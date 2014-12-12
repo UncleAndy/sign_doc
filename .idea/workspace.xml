@@ -29,12 +29,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cbcfc13-d7dd-4d79-af4d-0169ebf6e56a" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSign.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DoSign.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DoSign.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Receiver.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Receiver.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sign.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sign.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SignDoc.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,7 +58,7 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="585" max-vertical-offset="1785">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1785">
               <caret line="75" column="7" selection-start-line="75" selection-start-column="7" selection-end-line="75" selection-end-column="7" />
               <folding>
                 <element signature="e#2753#2775#0" expanded="true" />
@@ -76,37 +74,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
-          </provider>
-          <provider editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/main.xml">
-          <provider selected="true" editor-type-id="android-designer">
-            <state />
-          </provider>
-          <provider editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="840">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="JsonResponse.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/JsonResponse.java">
+      <file leaf-file-name="RegisterSign.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/RegisterSign.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
-              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="211" max-vertical-offset="1245">
+              <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -115,8 +87,8 @@
       <file leaf-file-name="Sender.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1380">
-              <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="31" max-vertical-offset="1380">
+              <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#894#927#0" expanded="true" />
@@ -133,55 +105,48 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Receiver.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Receiver.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Receiver.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.622824" vertical-offset="901" max-vertical-offset="2265">
-              <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="376" max-vertical-offset="2310">
+              <caret line="100" column="0" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1403#1436#0" expanded="true" />
-                <element signature="e#1990#2017#0" expanded="true" />
-                <element signature="e#2051#2089#0" expanded="true" />
-                <element signature="e#4492#4519#0" expanded="true" />
-                <element signature="e#4577#4615#0" expanded="true" />
-                <element signature="e#4734#4762#0" expanded="true" />
-                <element signature="e#4812#4851#0" expanded="true" />
-                <element signature="e#4939#4965#0" expanded="true" />
-                <element signature="e#5015#5052#0" expanded="true" />
-                <element signature="e#5158#5188#0" expanded="true" />
-                <element signature="e#5234#5267#0" expanded="true" />
-                <element signature="e#5473#5503#0" expanded="true" />
-                <element signature="e#5545#5586#0" expanded="true" />
-                <element signature="e#5807#5837#0" expanded="true" />
-                <element signature="e#5875#5916#0" expanded="true" />
+                <element signature="e#1434#1467#0" expanded="true" />
+                <element signature="e#2021#2048#0" expanded="true" />
+                <element signature="e#2082#2120#0" expanded="true" />
+                <element signature="e#4814#4841#0" expanded="true" />
+                <element signature="e#4899#4937#0" expanded="true" />
+                <element signature="e#5056#5084#0" expanded="true" />
+                <element signature="e#5134#5173#0" expanded="true" />
+                <element signature="e#5261#5287#0" expanded="true" />
+                <element signature="e#5337#5374#0" expanded="true" />
+                <element signature="e#5480#5510#0" expanded="true" />
+                <element signature="e#5556#5589#0" expanded="true" />
+                <element signature="e#5795#5825#0" expanded="true" />
+                <element signature="e#5867#5908#0" expanded="true" />
+                <element signature="e#6129#6159#0" expanded="true" />
+                <element signature="e#6197#6238#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <file leaf-file-name="DoSign.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DoSign.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.0" vertical-offset="0" max-vertical-offset="735">
-              <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.73887813" vertical-offset="181" max-vertical-offset="1215">
+              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Translations Editor" pinned="false" current="false" current-in-tab="false">
-        <entry file="mock:///Translations Editor">
-          <provider selected="true" editor-type-id="string-resource-editor">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocSignRequest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java">
+      <file leaf-file-name="DocSign.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSign.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
-              <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+              <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -190,12 +155,22 @@
       <file leaf-file-name="Sign.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sign.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="766" max-vertical-offset="2400">
+            <state vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="2400">
               <caret line="105" column="0" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
               <folding>
                 <element signature="e#3287#3288#0" expanded="true" />
                 <element signature="e#3340#3341#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DocSignRequest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -1242,9 +1217,11 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout-land/main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sign.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Receiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSign.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DoSign.java" />
       </list>
     </option>
   </component>
@@ -1264,10 +1241,13 @@
           <State>
             <id>General</id>
           </State>
+          <State>
+            <id>Spelling</id>
+          </State>
         </expanded-state>
         <selected-state>
           <State>
-            <id>Deprecation</id>
+            <id>SpellCheckingInspection</id>
           </State>
         </selected-state>
       </profile-state>
@@ -1981,21 +1961,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="435">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/import-summary.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1185">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
       <provider selected="true" editor-type-id="android-designer">
         <state />
@@ -2334,14 +2299,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/RegisterSign.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1140" max-vertical-offset="1485">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/LinkStatus.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="345">
@@ -2374,28 +2331,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1380">
-          <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#894#927#0" expanded="true" />
-            <element signature="e#1900#1929#0" expanded="true" />
-            <element signature="e#1971#2011#0" expanded="true" />
-            <element signature="e#2083#2113#0" expanded="true" />
-            <element signature="e#2155#2188#0" expanded="true" />
-            <element signature="e#2374#2404#0" expanded="true" />
-            <element signature="e#2442#2483#0" expanded="true" />
-            <element signature="e#2678#2708#0" expanded="true" />
-            <element signature="e#2742#2783#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-ldpi/cancel_icon.png">
       <provider selected="true" editor-type-id="images">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/JsonResponse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/main.xml">
@@ -2420,6 +2366,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/do_sign.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="165">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="585" max-vertical-offset="1785">
@@ -2437,19 +2394,63 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/JsonResponse.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/RegisterSign.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="225">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="211" max-vertical-offset="1245">
+          <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
-          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+        <state vertical-scroll-proportion="0.52031714" vertical-offset="0" max-vertical-offset="1009">
+          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Sender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1380">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#894#927#0" expanded="true" />
+            <element signature="e#1900#1929#0" expanded="true" />
+            <element signature="e#1971#2011#0" expanded="true" />
+            <element signature="e#2083#2113#0" expanded="true" />
+            <element signature="e#2155#2188#0" expanded="true" />
+            <element signature="e#2374#2404#0" expanded="true" />
+            <element signature="e#2442#2483#0" expanded="true" />
+            <element signature="e#2678#2708#0" expanded="true" />
+            <element signature="e#2742#2783#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Receiver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1141" max-vertical-offset="2310">
+          <caret line="100" column="0" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1434#1467#0" expanded="true" />
+            <element signature="e#2021#2048#0" expanded="true" />
+            <element signature="e#2082#2120#0" expanded="true" />
+            <element signature="e#4814#4841#0" expanded="true" />
+            <element signature="e#4899#4937#0" expanded="true" />
+            <element signature="e#5056#5084#0" expanded="true" />
+            <element signature="e#5134#5173#0" expanded="true" />
+            <element signature="e#5261#5287#0" expanded="true" />
+            <element signature="e#5337#5374#0" expanded="true" />
+            <element signature="e#5480#5510#0" expanded="true" />
+            <element signature="e#5556#5589#0" expanded="true" />
+            <element signature="e#5795#5825#0" expanded="true" />
+            <element signature="e#5867#5908#0" expanded="true" />
+            <element signature="e#6129#6159#0" expanded="true" />
+            <element signature="e#6197#6238#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2464,36 +2465,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSignRequest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.0" vertical-offset="0" max-vertical-offset="660">
-          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Receiver.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DocSign.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.622824" vertical-offset="901" max-vertical-offset="2265">
-          <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1403#1436#0" expanded="true" />
-            <element signature="e#1990#2017#0" expanded="true" />
-            <element signature="e#2051#2089#0" expanded="true" />
-            <element signature="e#4492#4519#0" expanded="true" />
-            <element signature="e#4577#4615#0" expanded="true" />
-            <element signature="e#4734#4762#0" expanded="true" />
-            <element signature="e#4812#4851#0" expanded="true" />
-            <element signature="e#4939#4965#0" expanded="true" />
-            <element signature="e#5015#5052#0" expanded="true" />
-            <element signature="e#5158#5188#0" expanded="true" />
-            <element signature="e#5234#5267#0" expanded="true" />
-            <element signature="e#5473#5503#0" expanded="true" />
-            <element signature="e#5545#5586#0" expanded="true" />
-            <element signature="e#5807#5837#0" expanded="true" />
-            <element signature="e#5875#5916#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
+          <caret line="11" column="0" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DoSign.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.73887813" vertical-offset="181" max-vertical-offset="1215">
+          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

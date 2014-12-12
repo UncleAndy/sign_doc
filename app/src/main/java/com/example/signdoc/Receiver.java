@@ -1,5 +1,6 @@
 package com.example.signdoc;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -101,8 +102,10 @@ public class Receiver extends LinkStatus implements GetPassInterface{
 
                                     Log.d("DATA", "Data decrypted array: " + json_data_str);
 
-
-
+                                    Intent intent = new Intent(this, DoSign.class);
+                                    intent.putExtra("Doc", doc.toJson());
+                                    intent.putExtra("Data", json_data_str);
+                                    startActivity(intent);
 
 
 

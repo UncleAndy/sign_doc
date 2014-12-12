@@ -6,6 +6,7 @@ package com.example.signdoc;
 public class DocSignRequest extends Doc {
     public String type;
     public String site;
-    public String data; // Данные - это зашифрованный JSON массив строк
+    public String id;       // Внутренний (клиента) идентификатор документа
+    public String data;     // Данные - это зашифрованный JSON массив строк
     public String template;
 }
