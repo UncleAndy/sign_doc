@@ -2,6 +2,7 @@
   <dictionary name="andy">
     <words>
       <w>dlgcontrol</w>
+      <w>pkcs</w>
       <w>prng</w>
     </words>
   </dictionary>

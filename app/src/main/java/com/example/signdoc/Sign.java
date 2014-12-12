@@ -20,6 +20,7 @@ public class Sign {
     private static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     private static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
     private static final String RSA_KEYS_TAG = "RSA";
+    private static final String RSA_DECRYPT_TAG = "RSA/None/PKCS1Padding";
     private static final String AES_KEYS_TAG = "AES";
     private static final String SIGN_ALG_TAG = "SHA1withRSA";
 
@@ -82,9 +83,10 @@ public class Sign {
 
         byte[] data = null;
         try {
-            Cipher c = Cipher.getInstance(RSA_KEYS_TAG);
+            Cipher c = Cipher.getInstance(RSA_DECRYPT_TAG);
             c.init(Cipher.DECRYPT_MODE, pvt_key);
             data = c.doFinal(enc_data);
+            Log.d("DATA", "Decrypted bytes: " + data.length);
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "RSA decryption error");
         }

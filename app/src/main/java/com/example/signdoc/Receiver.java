@@ -91,6 +91,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                 // В doc.data сожержится base64(encrypt(json(['val1', 'val2', ...])))
 
                                 byte[] json_data = sign.decrypt(doc.data);
+                                Log.d("DATA", "Data decrypted bytes: " + json_data.length);
                                 if (json_data != null) {
                                     cnt++;
                                     String json_data_str = new String(json_data, "UTF-8");
