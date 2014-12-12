@@ -33,6 +33,7 @@
         <activity android:name="RegisterSign"></activity>
         <activity android:name="DoSign"></activity>
         <activity android:name="Sender"></activity>
+        <activity android:name="Receiver"></activity>
     </application>
 
 </manifest>

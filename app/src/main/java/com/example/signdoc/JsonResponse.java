@@ -5,4 +5,5 @@ package com.example.signdoc;
  */
 public class JsonResponse {
     public int status;
+    public DocSignRequest[] documents;
 }

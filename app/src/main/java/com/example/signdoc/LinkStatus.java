@@ -2,12 +2,13 @@ package com.example.signdoc;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ResourceBundle;
 
-public class LinkStatus extends Activity {
+public class LinkStatus extends FragmentActivity {
 	protected TextView txtStatus;
     protected ProgressBar prLinkStatus;
 

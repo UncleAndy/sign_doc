@@ -69,10 +69,10 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
         DocSignRegistration doc = new DocSignRegistration();
         doc.site = edSite.getText().toString().trim();
         doc.code = edCode.getText().toString().trim();
-        doc.public_key = settings.get(PREF_PUBLIC_KEY);
 
         // Расшифровываем приватный ключ
         Sign sign = new Sign(password);
+        doc.public_key = sign.getPublicKeyBase64();
 
         // Формируем ЭЦП документа
         String sign_data = doc.code;

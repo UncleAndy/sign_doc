@@ -18,7 +18,6 @@ import org.apache.http.util.EntityUtils;
  */
 public class Sender extends LinkStatus {
     public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
-    public static final String HTTP_GET_URL = MainActivity.HTTP_GET_URL;
 
     private String document;
 
@@ -36,11 +35,12 @@ public class Sender extends LinkStatus {
     private boolean deliver() {
         txtStatus.setText(R.string.msg_status_start_deliver);
 
+        boolean success = true;
+
         // Инициируется процесс отправки документа
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(HTTP_SEND_URL);
 
-        boolean success = true;
         try {
             // Add your data
             StringEntity se = new StringEntity(document);
@@ -55,25 +55,25 @@ public class Sender extends LinkStatus {
             int http_status = response.getStatusLine().getStatusCode();
             if (http_status == 200) {
                 Gson gson = new Gson();
-                JsonResponse jresp = gson.fromJson(body, JsonResponse.class);
-                if (jresp.status != 0) {
-                    txtStatus.setText(R.string.msg_status_http_error);
-                    MainActivity.alert(getString(R.string.err_http_send), this);
-                    Log.e("HTTP", "Error HTTP response: " + body);
-                    success = false;
-                } else {
+                JsonResponse json_resp = gson.fromJson(body, JsonResponse.class);
+                if (json_resp.status == 0) {
                     txtStatus.setText(R.string.msg_status_delivered);
                     MainActivity.alert(getString(R.string.msg_status_delivered), this);
+                } else {
+                    txtStatus.setText(R.string.msg_status_http_error);
+                    MainActivity.error(getString(R.string.err_http_send), this);
+                    Log.e("HTTP", "Error HTTP response: " + body);
+                    success = false;
                 }
             } else {
                 txtStatus.setText(R.string.msg_status_http_error);
-                MainActivity.alert(getString(R.string.msg_status_http_error), this);
+                MainActivity.error(getString(R.string.msg_status_http_error), this);
                 Log.e("HTTP", "HTTP response: "+http_status+" body: "+body);
                 success = false;
             }
         } catch (Exception e) {
             txtStatus.setText(R.string.msg_status_http_error);
-            MainActivity.alert(getString(R.string.msg_status_http_error), this);
+            MainActivity.error(getString(R.string.msg_status_http_error), this);
             Log.e("HTTP", "Error HTTP request: ", e);
             success = false;
         };

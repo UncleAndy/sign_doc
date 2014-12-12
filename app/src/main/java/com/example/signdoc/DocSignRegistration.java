@@ -1,7 +1,5 @@
 package com.example.signdoc;
 
-import com.google.gson.Gson;
-
 /**
  * Created by andy on 12.12.14.
  */

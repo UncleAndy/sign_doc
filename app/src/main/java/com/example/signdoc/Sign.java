@@ -6,6 +6,7 @@ import android.util.Log;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -43,22 +44,6 @@ public class Sign {
         restorePublicKey();
     }
 
-    public byte[] create(byte[] data) {
-        if (!restorePrivateKey()) { return(null); };
-
-        byte[] signed = null;
-        try {
-            Signature signInstance = Signature.getInstance(SIGN_ALG_TAG);
-            signInstance.initSign(pvt_key);
-            signInstance.update(data);
-            signed = signInstance.sign();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return(signed);
-    }
-
     public boolean setPassword(String password) {
         // Формируем из пароля ключ для расшифровки AES
         try {
@@ -76,8 +61,75 @@ public class Sign {
         return(sks != null);
     }
 
-    public String getPublicKey() {
+    public byte[] create(byte[] data) {
+        if (!restorePrivateKey()) { return(null); };
+
+        byte[] signed = null;
+        try {
+            Signature signInstance = Signature.getInstance(SIGN_ALG_TAG);
+            signInstance.initSign(pvt_key);
+            signInstance.update(data);
+            signed = signInstance.sign();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return(signed);
+    }
+
+    public String createBase64(byte[] data) {
+        byte[] sign = create(data);
+        if (sign != null) {
+            return (Base64.encodeToString(sign, Base64.NO_WRAP));
+        } else {
+            return(null);
+        }
+    }
+
+    public String getPublicKeyBase64() {
         return(settings.get(PREF_PUBLIC_KEY));
+    }
+
+    public byte[] getPublicKey()
+    {
+        String b64_pub_key = getPublicKeyBase64();
+        return(Base64.decode(b64_pub_key, Base64.NO_WRAP));
+    }
+
+    public byte[] getPublicKeyId() {
+        MessageDigest digest = null;
+        byte[] hash = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            hash = digest.digest((byte[]) getPublicKey());
+            return(hash);
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("SHA-256", "Hash create error: "+e.getMessage());
+        };
+
+        return(null);
+    }
+
+    public String getPublicKeyIdBase64() {
+        byte[] hash = getPublicKeyId();
+        if (hash != null) {
+            return (Base64.encodeToString(hash, Base64.NO_WRAP));
+        };
+        return(null);
+    }
+
+    private boolean restorePublicKey() {
+        if (pub_key != null) { return(true); }
+
+        String b64_pub_key = settings.get(PREF_PUBLIC_KEY);
+        byte[] b_pub_key = Base64.decode(b64_pub_key, Base64.NO_WRAP);
+
+        try {
+            pub_key = KeyFactory.getInstance(RSA_KEYS_TAG).generatePublic(new X509EncodedKeySpec(b_pub_key));
+        } catch (Exception e) {
+            Log.e(RSA_KEYS_TAG, "Restore public key error: "+e.getMessage());
+        };
+        return(pub_key != null);
     }
 
     private boolean restorePrivateKey() {
@@ -97,19 +149,5 @@ public class Sign {
             Log.e(RSA_KEYS_TAG, "Restore private key error: "+e.getMessage());
         }
         return(pvt_key != null);
-    }
-
-    private boolean restorePublicKey() {
-        if (pub_key != null) { return(true); }
-
-        String b64_pub_key = settings.get(PREF_PUBLIC_KEY);
-        byte[] b_pub_key = Base64.decode(b64_pub_key, Base64.NO_WRAP);
-
-        try {
-            pub_key = KeyFactory.getInstance(RSA_KEYS_TAG).generatePublic(new X509EncodedKeySpec(b_pub_key));
-        } catch (Exception e) {
-            Log.e(RSA_KEYS_TAG, "Restore public key error: "+e.getMessage());
-        };
-        return(pub_key != null);
     }
 }

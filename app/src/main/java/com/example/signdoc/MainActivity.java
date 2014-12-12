@@ -25,7 +25,6 @@ public class MainActivity extends Activity implements OnClickListener {
     private Button btnInit;
     private Button btnRegister;
     private Button btnCheckNew;
-    private Button btnOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,6 @@ public class MainActivity extends Activity implements OnClickListener {
         btnInit = (Button) findViewById(R.id.btnInit); btnInit.setOnClickListener(this);
         btnRegister = (Button) findViewById(R.id.btnRegister); btnRegister.setOnClickListener(this);
         btnCheckNew = (Button) findViewById(R.id.btnCheckNew); btnCheckNew.setOnClickListener(this);
-        btnOptions = (Button) findViewById(R.id.btnOptions); btnOptions.setOnClickListener(this);
 
         if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
         settings = Settings.getInstance();
@@ -60,11 +58,8 @@ public class MainActivity extends Activity implements OnClickListener {
           startActivity(intent);
           break;
       case R.id.btnCheckNew:
-    	  intent = new Intent(this, LinkStatus.class);
+    	  intent = new Intent(this, Receiver.class);
           startActivity(intent);
-          break;
-      case R.id.btnOptions:
-          // TODO
           break;
       default:
         break;
@@ -77,10 +72,26 @@ public class MainActivity extends Activity implements OnClickListener {
 
     public static void alert(String text, Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.title_error)
+        builder.setTitle(R.string.title_warning)
+                .setIcon(R.drawable.notification_icon)
                 .setMessage(text)
                 .setCancelable(false)
-                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public static void error(String text, Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.title_error)
+                .setIcon(R.drawable.cancel_icon)
+                .setMessage(text)
+                .setCancelable(false)
+                .setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
@@ -100,12 +111,10 @@ public class MainActivity extends Activity implements OnClickListener {
             btnInit.setEnabled(true);
             btnRegister.setEnabled(false);
             btnCheckNew.setEnabled(false);
-            btnOptions.setEnabled(true);
         } else {
-            btnInit.setEnabled(true);
+            btnInit.setEnabled(false);
             btnRegister.setEnabled(true);
             btnCheckNew.setEnabled(true);
-            btnOptions.setEnabled(true);
         };
     }
 }
