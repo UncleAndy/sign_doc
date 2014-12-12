@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="fill_horizontal"
+        android:background="@color/green"
+        android:gravity="center_vertical|center_horizontal"
+        android:padding="6dp"
+        android:text="@string/reg_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.Space
+        android:id="@+id/space3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left" />
+
+    <android.support.v7.widget.Space
+        android:id="@+id/space1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left" />
+
+    <android.support.v7.widget.Space
+        android:id="@+id/space2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left" />
+
+    <EditText
+        android:id="@+id/edSite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="6dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:gravity="center_vertical|center_horizontal"
+        android:hint="@string/reg_client_id"
+        android:inputType="text"
+        android:padding="6dp"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:id="@+id/edCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_margin="6dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:gravity="center_vertical|center_horizontal"
+        android:hint="@string/reg_code"
+        android:inputType="text"
+        android:padding="6dp"
+        android:textColor="@color/black" />
+
+    <android.support.v7.widget.Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_vertical" />
+
+    <Button
+        android:id="@+id/btnReady"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_ready" />
+
+    <android.support.v7.widget.Space
+        android:id="@+id/space4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

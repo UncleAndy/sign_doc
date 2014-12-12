@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sign Doc</string>
+    <string name="btn_init">Initialize application</string>
+    <string name="btn_registration">Registration on site</string>
+    <string name="btn_check_new">Check new documents</string>
+    <string name="btn_docs_list">Documents list</string>
+    <string name="btn_options">Options...</string>
+    <string name="reg_client_id">Enter site domain</string>
+    <string name="reg_code">Enter code from site</string>
+    <string name="btn_ready">Ready</string>
+    <string name="btnSign">Sign</string>
+    <string name="btnDelay">Delay</string>
+    <string name="btnCancel">Cancel</string>
+    <string name="tabDelayed">Delayed</string>
+    <string name="tabCanceled">Canceled</string>
+    <string name="tabSigned">Signed</string>
+    <string name="reg_title">Register sign on site</string>
+    <string name="init_already">Already initialized! Press "Back".</string>
+    <string name="init_start">Start initialization...</string>
+    <string name="err_keys_pair_create">Main keys create error</string>
+    <string name="init_keys_pair_created">Initialize successfull</string>
+    <string name="msg_enter_new_password">Enter new password</string>
+    <string name="btnBegin">Begin</string>
+    <string name="err_bad_password">New password is bad format</string>
+    <string name="msg_enter_pass">Enter password</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="title_error">Error!</string>
+    <string name="err_site_required">Site filed is required</string>
+    <string name="err_code_required">Code should by present</string>
+    <string name="err_wrong_password">Wrong password</string>
+
+</resources>
