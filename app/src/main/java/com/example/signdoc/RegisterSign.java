@@ -86,7 +86,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
         };
 
         // Ставим документ в очередь на отправку
-        Log.d("SIGN", "Sign: "+doc.sign);
+        Log.d("SIGN", "Sign doc: "+doc.toJson());
 
 
 
