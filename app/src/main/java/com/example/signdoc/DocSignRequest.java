@@ -6,6 +6,6 @@ package com.example.signdoc;
 public class DocSignRequest extends Doc {
     public String type;
     public String site;
-    public String data;
+    public String[] data;
     public String template;
 }

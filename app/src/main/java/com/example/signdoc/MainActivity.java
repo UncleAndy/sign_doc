@@ -70,6 +70,11 @@ public class MainActivity extends Activity implements OnClickListener {
         return(sPref);
     }
 
+    /*
+        Иконки из набора Oxygen Icons (http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org)
+        Лицензия - GNU Lesser General Public License
+     */
+
     public static void alert(String text, Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.title_warning)
