@@ -106,16 +106,6 @@ public class InitKey extends Activity implements OnClickListener {
                     settings.set(PREF_ENC_PRIVATE_KEY, Base64.encodeToString(encodedBytes, Base64.NO_WRAP));
                     Log.d(RSA_KEYS_TAG, "Encrypted private key: "+Base64.encodeToString(encodedBytes, Base64.NO_WRAP));
 
-/*
-                    Log.d(RSA_KEYS_TAG, "Check restore:");
-                    byte[] b64_enc_pvt_key = Base64.decode(Base64.encodeToString(encodedBytes, Base64.NO_WRAP), Base64.NO_WRAP);
-
-                    c.init(Cipher.DECRYPT_MODE, sks);
-                    byte[] decodedBytes = c.doFinal(b64_enc_pvt_key);
-                    Log.d(RSA_KEYS_TAG, "Compare: "+ Arrays.equals(decodedBytes, privateKey.getEncoded()));
-*/
-
-
                     txtStatus.setText(R.string.init_keys_pair_created);
                 } catch (Exception e) {
                     txtStatus.setText("encryption error");

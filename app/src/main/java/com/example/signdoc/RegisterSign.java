@@ -1,7 +1,6 @@
 package com.example.signdoc;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -58,7 +57,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
         };
 
         if (!errors.isEmpty()) {
-            alert(errors);
+            MainActivity.alert(errors, this);
         } else {
             DialogFragment dlgPassword = new DlgPassword(this);
             dlgPassword.show(getSupportFragmentManager(), "missiles");
@@ -80,35 +79,15 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
         byte[] b_sign = sign.create(sign_data.getBytes());
 
         if (b_sign == null) {
-            alert(getString(R.string.err_wrong_password));
+            MainActivity.alert(getString(R.string.err_wrong_password), this);
         } else {
             doc.sign = Base64.encodeToString(b_sign, Base64.NO_WRAP);
+
+            // Запускаем отправку если все в норме
+            Intent intent = new Intent(this, Sender.class);
+            intent.putExtra("Doc", doc.toJson());
+            startActivity(intent);
+            Log.d("SIGN", "Sign doc: "+doc.toJson());
         };
-
-        // Ставим документ в очередь на отправку
-        Log.d("SIGN", "Sign doc: "+doc.toJson());
-
-
-
-
-
-
-
-
-
-    }
-
-    private void alert(String text) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.title_error)
-                .setMessage(text)
-                .setCancelable(false)
-                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 }

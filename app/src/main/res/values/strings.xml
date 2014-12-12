@@ -30,5 +30,9 @@
     <string name="err_site_required">Site filed is required</string>
     <string name="err_code_required">Code should by present</string>
     <string name="err_wrong_password">Wrong password</string>
+    <string name="err_http_send">Can not sent document</string>
+    <string name="msg_status_start_deliver">Start deliver document...</string>
+    <string name="msg_status_http_error">Error when deliver document</string>
+    <string name="msg_status_delivered">Document delivered</string>
 
 </resources>

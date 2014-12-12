@@ -9,7 +9,14 @@
     <string name="btn_options">Настройки...</string>
     <string name="reg_client_id">Введите домен сайта</string>
     <string name="reg_code">Введите одноразовый код</string>
-    <string name="btn_ready">Готово</string><string name="btnSign">Подписать</string><string name="btnDelay">Отложить</string><string name="btnCancel">Отказать</string><string name="tabDelayed">Отложенные</string><string name="tabCanceled">Отмененные</string><string name="tabSigned">Подписанные</string><string name="reg_title">Регистрация подписи</string>
+    <string name="btn_ready">Готово</string>
+    <string name="btnSign">Подписать</string>
+    <string name="btnDelay">Отложить</string>
+    <string name="btnCancel">Отказать</string>
+    <string name="tabDelayed">Отложенные</string>
+    <string name="tabCanceled">Отмененные</string>
+    <string name="tabSigned">Подписанные</string>
+    <string name="reg_title">Регистрация подписи</string>
     <string name="init_already">Приложение уже инициализировано. Нажмите кнопку "Назад".</string>
     <string name="init_start">Запуск инициализации...</string>
     <string name="err_keys_pair_create">Ошибка создания главного ключа</string>
@@ -23,5 +30,9 @@
     <string name="err_site_required">Сайт должен быть заполнен</string>
     <string name="err_code_required">Код должен быть заполнен</string>
     <string name="err_wrong_password">Неверный пароль</string>
+    <string name="err_http_send">Не могу отправить документ</string>
+    <string name="msg_status_start_deliver">Начало отправки документа...</string>
+    <string name="msg_status_http_error">Ошибка при отправке документа</string>
+    <string name="msg_status_delivered">Документ успешно доставлен</string>
 
 </resources>
