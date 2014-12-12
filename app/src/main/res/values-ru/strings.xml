@@ -38,5 +38,6 @@
     <string name="msg_status_no_new">Нет новых документов</string>
     <string name="btn_ok">ОК</string>
     <string name="title_warning">Внимание!</string>
+    <string name="err_cannot_decrypt">Ошибка расшифровки данных</string>
 
 </resources>

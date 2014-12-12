@@ -38,5 +38,6 @@
     <string name="msg_status_no_new">New documents absent</string>
     <string name="btn_ok">OK</string>
     <string name="title_warning">Attension!</string>
+    <string name="err_cannot_decrypt">Decrypt data error</string>
 
 </resources>

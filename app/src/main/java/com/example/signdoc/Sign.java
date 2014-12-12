@@ -86,6 +86,24 @@ public class Sign {
         }
     }
 
+    public byte[] decrypt(byte[] enc_data) {
+        if (!restorePrivateKey()) { return(null); };
+
+        byte[] data = null;
+        try {
+            Cipher c = Cipher.getInstance(RSA_KEYS_TAG);
+            c.init(Cipher.DECRYPT_MODE, pvt_key);
+            data = c.doFinal(enc_data);
+        } catch (Exception e) {
+            Log.e(RSA_KEYS_TAG, "RSA decryption error");
+        };
+        return(data);
+    }
+
+    public byte[] decrypt(String b64_enc_data) {
+        decrypt(Base64.decode(b64_enc_data, Base64.NO_WRAP))
+    }
+
     public String getPublicKeyBase64() {
         return(settings.get(PREF_PUBLIC_KEY));
     }
@@ -117,6 +135,8 @@ public class Sign {
         };
         return(null);
     }
+
+    // PRIVATE
 
     private boolean restorePublicKey() {
         if (pub_key != null) { return(true); }

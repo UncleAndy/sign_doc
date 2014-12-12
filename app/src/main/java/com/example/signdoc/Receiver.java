@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -14,6 +15,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 /**
  * Created by andy on 12.12.14.
@@ -84,16 +88,37 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                 DocSignRequest doc = json_resp.documents[i];
                                 Log.d("HTTP", "Request sign document: " + doc.toJson());
 
+                                // В doc.data сожержится base64(encrypt(json(['val1', 'val2', ...])))
 
+                                byte[] json_data = sign.decrypt(doc.data);
+                                if (json_data != null) {
+                                    String json_data_str = new String(json_data, "UTF-8");
+
+                                    // Документ и расшифрованные данные будут передаваться в другой Activity в виде строк
+                                    // Поэтому конвертацию данных в список переносим в другой Activity, который будет заниматься их показом
+                                    // Type collectionType = new TypeToken<Collection<String>>(){}.getType();
+                                    // Collection<String> data_collection = gson.fromJson(json_data_str, collectionType);
+
+                                    Log.d("DATA", "Data decrypted array: " + json_data_str);
+
+
+
+
+
+
+
+
+                                } else {
+                                    txtStatus.setText(R.string.err_cannot_decrypt);
+                                    MainActivity.alert(getString(R.string.err_cannot_decrypt), this);
+                                }
                             }
-                            ;
                             txtStatus.setText(R.string.msg_status_received);
                             MainActivity.alert(getString(R.string.msg_status_received), this);
                         } else {
                             txtStatus.setText(R.string.msg_status_no_new);
                             MainActivity.alert(getString(R.string.msg_status_no_new), this);
                         }
-                        ;
                     } else {
                         txtStatus.setText(R.string.msg_status_http_error);
                         MainActivity.error(getString(R.string.err_http_send), this);
@@ -111,8 +136,8 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                 MainActivity.error(getString(R.string.msg_status_http_error), this);
                 Log.e("HTTP", "Error HTTP request: ", e);
                 success = false;
-            };
-        };
+            }
+        }
 
         prLinkStatus.setVisibility(View.INVISIBLE);
         return(success);
