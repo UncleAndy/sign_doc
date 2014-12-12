@@ -13,9 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-/**
- * Created by andy on 12.12.14.
- */
 public class Sender extends LinkStatus {
     public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
 
@@ -32,10 +29,8 @@ public class Sender extends LinkStatus {
     }
 
 
-    private boolean deliver() {
+    private void deliver() {
         txtStatus.setText(R.string.msg_status_start_deliver);
-
-        boolean success = true;
 
         // Инициируется процесс отправки документа
         HttpClient httpclient = new DefaultHttpClient();
@@ -63,23 +58,19 @@ public class Sender extends LinkStatus {
                     txtStatus.setText(R.string.msg_status_http_error);
                     MainActivity.error(getString(R.string.err_http_send), this);
                     Log.e("HTTP", "Error HTTP response: " + body);
-                    success = false;
                 }
             } else {
                 txtStatus.setText(R.string.msg_status_http_error);
                 MainActivity.error(getString(R.string.msg_status_http_error), this);
                 Log.e("HTTP", "HTTP response: "+http_status+" body: "+body);
-                success = false;
             }
         } catch (Exception e) {
             txtStatus.setText(R.string.msg_status_http_error);
             MainActivity.error(getString(R.string.msg_status_http_error), this);
             Log.e("HTTP", "Error HTTP request: ", e);
-            success = false;
-        };
+        }
 
         prLinkStatus.setVisibility(View.INVISIBLE);
-        return(success);
     }
 
 

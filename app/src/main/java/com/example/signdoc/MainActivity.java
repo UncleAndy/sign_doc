@@ -75,7 +75,7 @@ public class MainActivity extends Activity implements OnClickListener {
         Лицензия - GNU Lesser General Public License
      */
 
-    public static void alert(String text, Activity activity) {
+    public static void alert(String text, final Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.title_warning)
                 .setIcon(R.drawable.notification_icon)
@@ -83,14 +83,14 @@ public class MainActivity extends Activity implements OnClickListener {
                 .setCancelable(false)
                 .setNegativeButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+                       dialog.cancel();
                     }
                 });
         AlertDialog alert = builder.create();
         alert.show();
     }
 
-    public static void error(String text, Activity activity) {
+    public static void error(String text, final Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.title_error)
                 .setIcon(R.drawable.cancel_icon)

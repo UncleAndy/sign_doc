@@ -1,6 +1,7 @@
 package com.example.signdoc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -42,8 +43,17 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
 
     @Override
     public void onClick(View v) {
-        DialogFragment dlgPassword = new DlgPassword(this);
-        dlgPassword.show(getSupportFragmentManager(), "missiles");
+        switch (v.getId()) {
+            case R.id.btnSign:
+                DialogFragment dlgPassword = new DlgPassword(this);
+                dlgPassword.show(getSupportFragmentManager(), "missiles");
+                break;
+            case R.id.btnSignCancel:
+                finish();
+                break;
+            default:
+                break;
+        }
     }
 
     // PRIVATE

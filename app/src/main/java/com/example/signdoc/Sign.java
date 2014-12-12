@@ -3,40 +3,31 @@ package com.example.signdoc;
 import android.util.Base64;
 import android.util.Log;
 
-import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.Signature;
-import java.security.SignatureException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Created by andy on 12.12.14.
- */
 public class Sign {
-    static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
-    static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
-    static final String RSA_KEYS_TAG = "RSA";
-    static final String AES_KEYS_TAG = "AES";
-    static final String AES_HASH_TAG = "SHA1PRNG";
-    static final String SIGN_ALG_TAG = "SHA1withRSA";
+    private static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
+    private static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
+    private static final String RSA_KEYS_TAG = "RSA";
+    private static final String AES_KEYS_TAG = "AES";
+    private static final String SIGN_ALG_TAG = "SHA1withRSA";
 
     private Settings settings;
 
-    SecretKeySpec sks = null;
-    PrivateKey pvt_key = null;
-    PublicKey pub_key = null;
+    private SecretKeySpec sks = null;
+    private PrivateKey pvt_key = null;
+    private PublicKey pub_key = null;
 
     public Sign(String password) {
         settings = Settings.getInstance();
@@ -44,7 +35,7 @@ public class Sign {
         restorePublicKey();
     }
 
-    public boolean setPassword(String password) {
+    boolean setPassword(String password) {
         // Формируем из пароля ключ для расшифровки AES
         try {
             int keyLength = 128;
@@ -62,7 +53,7 @@ public class Sign {
     }
 
     public byte[] create(byte[] data) {
-        if (!restorePrivateKey()) { return(null); };
+        if (!restorePrivateKey()) { return(null); }
 
         byte[] signed = null;
         try {
@@ -87,7 +78,7 @@ public class Sign {
     }
 
     public byte[] decrypt(byte[] enc_data) {
-        if (!restorePrivateKey()) { return(null); };
+        if (!restorePrivateKey()) { return(null); }
 
         byte[] data = null;
         try {
@@ -96,12 +87,18 @@ public class Sign {
             data = c.doFinal(enc_data);
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "RSA decryption error");
-        };
+        }
+
         return(data);
     }
 
     public byte[] decrypt(String b64_enc_data) {
-        decrypt(Base64.decode(b64_enc_data, Base64.NO_WRAP))
+        try {
+            return(decrypt(Base64.decode(b64_enc_data, Base64.NO_WRAP)));
+        } catch (Exception e) {
+            Log.e(RSA_KEYS_TAG, "Decrypt error: "+e.getMessage());
+            return(null);
+        }
     }
 
     public String getPublicKeyBase64() {
@@ -115,15 +112,15 @@ public class Sign {
     }
 
     public byte[] getPublicKeyId() {
-        MessageDigest digest = null;
-        byte[] hash = null;
+        MessageDigest digest;
+        byte[] hash;
         try {
             digest = MessageDigest.getInstance("SHA-256");
-            hash = digest.digest((byte[]) getPublicKey());
+            hash = digest.digest(getPublicKey());
             return(hash);
         } catch (NoSuchAlgorithmException e) {
             Log.e("SHA-256", "Hash create error: "+e.getMessage());
-        };
+        }
 
         return(null);
     }
@@ -132,7 +129,7 @@ public class Sign {
         byte[] hash = getPublicKeyId();
         if (hash != null) {
             return (Base64.encodeToString(hash, Base64.NO_WRAP));
-        };
+        }
         return(null);
     }
 
@@ -148,7 +145,8 @@ public class Sign {
             pub_key = KeyFactory.getInstance(RSA_KEYS_TAG).generatePublic(new X509EncodedKeySpec(b_pub_key));
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "Restore public key error: "+e.getMessage());
-        };
+        }
+
         return(pub_key != null);
     }
 
@@ -158,7 +156,7 @@ public class Sign {
         String b64_enc_pvt_key = settings.get(PREF_ENC_PRIVATE_KEY);
         byte[] enc_pvt_key = Base64.decode(b64_enc_pvt_key, Base64.NO_WRAP);
 
-        byte[] dec_pvt_key = null;
+        byte[] dec_pvt_key;
         try {
             Cipher c = Cipher.getInstance(AES_KEYS_TAG);
             c.init(Cipher.DECRYPT_MODE, sks);
@@ -168,6 +166,7 @@ public class Sign {
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "Restore private key error: "+e.getMessage());
         }
+
         return(pvt_key != null);
     }
 }

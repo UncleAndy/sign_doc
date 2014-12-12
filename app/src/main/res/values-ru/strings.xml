@@ -35,9 +35,14 @@
     <string name="msg_status_http_error">Ошибка при отправке документа</string>
     <string name="msg_status_delivered">Документ успешно доставлен</string>
     <string name="msg_status_received">Приняты новые документы</string>
-    <string name="msg_status_no_new">Нет новых документов</string>
+    <string name="msg_status_no_new">Нет новых документов или документы с ошибками</string>
     <string name="btn_ok">ОК</string>
     <string name="title_warning">Внимание!</string>
     <string name="err_cannot_decrypt">Ошибка расшифровки данных</string>
+    <string name="title_sign_doc">Подписание документа</string>
+    <string name="btn_do_sign">Подписать</string>
+    <string name="btn_sign_cancel">Отказать</string>
+    <string name="in_document"> в документе </string>
+    <string name="btn_back">Назад</string>
 
 </resources>

@@ -35,9 +35,14 @@
     <string name="msg_status_http_error">Error when deliver document</string>
     <string name="msg_status_delivered">Document delivered</string>
     <string name="msg_status_received">New documents incoming</string>
-    <string name="msg_status_no_new">New documents absent</string>
+    <string name="msg_status_no_new">New documents absent or bad</string>
     <string name="btn_ok">OK</string>
     <string name="title_warning">Attension!</string>
     <string name="err_cannot_decrypt">Decrypt data error</string>
+    <string name="title_sign_doc">Signing document</string>
+    <string name="btn_do_sign">Sign</string>
+    <string name="btn_sign_cancel">Cancel</string>
+    <string name="in_document">in document</string>
+    <string name="btn_back">Return</string>
 
 </resources>

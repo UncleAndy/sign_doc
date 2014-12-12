@@ -44,13 +44,11 @@ public class Receiver extends LinkStatus implements GetPassInterface{
         receive(sign);
     }
 
-    private boolean receive(Sign sign) {
+    private void receive(Sign sign) {
         String document;
         DocRequestForUser request = new DocRequestForUser();
 
         txtStatus.setText(R.string.msg_status_start_deliver);
-
-        boolean success = true;
 
         // Формируем документ для запроса (публичный ключ, идентификатор публичного ключа, время с которого проверять документы)
         request.public_key = sign.getPublicKeyBase64();
@@ -85,6 +83,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                     if (json_resp.status == 0) {
                         // Загружаем список документов и в цикле вдыаем Activity для запроса подписи
                         if ((json_resp.documents != null) && (json_resp.documents.length > 0)) {
+                            int cnt = 0;
                             for (int i = 0; i < json_resp.documents.length; i++) {
                                 DocSignRequest doc = json_resp.documents[i];
                                 Log.d("HTTP", "Request sign document: " + doc.toJson());
@@ -93,6 +92,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
 
                                 byte[] json_data = sign.decrypt(doc.data);
                                 if (json_data != null) {
+                                    cnt++;
                                     String json_data_str = new String(json_data, "UTF-8");
 
                                     // Документ и расшифрованные данные будут передаваться в другой Activity в виде строк
@@ -106,18 +106,15 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                     intent.putExtra("Doc", doc.toJson());
                                     intent.putExtra("Data", json_data_str);
                                     startActivity(intent);
-
-
-
-
-
                                 } else {
-                                    txtStatus.setText(R.string.err_cannot_decrypt);
-                                    MainActivity.alert(getString(R.string.err_cannot_decrypt), this);
+                                    Log.e("DECRYPT", "Can not decrypt data from doc: "+doc.data);
                                 }
                             }
-                            txtStatus.setText(R.string.msg_status_received);
-                            MainActivity.alert(getString(R.string.msg_status_received), this);
+                            if (cnt > 0) {
+                                txtStatus.setText(R.string.msg_status_received);
+                            } else {
+                                txtStatus.setText(R.string.msg_status_no_new);
+                            }
                         } else {
                             txtStatus.setText(R.string.msg_status_no_new);
                             MainActivity.alert(getString(R.string.msg_status_no_new), this);
@@ -126,23 +123,19 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                         txtStatus.setText(R.string.msg_status_http_error);
                         MainActivity.error(getString(R.string.err_http_send), this);
                         Log.e("HTTP", "Error HTTP response: " + body);
-                        success = false;
                     }
                 } else {
                     txtStatus.setText(R.string.msg_status_http_error);
                     MainActivity.error(getString(R.string.msg_status_http_error), this);
                     Log.e("HTTP", "HTTP response: " + http_status + " body: " + body);
-                    success = false;
                 }
             } catch (Exception e) {
                 txtStatus.setText(R.string.msg_status_http_error);
                 MainActivity.error(getString(R.string.msg_status_http_error), this);
                 Log.e("HTTP", "Error HTTP request: ", e);
-                success = false;
             }
         }
 
         prLinkStatus.setVisibility(View.INVISIBLE);
-        return(success);
-    };
+    }
 }
