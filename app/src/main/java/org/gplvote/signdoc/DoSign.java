@@ -75,7 +75,6 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
                 break;
             case R.id.btnSignCancel:
-                DocsStorage.add_doc(this.getApplicationContext(), current_document().site, current_document().doc_id);
                 show_next_document();
                 break;
             default:

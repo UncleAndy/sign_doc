@@ -90,14 +90,8 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                 // В doc.data сожержится base64(encrypt(json(['val1', 'val2', ...])))
 
                                 byte[] json_data = sign.decrypt(doc.data);
-                                Log.d("DATA", "Data decrypted bytes: " + json_data.length);
                                 if (json_data != null) {
                                     doc.dec_data = new String(json_data, "UTF-8");
-
-                                    // Документ и расшифрованные данные будут передаваться в другой Activity в виде строк
-                                    // Поэтому конвертацию данных в список переносим в другой Activity, который будет заниматься их показом
-                                    // Type collectionType = new TypeToken<Collection<String>>(){}.getType();
-                                    // Collection<String> data_collection = gson.fromJson(json_data_str, collectionType);
 
                                     Log.d("DATA", "Data decrypted array: " + doc.dec_data);
 

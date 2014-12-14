@@ -52,6 +52,13 @@ public class Sender extends LinkStatus {
                 Gson gson = new Gson();
                 JsonResponse json_resp = gson.fromJson(body, JsonResponse.class);
                 if (json_resp.status == 0) {
+                    DocSign doc = gson.fromJson(document, DocSign.class);
+                    Log.d("REGDOC", doc.toJson());
+
+                    if (doc.type == "SIGN") {
+                        DocsStorage.add_doc(this.getApplicationContext(), doc.site, doc.doc_id);
+                    };
+
                     txtStatus.setText(R.string.msg_status_delivered);
                     MainActivity.alert(getString(R.string.msg_status_delivered), this);
                 } else {
