@@ -1,4 +1,4 @@
-package com.example.signdoc;
+package org.gplvote.signdoc;
 
 import android.content.ContentValues;
 import android.content.Context;

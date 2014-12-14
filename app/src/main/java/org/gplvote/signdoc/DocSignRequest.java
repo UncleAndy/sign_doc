@@ -1,4 +1,4 @@
-package com.example.signdoc;
+package org.gplvote.signdoc;
 
 /**
  * Created by andy on 12.12.14.

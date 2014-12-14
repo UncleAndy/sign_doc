@@ -1,4 +1,4 @@
-package com.example.signdoc;
+package org.gplvote.signdoc;
 
 import android.content.Context;
 import android.content.SharedPreferences;

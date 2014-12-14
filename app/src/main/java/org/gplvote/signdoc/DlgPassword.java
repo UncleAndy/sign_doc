@@ -1,5 +1,6 @@
-package com.example.signdoc;
+package org.gplvote.signdoc;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,9 +12,7 @@ import android.widget.EditText;
 
 import java.lang.ref.Reference;
 
-/**
- * Created by andy on 11.12.14.
- */
+@SuppressLint("ValidFragment")
 public class DlgPassword extends DialogFragment {
     private EditText edPassword;
     private GetPassInterface eventPassword;

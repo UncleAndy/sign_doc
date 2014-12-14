@@ -1,4 +1,4 @@
-package com.example.signdoc;
+package org.gplvote.signdoc;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -56,11 +56,11 @@ public class InitKey extends Activity implements OnClickListener {
         if (is_password_valid(pass.toString())) {
             Log.d("BTN_STATE_INIT", "private_key = " + settings.get(PREF_ENC_PRIVATE_KEY));
 
-            //if (settings.get(PREF_ENC_PRIVATE_KEY) != "") {
-            //    txtStatus.setText(R.string.init_already);
-            //} else {
+            if (settings.get(PREF_ENC_PRIVATE_KEY) != "") {
+                txtStatus.setText(R.string.init_already);
+            } else {
                 createRSAKeysPair();
-            //}
+            }
         } else {
             txtStatus.setText(R.string.err_bad_password);
         };
@@ -107,6 +107,7 @@ public class InitKey extends Activity implements OnClickListener {
                     Log.d(RSA_KEYS_TAG, "Encrypted private key: "+Base64.encodeToString(encodedBytes, Base64.NO_WRAP));
 
                     txtStatus.setText(R.string.init_keys_pair_created);
+                    finish();
                 } catch (Exception e) {
                     txtStatus.setText("encryption error");
                     Log.e(AES_KEYS_TAG, "encryption error");
