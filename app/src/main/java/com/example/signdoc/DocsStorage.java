@@ -36,7 +36,7 @@ public class DocsStorage extends SQLiteOpenHelper {
     public static boolean is_new(Context context, DocSignRequest doc) {
         SQLiteDatabase db = getInstance(context).getReadableDatabase();
 
-        Cursor c = db.query("docs_list", new String[]{"id"}, "site = ? AND doc_id = ?", new String[]{doc.site, doc.id}, null, null, null, "1");
+        Cursor c = db.query("docs_list", new String[]{"id"}, "site = ? AND doc_id = ?", new String[]{doc.site, doc.doc_id}, null, null, null, "1");
         boolean result = c.moveToFirst();
         c.close();
         getInstance(context).close();

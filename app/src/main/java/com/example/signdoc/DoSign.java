@@ -75,7 +75,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
                 break;
             case R.id.btnSignCancel:
-                DocsStorage.add_doc(this.getApplicationContext(), current_document().site, current_document().id);
+                DocsStorage.add_doc(this.getApplicationContext(), current_document().site, current_document().doc_id);
                 show_next_document();
                 break;
             default:
@@ -98,7 +98,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         DocSignRequest document = current_document();
 
         textDocSite.setText(document.site);
-        textDocId.setText(document.id);
+        textDocId.setText(document.doc_id);
 
         String[] data = gson.fromJson(document.dec_data, String[].class);
 
@@ -131,10 +131,11 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         DocSign doc_sign = new DocSign();
 
         DocSignRequest doc = current_document();
-        String sign_data = doc.site + ":" + doc.id + ":" + doc.dec_data + ":" + doc.template;
+        String sign_data = doc.site + ":" + doc.doc_id + ":" + doc.dec_data + ":" + doc.template;
+        Log.d("SIGN", "Sign data: "+sign_data);
 
         doc_sign.site = doc.site;
-        doc_sign.id = doc.id;
+        doc_sign.doc_id = doc.doc_id;
         try {
             doc_sign.sign = sign.createBase64(sign_data.getBytes("UTF-8"));
         } catch (Exception e) {
@@ -142,13 +143,14 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         }
 
         if (doc_sign.sign != null) {
+            Log.d("SIGN", "Sign: "+doc_sign.sign);
             // Запускаем отправку если все в норме
             Intent intent = new Intent(this, Sender.class);
             intent.putExtra("Doc", doc_sign.toJson());
             startActivity(intent);
             Log.d("SIGN", "Sign doc: "+doc_sign.toJson());
 
-            DocsStorage.add_doc(this.getApplicationContext(), doc_sign.site, doc_sign.id);
+            DocsStorage.add_doc(this.getApplicationContext(), doc_sign.site, doc_sign.doc_id);
 
             show_next_document();
         } else {

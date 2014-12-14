@@ -66,6 +66,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
 
             try {
                 // Add your data
+                Log.d("HTTP", "User request: " + document);
                 StringEntity se = new StringEntity(document);
                 httppost.setEntity(se);
                 httppost.setHeader("Accept", "application/json");
