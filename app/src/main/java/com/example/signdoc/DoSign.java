@@ -32,6 +32,8 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
 
     private ListView listData;
     private TextView textTitleSignDoc;
+    private TextView textDocSite;
+    private TextView textDocId;
     private Button btnSign;
     private Button btnSignCancel;
 
@@ -40,8 +42,12 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.do_sign);
 
-        listData = (ListView) findViewById(R.id.listData);
+
         textTitleSignDoc = (TextView) findViewById(R.id.textTitleSignDoc);
+        textDocSite = (TextView) findViewById(R.id.textDocSite);
+        textDocId = (TextView) findViewById(R.id.textDocId);
+
+        listData = (ListView) findViewById(R.id.listData);
         btnSign = (Button) findViewById(R.id.btnSign); btnSign.setOnClickListener(this);
         btnSignCancel = (Button) findViewById(R.id.btnSignCancel); btnSignCancel.setOnClickListener(this);
 
@@ -69,6 +75,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
                 break;
             case R.id.btnSignCancel:
+                DocsStorage.add_doc(this.getApplicationContext(), current_document().site, current_document().id);
                 show_next_document();
                 break;
             default:
@@ -89,6 +96,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         textTitleSignDoc.setText(getString(R.string.title_sign_doc)+" "+(current_doc_idx+1)+"/"+documents.length);
 
         DocSignRequest document = current_document();
+
+        textDocSite.setText(document.site);
+        textDocId.setText(document.id);
+
         String[] data = gson.fromJson(document.dec_data, String[].class);
 
         String[] tpl_lines = document.template.split("\n");
@@ -131,12 +142,13 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         }
 
         if (doc_sign.sign != null) {
-            // TODO: Переделать на использование AsyncTask с переходом на следующий документ по окончанию
             // Запускаем отправку если все в норме
             Intent intent = new Intent(this, Sender.class);
             intent.putExtra("Doc", doc_sign.toJson());
             startActivity(intent);
             Log.d("SIGN", "Sign doc: "+doc_sign.toJson());
+
+            DocsStorage.add_doc(this.getApplicationContext(), doc_sign.site, doc_sign.id);
 
             show_next_document();
         } else {

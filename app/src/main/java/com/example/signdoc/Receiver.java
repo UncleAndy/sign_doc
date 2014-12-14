@@ -82,7 +82,6 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                     if (json_resp.status == 0) {
                         // Загружаем список документов и в цикле вдыаем Activity для запроса подписи
                         if ((json_resp.documents != null) && (json_resp.documents.length > 0)) {
-                            int cnt = 0;
                             for (int i = 0; i < json_resp.documents.length; i++) {
                                 DocSignRequest doc = json_resp.documents[i];
                                 Log.d("HTTP", "Request sign document: " + doc.toJson());
@@ -92,7 +91,6 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                 byte[] json_data = sign.decrypt(doc.data);
                                 Log.d("DATA", "Data decrypted bytes: " + json_data.length);
                                 if (json_data != null) {
-                                    cnt++;
                                     doc.dec_data = new String(json_data, "UTF-8");
 
                                     // Документ и расшифрованные данные будут передаваться в другой Activity в виде строк
@@ -103,15 +101,14 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                     Log.d("DATA", "Data decrypted array: " + doc.dec_data);
 
                                     // Собираем все новые запросы на подписание в массив
-                                    if (DocStorage.is_new(doc)) {
+                                    if (DocsStorage.is_new(this.getApplicationContext(), doc)) {
                                         requests_list.add(doc);
                                     }
-
                                 } else {
                                     Log.e("DECRYPT", "Can not decrypt data from doc: "+doc.data);
                                 }
                             }
-                            if (cnt > 0) {
+                            if (requests_list.size() > 0) {
                                 txtStatus.setText(R.string.msg_status_received);
 
                                 String json_requests_list = gson.toJson(new JSONArray(requests_list));

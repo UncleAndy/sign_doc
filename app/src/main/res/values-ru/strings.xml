@@ -44,5 +44,7 @@
     <string name="btn_sign_cancel">Отказать</string>
     <string name="in_document"> в документе </string>
     <string name="btn_back">Назад</string>
+    <string name="txt_doc_site">Сайт:</string>
+    <string name="txt_doc_id">Номер документа:</string>
 
 </resources>

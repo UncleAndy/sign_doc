@@ -58,6 +58,9 @@ public class MainActivity extends Activity implements OnClickListener {
           startActivity(intent);
           break;
       case R.id.btnCheckNew:
+          // DBG!!!
+          DocsStorage.clear_docs(this.getApplicationContext());
+
     	  intent = new Intent(this, Receiver.class);
           startActivity(intent);
           break;

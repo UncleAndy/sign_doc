@@ -44,5 +44,7 @@
     <string name="btn_sign_cancel">Cancel</string>
     <string name="in_document">in document</string>
     <string name="btn_back">Return</string>
+    <string name="txt_doc_site">Site:</string>
+    <string name="txt_doc_id">Document number:</string>
 
 </resources>
