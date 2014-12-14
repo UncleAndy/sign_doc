@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,11 +22,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DoSign extends FragmentActivity implements View.OnClickListener, GetPassInterface {
-    private DocSignRequest document;
-    private String[] data;
+    private class DocsListObject {
+        DocSignRequest[] values;
+    }
+
+    private DocSignRequest[] documents;
+    private int current_doc_idx = 0;
     private Gson gson;
 
     private ListView listData;
+    private TextView textTitleSignDoc;
+    private Button btnSign;
+    private Button btnSignCancel;
 
 	@Override
 	  protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +41,15 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
 	    setContentView(R.layout.do_sign);
 
         listData = (ListView) findViewById(R.id.listData);
+        textTitleSignDoc = (TextView) findViewById(R.id.textTitleSignDoc);
+        btnSign = (Button) findViewById(R.id.btnSign); btnSign.setOnClickListener(this);
+        btnSignCancel = (Button) findViewById(R.id.btnSignCancel); btnSignCancel.setOnClickListener(this);
 
         gson = new Gson();
 
-        String json_doc = getIntent().getStringExtra("Doc");
-        String json_data = getIntent().getStringExtra("Data");
+        String json_docs_list = getIntent().getStringExtra("DocsList");
 
-        setDoc(json_doc);
-        setData(json_data);
+        setDocs(json_docs_list);
 
         showData();
     }
@@ -58,7 +69,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
                 break;
             case R.id.btnSignCancel:
-                finish();
+                show_next_document();
                 break;
             default:
                 break;
@@ -67,16 +78,19 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
 
     // PRIVATE
 
-    private void setDoc(String json_doc) {
-        document = gson.fromJson(json_doc, DocSignRequest.class);
-    }
-
-    private void setData(String json_data) {
-        data = gson.fromJson(json_data, String[].class);
+    private void setDocs(String json_doc) {
+        DocsListObject doc_list_object;
+        doc_list_object = gson.fromJson(json_doc, DocsListObject.class);
+        documents = doc_list_object.values;
     }
 
     private void showData() {
         // Формируем вывод данных документа в диалог
+        textTitleSignDoc.setText(getString(R.string.title_sign_doc)+" "+(current_doc_idx+1)+"/"+documents.length);
+
+        DocSignRequest document = current_document();
+        String[] data = gson.fromJson(document.dec_data, String[].class);
+
         String[] tpl_lines = document.template.split("\n");
 
         switch (tpl_lines[0]) {
@@ -105,15 +119,42 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         // Формируем подпись документа (sha256(данные+шаблон)) и отправляем ее на сервер
         DocSign doc_sign = new DocSign();
 
+        DocSignRequest doc = current_document();
+        String sign_data = doc.site + ":" + doc.id + ":" + doc.dec_data + ":" + doc.template;
 
+        doc_sign.site = doc.site;
+        doc_sign.id = doc.id;
+        try {
+            doc_sign.sign = sign.createBase64(sign_data.getBytes("UTF-8"));
+        } catch (Exception e) {
+            Log.e("SIGN", "Wrong password error: ", e);
+        }
 
+        if (doc_sign.sign != null) {
+            // TODO: Переделать на использование AsyncTask с переходом на следующий документ по окончанию
+            // Запускаем отправку если все в норме
+            Intent intent = new Intent(this, Sender.class);
+            intent.putExtra("Doc", doc_sign.toJson());
+            startActivity(intent);
+            Log.d("SIGN", "Sign doc: "+doc_sign.toJson());
 
+            show_next_document();
+        } else {
+            MainActivity.error(getString(R.string.err_wrong_password), this);
+            showData();
+        }
+    }
 
+    private void show_next_document() {
+        if (current_doc_idx < (documents.length - 1)) {
+            current_doc_idx++;
+            showData();
+        } else {
+            finish();
+        }
+    }
 
-
-
-
-
-
+    private DocSignRequest current_document() {
+        return(documents[current_doc_idx]);
     }
 }

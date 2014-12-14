@@ -8,6 +8,7 @@ public class DocSignRequest extends Doc {
     public String site;
     public String id;       // Внутренний (клиента) идентификатор документа
     public String data;     // Данные - это зашифрованный JSON массив строк
+    public String dec_data; // Расшифрованные данные в строковом виде. Используются в коде, через сеть не передаются
     public String template; // Формат: До первого перевода строки - код типа шаблона:
                             // LIST - список строк с описанием каждого значения документа (по порядку, построчно)
 }

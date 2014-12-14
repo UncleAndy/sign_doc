@@ -3,7 +3,7 @@ package com.example.signdoc;
 /**
  * Created by andy on 13.12.14.
  */
-public class DocSign {
+public class DocSign extends Doc {
     public String type = "SIGN";
     public String site;
     public String id;       // Внутренний (клиента) идентификатор документа

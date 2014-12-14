@@ -3,12 +3,10 @@ package com.example.signdoc;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -16,9 +14,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * Created by andy on 12.12.14.
@@ -47,6 +45,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
     private void receive(Sign sign) {
         String document;
         DocRequestForUser request = new DocRequestForUser();
+        ArrayList<DocSignRequest> requests_list = new ArrayList<>();
 
         txtStatus.setText(R.string.msg_status_start_deliver);
 
@@ -94,25 +93,33 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                 Log.d("DATA", "Data decrypted bytes: " + json_data.length);
                                 if (json_data != null) {
                                     cnt++;
-                                    String json_data_str = new String(json_data, "UTF-8");
+                                    doc.dec_data = new String(json_data, "UTF-8");
 
                                     // Документ и расшифрованные данные будут передаваться в другой Activity в виде строк
                                     // Поэтому конвертацию данных в список переносим в другой Activity, который будет заниматься их показом
                                     // Type collectionType = new TypeToken<Collection<String>>(){}.getType();
                                     // Collection<String> data_collection = gson.fromJson(json_data_str, collectionType);
 
-                                    Log.d("DATA", "Data decrypted array: " + json_data_str);
+                                    Log.d("DATA", "Data decrypted array: " + doc.dec_data);
 
-                                    Intent intent = new Intent(this, DoSign.class);
-                                    intent.putExtra("Doc", doc.toJson());
-                                    intent.putExtra("Data", json_data_str);
-                                    startActivity(intent);
+                                    // Собираем все новые запросы на подписание в массив
+                                    if (DocStorage.is_new(doc)) {
+                                        requests_list.add(doc);
+                                    }
+
                                 } else {
                                     Log.e("DECRYPT", "Can not decrypt data from doc: "+doc.data);
                                 }
                             }
                             if (cnt > 0) {
                                 txtStatus.setText(R.string.msg_status_received);
+
+                                String json_requests_list = gson.toJson(new JSONArray(requests_list));
+                                Log.d("DATA", "Json docs list: " + json_requests_list);
+
+                                Intent intent = new Intent(this, DoSign.class);
+                                intent.putExtra("DocsList", json_requests_list);
+                                startActivity(intent);
                             } else {
                                 txtStatus.setText(R.string.msg_status_no_new);
                             }
