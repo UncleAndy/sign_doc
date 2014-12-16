@@ -11,6 +11,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -24,6 +33,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
     static final String RSA_KEYS_TAG = "RSA";
     static final String AES_KEYS_TAG = "AES";
     static final String AES_HASH_TAG = "SHA1PRNG";
+    public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
 
     private static Settings settings;
 
@@ -83,10 +93,12 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
         } else {
             doc.sign = Base64.encodeToString(b_sign, Base64.NO_WRAP);
 
+            HTTPActions.deliver(doc.toJson(), this, true);
+
             // Запускаем отправку если все в норме
-            Intent intent = new Intent(this, Sender.class);
-            intent.putExtra("Doc", doc.toJson());
-            startActivity(intent);
+            //Intent intent = new Intent(this, Sender.class);
+            //intent.putExtra("Doc", doc.toJson());
+            //startActivity(intent);
             Log.d("SIGN", "Sign doc: "+doc.toJson());
         };
     }

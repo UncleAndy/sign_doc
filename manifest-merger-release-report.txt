@@ -77,23 +77,11 @@ activity#org.gplvote.signdoc.InitKey
 ADDED from AndroidManifest.xml:33:9
 	android:name
 		ADDED from AndroidManifest.xml:33:19
-activity#org.gplvote.signdoc.LinkStatus
+activity#org.gplvote.signdoc.RegisterSign
 ADDED from AndroidManifest.xml:34:9
 	android:name
 		ADDED from AndroidManifest.xml:34:19
-activity#org.gplvote.signdoc.RegisterSign
+activity#org.gplvote.signdoc.DoSign
 ADDED from AndroidManifest.xml:35:9
 	android:name
 		ADDED from AndroidManifest.xml:35:19
-activity#org.gplvote.signdoc.DoSign
-ADDED from AndroidManifest.xml:36:9
-	android:name
-		ADDED from AndroidManifest.xml:36:19
-activity#org.gplvote.signdoc.Sender
-ADDED from AndroidManifest.xml:37:9
-	android:name
-		ADDED from AndroidManifest.xml:37:19
-activity#org.gplvote.signdoc.Receiver
-ADDED from AndroidManifest.xml:38:9
-	android:name
-		ADDED from AndroidManifest.xml:38:19

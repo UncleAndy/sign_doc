@@ -15,7 +15,9 @@ import java.lang.ref.Reference;
 public class DlgPassword extends DialogFragment {
     private EditText edPassword;
     private static GetPassInterface eventPassword;
+    private static Dialog dlgPassword;
 
+    @SuppressLint("ValidFragment")
     public DlgPassword(GetPassInterface eventPass) {
         eventPassword = eventPass;
     };
@@ -23,25 +25,35 @@ public class DlgPassword extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        if (dlgPassword == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        builder.setView(inflater.inflate(R.layout.dlg_password, null))
-                // Add action buttons
-                .setPositiveButton(R.string.btn_ready, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        //
-                        edPassword = (EditText) DlgPassword.this.getDialog().findViewById(R.id.edPassword);
-                        String password = edPassword.getText().toString();
-                        eventPassword.onPassword(password);
-                    }
-                })
-                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        DlgPassword.this.getDialog().cancel();
-                    }
-                });
-        return builder.create();
+            builder.setView(inflater.inflate(R.layout.dlg_password, null))
+                    // Add action buttons
+                    .setPositiveButton(R.string.btn_ready, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            //
+                            edPassword = (EditText) DlgPassword.this.getDialog().findViewById(R.id.edPassword);
+                            String password = edPassword.getText().toString();
+                            eventPassword.onPassword(password);
+                        }
+                    })
+                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            DlgPassword.this.getDialog().cancel();
+                        }
+                    });
+            dlgPassword = builder.create();
+        };
+        return(dlgPassword);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("DlgPassword", "onDestroy()");
+        dlgPassword = null;
     }
 }

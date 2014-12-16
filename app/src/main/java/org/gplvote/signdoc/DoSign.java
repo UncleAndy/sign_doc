@@ -72,6 +72,9 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
             case R.id.btnSignCancel:
                 DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
                 show_next_document();
+                if (is_last_document()) {
+                    finish();
+                }
                 break;
             default:
                 break;
@@ -148,10 +151,13 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         if (doc_sign.sign != null) {
             Log.d("SIGN", "Sign: "+doc_sign.sign);
             // Запускаем отправку если все в норме
-            Intent intent = new Intent(this, Sender.class);
-            intent.putExtra("Doc", doc_sign.toJson());
-            startActivity(intent);
+
             Log.d("SIGN", "Sign doc: "+doc_sign.toJson());
+
+            HTTPActions.deliver(doc_sign.toJson(), this, is_last_document());
+            //Intent intent = new Intent(this, Sender.class);
+            //intent.putExtra("Doc", doc_sign.toJson());
+            //startActivity(intent);
 
             DocsStorage.add_doc(this.getApplicationContext(), doc_sign.site, doc_sign.doc_id);
 
@@ -163,12 +169,14 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
     }
 
     private void show_next_document() {
-        if (current_doc_idx < (documents.size() - 1)) {
+        if (!is_last_document()) {
             current_doc_idx++;
             showData();
-        } else {
-            finish();
-        }
+        };
+    }
+
+    private boolean is_last_document() {
+        return(current_doc_idx >= (documents.size() - 1));
     }
 
     private DocSignRequest current_document() {
