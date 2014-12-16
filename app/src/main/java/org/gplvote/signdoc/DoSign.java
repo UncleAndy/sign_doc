@@ -62,18 +62,12 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
     }
 
     @Override
-    public void onPassword(String password) {
-        Sign sign = new Sign(password);
-
-        sign_doc(sign);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSign:
                 DialogFragment dlgPassword = new DlgPassword(this);
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
+
                 break;
             case R.id.btnSignCancel:
                 DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
@@ -82,6 +76,13 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onPassword(String password) {
+        Sign sign = new Sign(password);
+
+        sign_doc(sign);
     }
 
     // PRIVATE

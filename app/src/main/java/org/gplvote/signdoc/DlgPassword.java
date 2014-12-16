@@ -12,14 +12,14 @@ import android.widget.EditText;
 
 import java.lang.ref.Reference;
 
-@SuppressLint("ValidFragment")
 public class DlgPassword extends DialogFragment {
     private EditText edPassword;
-    private GetPassInterface eventPassword;
+    private static GetPassInterface eventPassword;
 
     public DlgPassword(GetPassInterface eventPass) {
         eventPassword = eventPass;
-    }
+    };
+    public DlgPassword() { };
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

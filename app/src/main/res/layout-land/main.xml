@@ -17,14 +17,14 @@
             android:layout_weight="1" >
 
             <Button
-                android:id="@+id/btnLInit"
+                android:id="@+id/btnInit"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/btn_init" />
 
             <Button
-                android:id="@+id/btnLRegister"
+                android:id="@+id/btnRegister"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -38,7 +38,7 @@
             android:layout_weight="1" >
 
             <Button
-                android:id="@+id/btnLCheckNew"
+                android:id="@+id/btnCheckNew"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
