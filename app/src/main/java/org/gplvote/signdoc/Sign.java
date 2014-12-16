@@ -89,6 +89,9 @@ public class Sign {
             Log.d("DATA", "Decrypted bytes: " + data.length);
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "RSA decryption error");
+
+            // Encrypt for test
+
         }
 
         return(data);

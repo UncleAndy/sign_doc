@@ -26,7 +26,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         DocSignRequest[] values;
     }
 
-    private DocSignRequest[] documents;
+    ArrayList<DocSignRequest> documents;
     private int current_doc_idx = 0;
     private Gson gson;
 
@@ -54,6 +54,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         gson = new Gson();
 
         String json_docs_list = getIntent().getStringExtra("DocsList");
+        Log.d("DoSign", "JSON Documents From StringExtra: "+json_docs_list);
 
         setDocs(json_docs_list);
 
@@ -75,6 +76,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
                 break;
             case R.id.btnSignCancel:
+                DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
                 show_next_document();
                 break;
             default:
@@ -85,14 +87,15 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
     // PRIVATE
 
     private void setDocs(String json_doc) {
-        DocsListObject doc_list_object;
-        doc_list_object = gson.fromJson(json_doc, DocsListObject.class);
-        documents = doc_list_object.values;
+        ArrayList<DocSignRequest> doc_list_object;
+        documents = gson.fromJson(json_doc, new TypeToken<ArrayList<DocSignRequest>>(){}.getType());
+
+        Log.d("DoSign", "Get documents: "+gson.toJson(documents));
     }
 
     private void showData() {
         // Формируем вывод данных документа в диалог
-        textTitleSignDoc.setText(getString(R.string.title_sign_doc)+" "+(current_doc_idx+1)+"/"+documents.length);
+        textTitleSignDoc.setText(getString(R.string.title_sign_doc)+" "+(current_doc_idx+1)+"/"+documents.size());
 
         DocSignRequest document = current_document();
 
@@ -159,7 +162,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
     }
 
     private void show_next_document() {
-        if (current_doc_idx < (documents.length - 1)) {
+        if (current_doc_idx < (documents.size() - 1)) {
             current_doc_idx++;
             showData();
         } else {
@@ -168,6 +171,6 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
     }
 
     private DocSignRequest current_document() {
-        return(documents[current_doc_idx]);
+        return(documents.get(current_doc_idx));
     }
 }

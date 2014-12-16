@@ -44,6 +44,7 @@ public class DocsStorage extends SQLiteOpenHelper {
     }
 
     public static boolean add_doc(Context context, String site, String doc_id) {
+        Log.d("DB", "Save doc_id = "+doc_id);
         SQLiteDatabase db = getInstance(context).getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("site", site);

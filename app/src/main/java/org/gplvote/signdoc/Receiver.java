@@ -45,7 +45,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
     private void receive(Sign sign) {
         String document;
         DocRequestForUser request = new DocRequestForUser();
-        ArrayList<DocSignRequest> requests_list = new ArrayList<>();
+        ArrayList<DocSignRequest> requests_list = new ArrayList<DocSignRequest>();
 
         txtStatus.setText(R.string.msg_status_start_deliver);
 
@@ -93,11 +93,15 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                                 if (json_data != null) {
                                     doc.dec_data = new String(json_data, "UTF-8");
 
-                                    Log.d("DATA", "Data decrypted array: " + doc.dec_data);
+                                    Log.d("Receiver", "Doc after decode: " + gson.toJson(doc));
 
                                     // Собираем все новые запросы на подписание в массив
                                     if (DocsStorage.is_new(this.getApplicationContext(), doc)) {
+                                        Log.d("Receiver", "New doc add to list");
                                         requests_list.add(doc);
+                                        Log.d("Receiver", "List array after add: " + gson.toJson(requests_list));
+                                    } else {
+                                        Log.d("Receiver", "Already present - NOT ADD");
                                     }
                                 } else {
                                     Log.e("DECRYPT", "Can not decrypt data from doc: "+doc.data);
@@ -106,7 +110,7 @@ public class Receiver extends LinkStatus implements GetPassInterface{
                             if (requests_list.size() > 0) {
                                 txtStatus.setText(R.string.msg_status_received);
 
-                                String json_requests_list = gson.toJson(new JSONArray(requests_list));
+                                String json_requests_list = gson.toJson(requests_list);
                                 Log.d("DATA", "Json docs list: " + json_requests_list);
 
                                 Intent intent = new Intent(this, DoSign.class);

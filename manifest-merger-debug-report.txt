@@ -58,42 +58,42 @@ MERGED from com.android.support:support-v4:21.0.2:16:5
 	android:theme
 		ADDED from AndroidManifest.xml:21:9
 activity#org.gplvote.signdoc.MainActivity
-ADDED from AndroidManifest.xml:24:9
+ADDED from AndroidManifest.xml:22:9
 	android:label
-		ADDED from AndroidManifest.xml:26:13
+		ADDED from AndroidManifest.xml:24:13
 	android:name
-		ADDED from AndroidManifest.xml:25:13
+		ADDED from AndroidManifest.xml:23:13
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:27:13
+ADDED from AndroidManifest.xml:25:13
 action#android.intent.action.MAIN
+ADDED from AndroidManifest.xml:26:17
+	android:name
+		ADDED from AndroidManifest.xml:26:25
+category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:28:17
 	android:name
-		ADDED from AndroidManifest.xml:28:25
-category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:30:17
-	android:name
-		ADDED from AndroidManifest.xml:30:27
+		ADDED from AndroidManifest.xml:28:27
 activity#org.gplvote.signdoc.InitKey
+ADDED from AndroidManifest.xml:31:9
+	android:name
+		ADDED from AndroidManifest.xml:31:19
+activity#org.gplvote.signdoc.LinkStatus
+ADDED from AndroidManifest.xml:32:9
+	android:name
+		ADDED from AndroidManifest.xml:32:19
+activity#org.gplvote.signdoc.RegisterSign
 ADDED from AndroidManifest.xml:33:9
 	android:name
 		ADDED from AndroidManifest.xml:33:19
-activity#org.gplvote.signdoc.LinkStatus
+activity#org.gplvote.signdoc.DoSign
 ADDED from AndroidManifest.xml:34:9
 	android:name
 		ADDED from AndroidManifest.xml:34:19
-activity#org.gplvote.signdoc.RegisterSign
+activity#org.gplvote.signdoc.Sender
 ADDED from AndroidManifest.xml:35:9
 	android:name
 		ADDED from AndroidManifest.xml:35:19
-activity#org.gplvote.signdoc.DoSign
+activity#org.gplvote.signdoc.Receiver
 ADDED from AndroidManifest.xml:36:9
 	android:name
 		ADDED from AndroidManifest.xml:36:19
-activity#org.gplvote.signdoc.Sender
-ADDED from AndroidManifest.xml:37:9
-	android:name
-		ADDED from AndroidManifest.xml:37:19
-activity#org.gplvote.signdoc.Receiver
-ADDED from AndroidManifest.xml:38:9
-	android:name
-		ADDED from AndroidManifest.xml:38:19
