@@ -46,5 +46,6 @@
     <string name="btn_back">Return</string>
     <string name="txt_doc_site">Site:</string>
     <string name="txt_doc_id">Document number:</string>
+    <string name="err_internet_connection_absent">No internet connection</string>
 
 </resources>

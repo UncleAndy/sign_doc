@@ -1,7 +1,6 @@
 package org.gplvote.signdoc;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;

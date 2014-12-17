@@ -1,9 +1,6 @@
 package org.gplvote.signdoc;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,13 +12,11 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DoSign extends FragmentActivity implements View.OnClickListener, GetPassInterface {
+public class DoSign extends FragmentActivity implements View.OnClickListener {
     private class DocsListObject {
         DocSignRequest[] values;
     }
@@ -65,8 +60,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSign:
-                DialogFragment dlgPassword = new DlgPassword(this);
-                dlgPassword.show(getSupportFragmentManager(), "missiles");
+                sign_doc();
 
                 break;
             case R.id.btnSignCancel:
@@ -79,13 +73,6 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onPassword(String password) {
-        Sign sign = new Sign(password);
-
-        sign_doc(sign);
     }
 
     // PRIVATE
@@ -132,7 +119,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         }
     }
 
-    private void sign_doc(Sign sign) {
+    private void sign_doc() {
         // Формируем подпись документа (sha256(данные+шаблон)) и отправляем ее на сервер
         DocSign doc_sign = new DocSign();
 
@@ -143,7 +130,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener, Ge
         doc_sign.site = doc.site;
         doc_sign.doc_id = doc.doc_id;
         try {
-            doc_sign.sign = sign.createBase64(sign_data.getBytes("UTF-8"));
+            doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
         } catch (Exception e) {
             Log.e("SIGN", "Wrong password error: ", e);
         }

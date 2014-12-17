@@ -2,19 +2,20 @@ package org.gplvote.signdoc;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.gson.Gson;
 
@@ -37,6 +38,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
     private static SharedPreferences sPref;
     private static Settings settings;
     private static String current_action;
+    public static Sign sign = null;
 
     private Button btnInit;
     private Button btnRegister;
@@ -58,6 +60,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
 
         if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
         settings = Settings.getInstance();
+
+        if ((settings.get(PREF_ENC_PRIVATE_KEY) != "") && (sign == null || !sign.pvt_key_present())) {
+            DialogFragment dlgPassword = new DlgPassword(this);
+            dlgPassword.show(getSupportFragmentManager(), "missiles");
+        }
     }
 
     @Override
@@ -70,16 +77,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
           startActivity(intent);
     	  break;
       case R.id.btnRegister:
-    	  intent = new Intent(this, RegisterSign.class);
-          startActivity(intent);
+          if (isInternetPresent(this)) {
+              intent = new Intent(this, RegisterSign.class);
+              startActivity(intent);
+          } else {
+              MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+          }
           break;
       case R.id.btnCheckNew:
           // DBG!!!
           // DocsStorage.clear_docs(this.getApplicationContext());
-
-          current_action = "check_new";
-          DialogFragment dlgPassword = new DlgPassword(this);
-          dlgPassword.show(getSupportFragmentManager(), "missiles");
+          if (isInternetPresent(this)) {
+              receive();
+          } else {
+              MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+          }
           break;
       default:
         break;
@@ -144,6 +156,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
         updateButtonsState();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(0);
+    }
+
+
     private void updateButtonsState() {
         if (settings.get(PREF_ENC_PRIVATE_KEY) == "") {
             btnInit.setEnabled(true);
@@ -156,12 +175,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
         };
     }
 
-    private void receive(Sign sign) {
+    private void receive() {
         String document;
         DocRequestForUser request = new DocRequestForUser();
         ArrayList<DocSignRequest> requests_list = new ArrayList<DocSignRequest>();
-
-        //txtStatus.setText(R.string.msg_status_start_deliver);
 
         // Формируем документ для запроса (публичный ключ, идентификатор публичного ключа, время с которого проверять документы)
         request.public_key = sign.getPublicKeyBase64();
@@ -171,7 +188,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
         document = request.toJson();
 
         if (request.sign == null) {
-            //txtStatus.setText(R.string.err_wrong_password);
             MainActivity.error(getString(R.string.err_wrong_password), this);
         } else {
 
@@ -222,8 +238,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
                                 }
                             }
                             if (requests_list.size() > 0) {
-                                //txtStatus.setText(R.string.msg_status_received);
-
                                 String json_requests_list = gson.toJson(requests_list);
                                 Log.d("DATA", "Json docs list: " + json_requests_list);
 
@@ -231,42 +245,62 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
                                 intent.putExtra("DocsList", json_requests_list);
                                 startActivity(intent);
                             } else {
-                                //txtStatus.setText(R.string.msg_status_no_new);
                                 MainActivity.alert(getString(R.string.msg_status_no_new), this);
                             }
                         } else {
-                            //txtStatus.setText(R.string.msg_status_no_new);
                             MainActivity.alert(getString(R.string.msg_status_no_new), this);
                         }
                     } else {
-                        //txtStatus.setText(R.string.msg_status_http_error);
                         MainActivity.error(getString(R.string.err_http_send), this);
                         Log.e("HTTP", "Error HTTP response: " + body);
                     }
                 } else {
-                    //txtStatus.setText(R.string.msg_status_http_error);
                     MainActivity.error(getString(R.string.msg_status_http_error), this);
                     Log.e("HTTP", "HTTP response: " + http_status + " body: " + body);
                 }
             } catch (Exception e) {
-                //txtStatus.setText(R.string.msg_status_http_error);
                 MainActivity.error(getString(R.string.msg_status_http_error), this);
                 Log.e("HTTP", "Error HTTP request: ", e);
             }
         }
-
-        //prLinkStatus.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void onPassword(String password) {
-        switch (current_action) {
-            case "check_new":
-                Sign sign = new Sign(password);
-                receive(sign);
-                break;
-            default:
-                break;
+    public boolean onPassword(String password) {
+        if (sign == null) {
+            sign = new Sign();
+        } else {
+            sign.cache_reset();
         }
+        Log.d("MainActivity", "setPassword");
+        sign.setPassword(password);
+        if (sign.pvt_key_present()) {
+            Log.d("MainActivity", "pvt_key_present true");
+            return(true);
+        } else {
+            Log.d("MainActivity", "Error about wrong password");
+
+            return(false);
+        }
+    }
+
+    public static void initSign(String password) {
+        sign = new Sign();
+        sign.setPassword(password);
+    }
+
+    public static boolean isInternetPresent(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null)
+        {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null)
+                for (int i = 0; i < info.length; i++)
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
+                    {
+                        return true;
+                    }
+        }
+        return false;
     }
 }

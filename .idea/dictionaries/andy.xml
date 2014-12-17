@@ -4,6 +4,7 @@
       <w>dlgcontrol</w>
       <w>pkcs</w>
       <w>prng</w>
+      <w>pvtkey</w>
     </words>
   </dictionary>
 </component>

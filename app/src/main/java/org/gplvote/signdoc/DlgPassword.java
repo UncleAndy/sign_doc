@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 
@@ -16,6 +17,7 @@ public class DlgPassword extends DialogFragment {
     private EditText edPassword;
     private static GetPassInterface eventPassword;
     private static Dialog dlgPassword;
+    private static boolean password_correct = true;
 
     @SuppressLint("ValidFragment")
     public DlgPassword(GetPassInterface eventPass) {
@@ -37,12 +39,23 @@ public class DlgPassword extends DialogFragment {
                             //
                             edPassword = (EditText) DlgPassword.this.getDialog().findViewById(R.id.edPassword);
                             String password = edPassword.getText().toString();
-                            eventPassword.onPassword(password);
+                            password_correct = eventPassword.onPassword(password);
                         }
                     })
                     .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             DlgPassword.this.getDialog().cancel();
+                            System.exit(0);
+                        }
+                    })
+                    .setOnKeyListener(new Dialog.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event) {
+                            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                                System.exit(0);
+                                return true;
+                            }
+                            return false;
                         }
                     });
             dlgPassword = builder.create();
@@ -55,5 +68,10 @@ public class DlgPassword extends DialogFragment {
         super.onDestroy();
         Log.d("DlgPassword", "onDestroy()");
         dlgPassword = null;
+
+        if (!password_correct) {
+            DlgPassword dlg = new DlgPassword(eventPassword);
+            dlg.show(getFragmentManager(), "missiles");
+        }
     }
 }

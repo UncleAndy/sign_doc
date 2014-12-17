@@ -8,12 +8,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Sign {
@@ -26,17 +28,20 @@ public class Sign {
 
     private Settings settings;
 
-    private SecretKeySpec sks = null;
-    private PrivateKey pvt_key = null;
+    //private SecretKeySpec sks = null;
+    // private PrivateKey pvt_key = null;
+    private byte[] cache_pvt_key_enc = null;
     private PublicKey pub_key = null;
+    private byte[] cache_aes_key = null;
 
-    public Sign(String password) {
+    public Sign() {
         settings = Settings.getInstance();
-        setPassword(password);
         restorePublicKey();
     }
 
     boolean setPassword(String password) {
+        if (pvt_key_present()) { return(true); }
+
         // Формируем из пароля ключ для расшифровки AES
         try {
             int keyLength = 128;
@@ -45,21 +50,21 @@ public class Sign {
             byte[] passwordBytes = password.getBytes("UTF-8");
             int length = passwordBytes.length < keyBytes.length ? passwordBytes.length : keyBytes.length;
             System.arraycopy(passwordBytes, 0, keyBytes, 0, length);
-            sks = new SecretKeySpec(keyBytes, AES_KEYS_TAG);
+            return(restorePrivateKey(new SecretKeySpec(keyBytes, AES_KEYS_TAG)));
         } catch (Exception e) {
-            Log.e(AES_KEYS_TAG, "secret key spec error");
+            Log.e("setPassword", "error restore pvt key");
         }
 
-        return(sks != null);
+        return(false);
     }
 
     public byte[] create(byte[] data) {
-        if (!restorePrivateKey()) { return(null); }
+        if (!pvt_key_present()) { return(null); }
 
         byte[] signed = null;
         try {
             Signature signInstance = Signature.getInstance(SIGN_ALG_TAG);
-            signInstance.initSign(pvt_key);
+            signInstance.initSign(pvt_key_from_cache());
             signInstance.update(data);
             signed = signInstance.sign();
         } catch (Exception e) {
@@ -79,12 +84,12 @@ public class Sign {
     }
 
     public byte[] decrypt(byte[] enc_data) {
-        if (!restorePrivateKey()) { return(null); }
+        if (!pvt_key_present()) { return(null); }
 
         byte[] data = null;
         try {
             Cipher c = Cipher.getInstance(RSA_DECRYPT_TAG);
-            c.init(Cipher.DECRYPT_MODE, pvt_key);
+            c.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
             data = c.doFinal(enc_data);
             Log.d("DATA", "Decrypted bytes: " + data.length);
         } catch (Exception e) {
@@ -135,6 +140,18 @@ public class Sign {
         return(null);
     }
 
+    // Cache private key (encrypted)
+    public void cache_reset() {
+        if (cache_pvt_key_enc != null) Arrays.fill(cache_pvt_key_enc, (byte) 0 );
+        if (cache_aes_key != null) Arrays.fill(cache_aes_key, (byte) 0 );
+        cache_pvt_key_enc = null;
+        cache_aes_key = null;
+    }
+
+    public boolean pvt_key_present() {
+        return(cache_pvt_key_enc != null);
+    }
+
     // PRIVATE
 
     private boolean restorePublicKey() {
@@ -152,8 +169,8 @@ public class Sign {
         return(pub_key != null);
     }
 
-    private boolean restorePrivateKey() {
-        if (pvt_key != null) { return(true); }
+    private boolean restorePrivateKey(SecretKeySpec sks) {
+        if (pvt_key_present()) { return(true); }
 
         String b64_enc_pvt_key = settings.get(PREF_ENC_PRIVATE_KEY);
         byte[] enc_pvt_key = Base64.decode(b64_enc_pvt_key, Base64.NO_WRAP);
@@ -164,11 +181,43 @@ public class Sign {
             c.init(Cipher.DECRYPT_MODE, sks);
             dec_pvt_key = c.doFinal(enc_pvt_key);
 
-            pvt_key = KeyFactory.getInstance(RSA_KEYS_TAG).generatePrivate(new PKCS8EncodedKeySpec(dec_pvt_key));
+            pvt_key_to_cache(KeyFactory.getInstance(RSA_KEYS_TAG).generatePrivate(new PKCS8EncodedKeySpec(dec_pvt_key)));
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "Restore private key error: "+e.getMessage());
         }
 
-        return(pvt_key != null);
+        return(pvt_key_present());
+    }
+
+    private PrivateKey pvt_key_from_cache() {
+        try {
+            SecretKeySpec aes_key_sks = new SecretKeySpec(cache_aes_key, "AES");
+
+            byte[] decodedBytes = null;
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.DECRYPT_MODE, aes_key_sks);
+            return(KeyFactory.getInstance(RSA_KEYS_TAG).generatePrivate(new PKCS8EncodedKeySpec(c.doFinal(cache_pvt_key_enc))));
+        } catch (Exception e) {
+            Log.e("PVT_KEY_FROM_CACHE", "AES encryption error: "+e.getLocalizedMessage());
+        }
+        return(null);
+    }
+
+    private void pvt_key_to_cache(PrivateKey key) throws NoSuchAlgorithmException {
+        try {
+            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+            sr.setSeed(Long.toString(System.currentTimeMillis()).getBytes());
+            KeyGenerator kg = KeyGenerator.getInstance("AES");
+            kg.init(256, sr);
+            SecretKeySpec aes_key_sks = new SecretKeySpec((kg.generateKey()).getEncoded(), "AES");
+            cache_pvt_key_enc = null;
+            cache_aes_key = aes_key_sks.getEncoded();
+
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.ENCRYPT_MODE, aes_key_sks);
+            cache_pvt_key_enc = c.doFinal(key.getEncoded());
+        } catch (Exception e) {
+            Log.e("PVT_KEY_TO_CACHE", "AES encryption error: "+e.getLocalizedMessage());
+        }
     }
 }

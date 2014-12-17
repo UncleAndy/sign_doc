@@ -14,11 +14,9 @@ import android.widget.TextView;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 
 public class InitKey extends Activity implements OnClickListener {
@@ -60,6 +58,7 @@ public class InitKey extends Activity implements OnClickListener {
                 txtStatus.setText(R.string.init_already);
             } else {
                 createRSAKeysPair();
+                MainActivity.initSign(pass.toString());
             }
         } else {
             txtStatus.setText(R.string.err_bad_password);

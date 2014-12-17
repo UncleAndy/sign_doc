@@ -1,8 +1,6 @@
 package org.gplvote.signdoc;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -11,23 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.spec.SecretKeySpec;
-
-public class RegisterSign extends FragmentActivity implements OnClickListener, GetPassInterface {
+public class RegisterSign extends FragmentActivity implements OnClickListener {
     static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
     static final String RSA_KEYS_TAG = "RSA";
@@ -44,6 +26,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+        Log.d("REGISTER_SIGN", "onCreate");
 	    setContentView(R.layout.register_sign);
 
         settings = Settings.getInstance();
@@ -56,37 +39,39 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
     @Override
     public void onClick(View v) {
         // Check input fields
-        String errors = "";
-        String sep = "";
-        if (edSite.getText().toString().trim().isEmpty()) {
-            errors = getString(R.string.err_site_required);
-            sep = "\n";
-        };
-        if (edCode.getText().toString().trim().isEmpty()) {
-            errors += sep + getString(R.string.err_code_required);
-        };
+        if (MainActivity.isInternetPresent(this)) {
+            String errors = "";
+            String sep = "";
+            if (edSite.getText().toString().trim().isEmpty()) {
+                errors = getString(R.string.err_site_required);
+                sep = "\n";
+            };
+            if (edCode.getText().toString().trim().isEmpty()) {
+                errors += sep + getString(R.string.err_code_required);
+            };
 
-        if (!errors.isEmpty()) {
-            MainActivity.alert(errors, this);
+            if (errors.isEmpty()) {
+                send_register_sign();
+            } else {
+                MainActivity.alert(errors, this);
+            };
         } else {
-            DialogFragment dlgPassword = new DlgPassword(this);
-            dlgPassword.show(getSupportFragmentManager(), "missiles");
-        };
+            MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+        }
     }
 
-    public void onPassword(String password) {
+    public void send_register_sign() {
         // Формируем документ для регистрации подписи
         DocSignRegistration doc = new DocSignRegistration();
         doc.site = edSite.getText().toString().trim();
         doc.code = edCode.getText().toString().trim();
 
-        // Расшифровываем приватный ключ
-        Sign sign = new Sign(password);
-        doc.public_key = sign.getPublicKeyBase64();
+        // Извлекаем публичный ключ
+        doc.public_key = MainActivity.sign.getPublicKeyBase64();
 
         // Формируем ЭЦП документа
         String sign_data = doc.code;
-        byte[] b_sign = sign.create(sign_data.getBytes());
+        byte[] b_sign = MainActivity.sign.create(sign_data.getBytes());
 
         if (b_sign == null) {
             MainActivity.alert(getString(R.string.err_wrong_password), this);
@@ -102,4 +87,42 @@ public class RegisterSign extends FragmentActivity implements OnClickListener, G
             Log.d("SIGN", "Sign doc: "+doc.toJson());
         };
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("REGISTER_SIGN", "onResume");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Log.d("REGISTER_SIGN", "onStart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("REGISTER_SIGN", "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("REGISTER_SIGN", "onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("REGISTER_SIGN", "onRestart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("REGISTER_SIGN", "onDestroy");
+    }
+
 }

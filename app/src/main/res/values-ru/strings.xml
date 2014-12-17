@@ -46,5 +46,6 @@
     <string name="btn_back">Назад</string>
     <string name="txt_doc_site">Сайт:</string>
     <string name="txt_doc_id">Номер документа:</string>
+    <string name="err_internet_connection_absent">Отсутствует подключение к интернет</string>
 
 </resources>
