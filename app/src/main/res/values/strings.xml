@@ -18,7 +18,7 @@
     <string name="tabSigned">Signed</string>
     <string name="reg_title">Register sign on site</string>
     <string name="init_already">Already initialized! Press "Back".</string>
-    <string name="init_start">Start initialization...</string>
+    <string name="init_start">Initialization in process...</string>
     <string name="err_keys_pair_create">Main keys create error</string>
     <string name="init_keys_pair_created">Initialize successfull</string>
     <string name="msg_enter_new_password">Enter new password</string>
@@ -49,5 +49,6 @@
     <string name="err_internet_connection_absent">No internet connection</string>
     <string name="title_get_new_docs">Receive</string>
     <string name="title_send">Sending</string>
+    <string name="title_init">Initialization</string>
 
 </resources>

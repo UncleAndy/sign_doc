@@ -50,10 +50,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
     private ReceiverTask receiver;
     private ProgressDialog receiver_pd;
 
+    public static boolean do_destroy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        do_destroy = false;
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -175,6 +179,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
 
     @Override
     protected void onDestroy() {
+        do_destroy = true;
         super.onDestroy();
         if (isFinishing())
             System.exit(0);

@@ -18,7 +18,7 @@
     <string name="tabSigned">Подписанные</string>
     <string name="reg_title">Регистрация подписи</string>
     <string name="init_already">Приложение уже инициализировано. Нажмите кнопку "Назад".</string>
-    <string name="init_start">Запуск инициализации...</string>
+    <string name="init_start">Производится инициализации...</string>
     <string name="err_keys_pair_create">Ошибка создания главного ключа</string>
     <string name="init_keys_pair_created">Инициализация прошла успешно</string>
     <string name="msg_enter_new_password">Введите новый пароль</string>
@@ -49,5 +49,6 @@
     <string name="err_internet_connection_absent">Отсутствует подключение к интернет</string>
     <string name="title_get_new_docs">Прием</string>
     <string name="title_send">Отправка</string>
+    <string name="title_init">Инициализация</string>
 
 </resources>

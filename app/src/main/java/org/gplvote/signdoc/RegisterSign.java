@@ -25,8 +25,9 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
     private EditText edCode;
     private Button btnReady;
 
-    private ProgressDialog send_pd;
-    private SendRegisterTask send_task;
+    private static ProgressDialog send_pd;
+    private static SendRegisterTask send_task;
+    private static boolean running;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +40,27 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         edSite = (EditText) findViewById(R.id.edSite);
         edCode = (EditText) findViewById(R.id.edCode);
         btnReady = (Button) findViewById(R.id.btnReady); btnReady.setOnClickListener(this);
+
+        if (running) {
+            edCode.setEnabled(false);
+            edSite.setEnabled(false);
+            btnReady.setEnabled(false);
+
+            send_pd = new ProgressDialog(RegisterSign.this);
+            send_pd.setTitle(getString(R.string.title_send));
+            send_pd.setMessage(getString(R.string.msg_status_start_deliver));
+            send_pd.show();
+        }
     }
 
     @Override
     public void onClick(View v) {
+        running = true;
+        edCode.setEnabled(false);
+        edSite.setEnabled(false);
+        btnReady.setEnabled(false);
+
+
         // Check input fields
         if (MainActivity.isInternetPresent(this)) {
             String errors = "";
@@ -68,6 +86,15 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         } else {
             MainActivity.error(getString(R.string.err_internet_connection_absent), this);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if ((send_pd != null) && send_pd.isShowing())
+            send_pd.dismiss();
+        send_pd = null;
     }
 
     class SendRegisterTask extends AsyncTask<String, Void, String> {
@@ -113,7 +140,8 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            send_pd.dismiss();
+            if ((send_pd != null) && send_pd.isShowing())
+                send_pd.dismiss();
 
             if (result == null) {
                 MainActivity.alert(getString(R.string.msg_status_delivered), RegisterSign.this, true);

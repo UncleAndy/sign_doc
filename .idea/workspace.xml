@@ -49,16 +49,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cbcfc13-d7dd-4d79-af4d-0169ebf6e56a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DlgPassword.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DlgPassword.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DoSign.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DoSign.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DocsStorage.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DocsStorage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/HTTPActions.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/HTTPActions.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/JsonResponse.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/JsonResponse.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/Sign.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/Sign.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/andy.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/andy.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/init_key.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/init_key.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
@@ -94,37 +89,100 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/MainActivity.java">
+      <file leaf-file-name="InitKey.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8464912" vertical-offset="1041" max-vertical-offset="5700">
-              <caret line="108" column="15" selection-start-line="108" selection-start-column="15" selection-end-line="108" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="450" max-vertical-offset="3075">
+              <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3508#3558#0" expanded="true" />
-                <element signature="e#3962#4012#0" expanded="true" />
-                <element signature="e#4157#4158#0" expanded="true" />
-                <element signature="e#4186#4187#0" expanded="true" />
-                <element signature="e#4424#4425#0" expanded="true" />
-                <element signature="e#4468#4469#0" expanded="true" />
-                <element signature="e#4671#4693#0" expanded="true" />
-                <element signature="e#4857#4872#0" expanded="true" />
-                <element signature="e#4874#5180#0" expanded="true" />
-                <element signature="e#5161#5162#0" expanded="true" />
-                <element signature="e#5319#5320#0" expanded="true" />
-                <element signature="e#5363#5364#0" expanded="true" />
-                <element signature="e#5559#5579#0" expanded="true" />
-                <element signature="e#5737#5752#0" expanded="true" />
-                <element signature="e#5754#6064#0" expanded="true" />
-                <element signature="e#6045#6046#0" expanded="true" />
-                <element signature="e#8128#8144#0" expanded="true" />
-                <element signature="e#8479#8517#0" expanded="true" />
-                <element signature="e#8555#8594#0" expanded="true" />
-                <element signature="e#9911#9949#0" expanded="true" />
-                <element signature="e#13001#13034#0" expanded="true" />
-                <element signature="e#13214#13255#0" expanded="true" />
-                <element signature="e#13454#13495#0" expanded="true" />
-                <element signature="e#14408#14445#0" expanded="true" />
+                <element signature="e#1767#1797#0" expanded="true" />
+                <element signature="e#1835#1865#0" expanded="true" />
+                <element signature="e#2421#2453#0" expanded="true" />
+                <element signature="e#2590#2626#0" expanded="true" />
+                <element signature="e#3551#3581#0" expanded="true" />
+                <element signature="e#3619#3649#0" expanded="true" />
+                <element signature="e#6222#6262#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RegisterSign.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.8684211" vertical-offset="201" max-vertical-offset="2415">
+              <caret line="53" column="5" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1738#1768#0" expanded="true" />
+                <element signature="e#1802#1846#0" expanded="true" />
+                <element signature="e#2398#2435#0" expanded="true" />
+                <element signature="e#2545#2582#0" expanded="true" />
+                <element signature="e#2934#2984#0" expanded="true" />
+                <element signature="e#3481#3511#0" expanded="true" />
+                <element signature="e#3545#3589#0" expanded="true" />
+                <element signature="e#4218#4256#0" expanded="true" />
+                <element signature="e#4831#4871#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-18.36" vertical-offset="201" max-vertical-offset="900">
+              <caret line="44" column="31" selection-start-line="44" selection-start-column="31" selection-end-line="44" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="init_key.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/init_key.xml">
+          <provider editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="750">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+          <provider selected="true" editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2391" max-vertical-offset="5775">
+              <caret line="185" column="0" selection-start-line="185" selection-start-column="0" selection-end-line="185" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#3576#3626#0" expanded="true" />
+                <element signature="e#4030#4080#0" expanded="true" />
+                <element signature="e#4225#4226#0" expanded="true" />
+                <element signature="e#4254#4255#0" expanded="true" />
+                <element signature="e#4492#4493#0" expanded="true" />
+                <element signature="e#4536#4537#0" expanded="true" />
+                <element signature="e#4739#4761#0" expanded="true" />
+                <element signature="e#4925#4940#0" expanded="true" />
+                <element signature="e#4942#5248#0" expanded="true" />
+                <element signature="e#5229#5230#0" expanded="true" />
+                <element signature="e#5387#5388#0" expanded="true" />
+                <element signature="e#5431#5432#0" expanded="true" />
+                <element signature="e#5627#5647#0" expanded="true" />
+                <element signature="e#5805#5820#0" expanded="true" />
+                <element signature="e#5822#6132#0" expanded="true" />
+                <element signature="e#6113#6114#0" expanded="true" />
+                <element signature="e#8223#8239#0" expanded="true" />
+                <element signature="e#8574#8612#0" expanded="true" />
+                <element signature="e#8650#8689#0" expanded="true" />
+                <element signature="e#10006#10044#0" expanded="true" />
+                <element signature="e#13096#13129#0" expanded="true" />
+                <element signature="e#13309#13350#0" expanded="true" />
+                <element signature="e#13549#13590#0" expanded="true" />
+                <element signature="e#14503#14540#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -133,8 +191,8 @@
       <file leaf-file-name="DoSign.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DoSign.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.555555" vertical-offset="675" max-vertical-offset="3405">
-              <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+            <state vertical-scroll-proportion="-19.88889" vertical-offset="2748" max-vertical-offset="3405">
+              <caret line="219" column="0" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3613#3647#0" expanded="true" />
@@ -154,7 +212,7 @@
       <file leaf-file-name="DlgPassword.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DlgPassword.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="411" max-vertical-offset="1095">
+            <state vertical-scroll-proportion="0.0" vertical-offset="456" max-vertical-offset="1140">
               <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -175,54 +233,6 @@
           </provider>
           <provider selected="true" editor-type-id="android-designer">
             <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RegisterSign.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1995">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1838#1875#0" expanded="true" />
-                <element signature="e#1985#2022#0" expanded="true" />
-                <element signature="e#2374#2424#0" expanded="true" />
-                <element signature="e#2737#2767#0" expanded="true" />
-                <element signature="e#2801#2845#0" expanded="true" />
-                <element signature="e#3474#3512#0" expanded="true" />
-                <element signature="e#4025#4065#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HTTPActions.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/HTTPActions.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1170">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1946#1988#0" expanded="true" />
-                <element signature="e#2124#2174#0" expanded="true" />
-                <element signature="e#2342#2392#0" expanded="true" />
-                <element signature="e#2518#2568#0" expanded="true" />
-                <element signature="e#2682#2732#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocsStorage.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DocsStorage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-30.074074" vertical-offset="193" max-vertical-offset="1200">
-              <caret line="69" column="5" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
           </provider>
         </entry>
       </file>
@@ -1265,7 +1275,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/DlgPassword.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/Doc.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/signdoc/InitKey.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml" />
@@ -1302,20 +1311,21 @@
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/Receiver.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DocSignApplication.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/GetPassInterface.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/do_sign.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/HTTPActions.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/ReceiverTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/JsonResponse.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DocsStorage.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/Sign.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DoSign.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dlg_password_fs.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/dlg_password.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DlgPassword.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/init_key.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DlgPassword.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java" />
       </list>
     </option>
   </component>
@@ -1896,7 +1906,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987747" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987747" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32987747" sideWeight="0.49972662" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32987747" sideWeight="0.49972662" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32987747" sideWeight="0.50027335" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18042646" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1945,30 +1955,30 @@
           <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3508#3558#0" expanded="true" />
-            <element signature="e#3962#4012#0" expanded="true" />
-            <element signature="e#4157#4158#0" expanded="true" />
-            <element signature="e#4186#4187#0" expanded="true" />
-            <element signature="e#4424#4425#0" expanded="true" />
-            <element signature="e#4468#4469#0" expanded="true" />
-            <element signature="e#4671#4693#0" expanded="true" />
-            <element signature="e#4857#4872#0" expanded="true" />
-            <element signature="e#4874#5180#0" expanded="true" />
-            <element signature="e#5161#5162#0" expanded="true" />
-            <element signature="e#5319#5320#0" expanded="true" />
-            <element signature="e#5363#5364#0" expanded="true" />
-            <element signature="e#5559#5579#0" expanded="true" />
-            <element signature="e#5737#5752#0" expanded="true" />
-            <element signature="e#5754#6064#0" expanded="true" />
-            <element signature="e#6045#6046#0" expanded="true" />
-            <element signature="e#8128#8144#0" expanded="true" />
-            <element signature="e#8479#8517#0" expanded="true" />
-            <element signature="e#8555#8594#0" expanded="true" />
-            <element signature="e#9911#9949#0" expanded="true" />
-            <element signature="e#13001#13034#0" expanded="true" />
-            <element signature="e#13214#13255#0" expanded="true" />
-            <element signature="e#13454#13495#0" expanded="true" />
-            <element signature="e#14408#14445#0" expanded="true" />
+            <element signature="e#3576#3626#0" expanded="true" />
+            <element signature="e#4030#4080#0" expanded="true" />
+            <element signature="e#4225#4226#0" expanded="true" />
+            <element signature="e#4254#4255#0" expanded="true" />
+            <element signature="e#4492#4493#0" expanded="true" />
+            <element signature="e#4536#4537#0" expanded="true" />
+            <element signature="e#4739#4761#0" expanded="true" />
+            <element signature="e#4925#4940#0" expanded="true" />
+            <element signature="e#4942#5248#0" expanded="true" />
+            <element signature="e#5229#5230#0" expanded="true" />
+            <element signature="e#5387#5388#0" expanded="true" />
+            <element signature="e#5431#5432#0" expanded="true" />
+            <element signature="e#5627#5647#0" expanded="true" />
+            <element signature="e#5805#5820#0" expanded="true" />
+            <element signature="e#5822#6132#0" expanded="true" />
+            <element signature="e#6113#6114#0" expanded="true" />
+            <element signature="e#8223#8239#0" expanded="true" />
+            <element signature="e#8574#8612#0" expanded="true" />
+            <element signature="e#8650#8689#0" expanded="true" />
+            <element signature="e#10006#10044#0" expanded="true" />
+            <element signature="e#13096#13129#0" expanded="true" />
+            <element signature="e#13309#13350#0" expanded="true" />
+            <element signature="e#13549#13590#0" expanded="true" />
+            <element signature="e#14503#14540#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2108,17 +2118,6 @@
         <state vertical-scroll-proportion="0.3326713" vertical-offset="925" max-vertical-offset="10605">
           <caret line="94" column="19" selection-start-line="94" selection-start-column="15" selection-end-line="94" selection-end-column="19" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/init_key.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values-ru/strings.xml">
@@ -2270,18 +2269,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2010">
-          <caret line="19" column="39" selection-start-line="19" selection-start-column="39" selection-end-line="19" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4635#4636#0" expanded="true" />
-            <element signature="e#4663#4664#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/do_sign.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="422" max-vertical-offset="1605">
@@ -2291,14 +2278,6 @@
       </provider>
       <provider selected="true" editor-type-id="android-designer">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-19.56" vertical-offset="171" max-vertical-offset="855">
-          <caret line="44" column="31" selection-start-line="44" selection-start-column="31" selection-end-line="44" selection-end-column="31" />
-          <folding />
-        </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Android/Sdk/sources/android-21/android/inputmethodservice/IInputMethodWrapper.java">
@@ -2314,23 +2293,6 @@
         <state vertical-scroll-proportion="0.14506769" vertical-offset="0" max-vertical-offset="1034">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1995">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1838#1875#0" expanded="true" />
-            <element signature="e#1985#2022#0" expanded="true" />
-            <element signature="e#2374#2424#0" expanded="true" />
-            <element signature="e#2737#2767#0" expanded="true" />
-            <element signature="e#2801#2845#0" expanded="true" />
-            <element signature="e#3474#3512#0" expanded="true" />
-            <element signature="e#4025#4065#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2379,10 +2341,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dlg_password.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="555">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding>
+            <element signature="e#511#535#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-18.36" vertical-offset="201" max-vertical-offset="885">
+          <caret line="44" column="31" selection-start-line="44" selection-start-column="31" selection-end-line="44" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DoSign.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.555555" vertical-offset="675" max-vertical-offset="3405">
-          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+        <state vertical-scroll-proportion="-19.88889" vertical-offset="2748" max-vertical-offset="3405">
+          <caret line="219" column="0" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3613#3647#0" expanded="true" />
@@ -2398,22 +2381,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dlg_password.xml">
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="555">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding>
-            <element signature="e#511#535#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/DlgPassword.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="411" max-vertical-offset="1095">
+        <state vertical-scroll-proportion="0.0" vertical-offset="456" max-vertical-offset="1140">
           <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -2421,36 +2391,83 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/init_key.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8464912" vertical-offset="1041" max-vertical-offset="5700">
-          <caret line="108" column="15" selection-start-line="108" selection-start-column="15" selection-end-line="108" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2391" max-vertical-offset="5775">
+          <caret line="185" column="0" selection-start-line="185" selection-start-column="0" selection-end-line="185" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3508#3558#0" expanded="true" />
-            <element signature="e#3962#4012#0" expanded="true" />
-            <element signature="e#4157#4158#0" expanded="true" />
-            <element signature="e#4186#4187#0" expanded="true" />
-            <element signature="e#4424#4425#0" expanded="true" />
-            <element signature="e#4468#4469#0" expanded="true" />
-            <element signature="e#4671#4693#0" expanded="true" />
-            <element signature="e#4857#4872#0" expanded="true" />
-            <element signature="e#4874#5180#0" expanded="true" />
-            <element signature="e#5161#5162#0" expanded="true" />
-            <element signature="e#5319#5320#0" expanded="true" />
-            <element signature="e#5363#5364#0" expanded="true" />
-            <element signature="e#5559#5579#0" expanded="true" />
-            <element signature="e#5737#5752#0" expanded="true" />
-            <element signature="e#5754#6064#0" expanded="true" />
-            <element signature="e#6045#6046#0" expanded="true" />
-            <element signature="e#8128#8144#0" expanded="true" />
-            <element signature="e#8479#8517#0" expanded="true" />
-            <element signature="e#8555#8594#0" expanded="true" />
-            <element signature="e#9911#9949#0" expanded="true" />
-            <element signature="e#13001#13034#0" expanded="true" />
-            <element signature="e#13214#13255#0" expanded="true" />
-            <element signature="e#13454#13495#0" expanded="true" />
-            <element signature="e#14408#14445#0" expanded="true" />
+            <element signature="e#3576#3626#0" expanded="true" />
+            <element signature="e#4030#4080#0" expanded="true" />
+            <element signature="e#4225#4226#0" expanded="true" />
+            <element signature="e#4254#4255#0" expanded="true" />
+            <element signature="e#4492#4493#0" expanded="true" />
+            <element signature="e#4536#4537#0" expanded="true" />
+            <element signature="e#4739#4761#0" expanded="true" />
+            <element signature="e#4925#4940#0" expanded="true" />
+            <element signature="e#4942#5248#0" expanded="true" />
+            <element signature="e#5229#5230#0" expanded="true" />
+            <element signature="e#5387#5388#0" expanded="true" />
+            <element signature="e#5431#5432#0" expanded="true" />
+            <element signature="e#5627#5647#0" expanded="true" />
+            <element signature="e#5805#5820#0" expanded="true" />
+            <element signature="e#5822#6132#0" expanded="true" />
+            <element signature="e#6113#6114#0" expanded="true" />
+            <element signature="e#8223#8239#0" expanded="true" />
+            <element signature="e#8574#8612#0" expanded="true" />
+            <element signature="e#8650#8689#0" expanded="true" />
+            <element signature="e#10006#10044#0" expanded="true" />
+            <element signature="e#13096#13129#0" expanded="true" />
+            <element signature="e#13309#13350#0" expanded="true" />
+            <element signature="e#13549#13590#0" expanded="true" />
+            <element signature="e#14503#14540#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/InitKey.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="990" max-vertical-offset="3075">
+          <caret line="92" column="0" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1767#1797#0" expanded="true" />
+            <element signature="e#1835#1865#0" expanded="true" />
+            <element signature="e#2421#2453#0" expanded="true" />
+            <element signature="e#2590#2626#0" expanded="true" />
+            <element signature="e#3551#3581#0" expanded="true" />
+            <element signature="e#3619#3649#0" expanded="true" />
+            <element signature="e#6222#6262#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/org/gplvote/signdoc/RegisterSign.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8684211" vertical-offset="201" max-vertical-offset="2415">
+          <caret line="53" column="5" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1738#1768#0" expanded="true" />
+            <element signature="e#1802#1846#0" expanded="true" />
+            <element signature="e#2398#2435#0" expanded="true" />
+            <element signature="e#2545#2582#0" expanded="true" />
+            <element signature="e#2934#2984#0" expanded="true" />
+            <element signature="e#3481#3511#0" expanded="true" />
+            <element signature="e#3545#3589#0" expanded="true" />
+            <element signature="e#4218#4256#0" expanded="true" />
+            <element signature="e#4831#4871#0" expanded="true" />
           </folding>
         </state>
       </provider>
