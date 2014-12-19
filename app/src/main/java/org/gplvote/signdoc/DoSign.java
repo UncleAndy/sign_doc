@@ -1,6 +1,8 @@
 package org.gplvote.signdoc;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -84,23 +87,43 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.btnSignCancel:
-                DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
-                if (is_last_document()) {
-                    // Сохраняем серверное время текущего запроса
-                    if (last_recv_time != null)
-                        settings.set("last_recv_time", last_recv_time.toString());
-
-                    finish();
-                } else {
-                    show_next_document();
-                }
+                getCancelConfirmation ();
                 break;
             default:
                 break;
         }
     }
 
-    // PRIVATE
+    private void getCancelConfirmation () {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
+                        if (is_last_document()) {
+                            // Сохраняем серверное время текущего запроса
+                            if (last_recv_time != null)
+                                settings.set("last_recv_time", last_recv_time.toString());
+
+                            finish();
+                        } else {
+                            show_next_document();
+                        }
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.title_need_confirm)
+                .setIcon(R.drawable.confirm)
+                .setMessage(getString(R.string.msg_cansel_sure))
+                .setPositiveButton(getString(R.string.btn_cancel_yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.btn_no), dialogClickListener).show();
+    }
+
 
     private void setDocs(String json_doc) {
         ArrayList<DocSignRequest> doc_list_object;

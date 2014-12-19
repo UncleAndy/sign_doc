@@ -50,5 +50,9 @@
     <string name="title_get_new_docs">Receive</string>
     <string name="title_send">Sending</string>
     <string name="title_init">Initialization</string>
+    <string name="msg_cansel_sure">Are you sure in cancel?</string>
+    <string name="btn_cancel_yes">Yes</string>
+    <string name="btn_no">No</string>
+    <string name="title_need_confirm">Confirmation required</string>
 
 </resources>
