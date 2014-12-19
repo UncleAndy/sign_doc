@@ -7,9 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by andy on 14.12.14.
- */
 public class DocsStorage extends SQLiteOpenHelper {
     private static final String LOG_TAG = "DB";
 

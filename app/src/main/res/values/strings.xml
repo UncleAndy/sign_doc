@@ -31,10 +31,10 @@
     <string name="err_code_required">Code should by present</string>
     <string name="err_wrong_password">Wrong password</string>
     <string name="err_http_send">Can not sent document</string>
-    <string name="msg_status_start_deliver">Start deliver document...</string>
+    <string name="msg_status_start_deliver">Document delivering...</string>
     <string name="msg_status_http_error">Error when deliver document</string>
     <string name="msg_status_delivered">Document delivered</string>
-    <string name="msg_status_received">New documents incoming</string>
+    <string name="msg_status_received">Check new documents present...</string>
     <string name="msg_status_no_new">New documents absent</string>
     <string name="btn_ok">OK</string>
     <string name="title_warning">Attension!</string>
@@ -47,5 +47,7 @@
     <string name="txt_doc_site">Site:</string>
     <string name="txt_doc_id">Document number:</string>
     <string name="err_internet_connection_absent">No internet connection</string>
+    <string name="title_get_new_docs">Receive</string>
+    <string name="title_send">Sending</string>
 
 </resources>

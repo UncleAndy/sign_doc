@@ -1,5 +1,7 @@
 package org.gplvote.signdoc;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
@@ -23,7 +25,10 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
     private EditText edCode;
     private Button btnReady;
 
-	@Override
+    private ProgressDialog send_pd;
+    private SendRegisterTask send_task;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
         Log.d("REGISTER_SIGN", "onCreate");
@@ -42,87 +47,81 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         if (MainActivity.isInternetPresent(this)) {
             String errors = "";
             String sep = "";
-            if (edSite.getText().toString().trim().isEmpty()) {
+            String site = edSite.getText().toString().trim();
+            String code = edCode.getText().toString().trim();
+            if (site.isEmpty()) {
                 errors = getString(R.string.err_site_required);
                 sep = "\n";
-            };
-            if (edCode.getText().toString().trim().isEmpty()) {
+            }
+            if (code.isEmpty()) {
                 errors += sep + getString(R.string.err_code_required);
-            };
+            }
 
             if (errors.isEmpty()) {
-                send_register_sign();
+                if (send_task == null) {
+                    send_task = new SendRegisterTask();
+                    send_task.execute(site, code);
+                }
             } else {
                 MainActivity.alert(errors, this);
-            };
+            }
         } else {
             MainActivity.error(getString(R.string.err_internet_connection_absent), this);
         }
     }
 
-    public void send_register_sign() {
-        // Формируем документ для регистрации подписи
-        DocSignRegistration doc = new DocSignRegistration();
-        doc.site = edSite.getText().toString().trim();
-        doc.code = edCode.getText().toString().trim();
+    class SendRegisterTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
 
-        // Извлекаем публичный ключ
-        doc.public_key = MainActivity.sign.getPublicKeyBase64();
+            // Показываем Progress
+            send_pd = new ProgressDialog(RegisterSign.this);
+            send_pd.setTitle(getString(R.string.title_send));
+            send_pd.setMessage(getString(R.string.msg_status_start_deliver));
+            send_pd.show();
+        }
 
-        // Формируем ЭЦП документа
-        String sign_data = doc.code;
-        byte[] b_sign = MainActivity.sign.create(sign_data.getBytes());
+        @Override
+        protected String doInBackground(String... params) {
+            String result = null;
 
-        if (b_sign == null) {
-            MainActivity.alert(getString(R.string.err_wrong_password), this);
-        } else {
-            doc.sign = Base64.encodeToString(b_sign, Base64.NO_WRAP);
+            DocSignRegistration doc = new DocSignRegistration();
+            doc.site = params[0].trim();
+            doc.code = params[1].trim();
 
-            HTTPActions.deliver(doc.toJson(), this, true);
+            // Извлекаем публичный ключ
+            doc.public_key = MainActivity.sign.getPublicKeyBase64();
 
-            // Запускаем отправку если все в норме
-            //Intent intent = new Intent(this, Sender.class);
-            //intent.putExtra("Doc", doc.toJson());
-            //startActivity(intent);
-            Log.d("SIGN", "Sign doc: "+doc.toJson());
-        };
+            // Формируем ЭЦП документа
+            String sign_data = doc.code;
+            byte[] b_sign = MainActivity.sign.create(sign_data.getBytes());
+
+            if (b_sign == null) {
+                result = getString(R.string.err_wrong_password);
+            } else {
+                doc.sign = Base64.encodeToString(b_sign, Base64.NO_WRAP);
+
+                result = HTTPActions.deliver(doc.toJson(), RegisterSign.this);
+                Log.d("SIGN_REGISTER", "Sign doc: "+doc.toJson());
+            }
+
+            return(result);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            send_pd.dismiss();
+
+            if (result == null) {
+                MainActivity.alert(getString(R.string.msg_status_delivered), RegisterSign.this, true);
+            } else {
+                MainActivity.error(result, RegisterSign.this);
+            }
+
+            send_task = null;
+        }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("REGISTER_SIGN", "onResume");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        Log.d("REGISTER_SIGN", "onStart");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("REGISTER_SIGN", "onPause");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("REGISTER_SIGN", "onStop");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("REGISTER_SIGN", "onRestart");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("REGISTER_SIGN", "onDestroy");
-    }
-
 }

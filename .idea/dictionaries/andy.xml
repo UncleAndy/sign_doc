@@ -5,6 +5,7 @@
       <w>pkcs</w>
       <w>prng</w>
       <w>pvtkey</w>
+      <w>recv</w>
     </words>
   </dictionary>
 </component>

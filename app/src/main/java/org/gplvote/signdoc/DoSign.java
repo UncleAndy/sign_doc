@@ -1,5 +1,7 @@
 package org.gplvote.signdoc;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -21,9 +23,11 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
         DocSignRequest[] values;
     }
 
+    private static Settings settings;
     ArrayList<DocSignRequest> documents;
     private int current_doc_idx = 0;
     private Gson gson;
+    private Long last_recv_time = null;
 
     private ListView listData;
     private TextView textTitleSignDoc;
@@ -32,11 +36,15 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     private Button btnSign;
     private Button btnSignCancel;
 
+    private ProgressDialog send_pd;
+    private DoSignTask send_task;
+
 	@Override
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.do_sign);
 
+        settings = Settings.getInstance();
 
         textTitleSignDoc = (TextView) findViewById(R.id.textTitleSignDoc);
         textDocSite = (TextView) findViewById(R.id.textDocSite);
@@ -48,8 +56,18 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
         gson = new Gson();
 
+        String sLastRecvTime = getIntent().getStringExtra("LastRecvTime");
+        if (sLastRecvTime != null && (!sLastRecvTime.equals(""))) {
+            try {
+                Log.d("DOSIGN", "LastRecvTime = ["+sLastRecvTime+"]");
+                last_recv_time = Long.parseLong(sLastRecvTime);
+            } catch (Exception e) {
+                Log.e("DOSIGN", "Long parse error: "+e.getLocalizedMessage());
+                last_recv_time = 0L;
+            }
+        }
+
         String json_docs_list = getIntent().getStringExtra("DocsList");
-        Log.d("DoSign", "JSON Documents From StringExtra: "+json_docs_list);
 
         setDocs(json_docs_list);
 
@@ -60,14 +78,21 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSign:
-                sign_doc();
-
+                if (send_task == null) {
+                    send_task = new DoSignTask();
+                    send_task.execute(current_document());
+                }
                 break;
             case R.id.btnSignCancel:
                 DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
-                show_next_document();
                 if (is_last_document()) {
+                    // Сохраняем серверное время текущего запроса
+                    if (last_recv_time != null)
+                        settings.set("last_recv_time", last_recv_time.toString());
+
                     finish();
+                } else {
+                    show_next_document();
                 }
                 break;
             default:
@@ -80,8 +105,6 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     private void setDocs(String json_doc) {
         ArrayList<DocSignRequest> doc_list_object;
         documents = gson.fromJson(json_doc, new TypeToken<ArrayList<DocSignRequest>>(){}.getType());
-
-        Log.d("DoSign", "Get documents: "+gson.toJson(documents));
     }
 
     private void showData() {
@@ -119,47 +142,11 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
         }
     }
 
-    private void sign_doc() {
-        // Формируем подпись документа (sha256(данные+шаблон)) и отправляем ее на сервер
-        DocSign doc_sign = new DocSign();
-
-        DocSignRequest doc = current_document();
-        String sign_data = doc.site + ":" + doc.doc_id + ":" + doc.dec_data + ":" + doc.template;
-        Log.d("SIGN", "Sign data: "+sign_data);
-
-        doc_sign.site = doc.site;
-        doc_sign.doc_id = doc.doc_id;
-        try {
-            doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
-        } catch (Exception e) {
-            Log.e("SIGN", "Wrong password error: ", e);
-        }
-
-        if (doc_sign.sign != null) {
-            Log.d("SIGN", "Sign: "+doc_sign.sign);
-            // Запускаем отправку если все в норме
-
-            Log.d("SIGN", "Sign doc: "+doc_sign.toJson());
-
-            HTTPActions.deliver(doc_sign.toJson(), this, is_last_document());
-            //Intent intent = new Intent(this, Sender.class);
-            //intent.putExtra("Doc", doc_sign.toJson());
-            //startActivity(intent);
-
-            DocsStorage.add_doc(this.getApplicationContext(), doc_sign.site, doc_sign.doc_id);
-
-            show_next_document();
-        } else {
-            MainActivity.error(getString(R.string.err_wrong_password), this);
-            showData();
-        }
-    }
-
     private void show_next_document() {
         if (!is_last_document()) {
             current_doc_idx++;
             showData();
-        };
+        }
     }
 
     private boolean is_last_document() {
@@ -168,5 +155,67 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
     private DocSignRequest current_document() {
         return(documents.get(current_doc_idx));
+    }
+
+    class DoSignTask extends AsyncTask<DocSignRequest, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            // Показываем Progress
+            send_pd = new ProgressDialog(DoSign.this);
+            send_pd.setTitle(getString(R.string.title_send));
+            send_pd.setMessage(getString(R.string.msg_status_start_deliver));
+            send_pd.show();
+        }
+
+        @Override
+        protected String doInBackground(DocSignRequest... params) {
+            // Формируем подпись документа и отправляем ее на сервер
+            String result = null;
+
+            DocSign doc_sign = new DocSign();
+
+            DocSignRequest doc = params[0];
+            String sign_data = doc.site + ":" + doc.doc_id + ":" + doc.dec_data + ":" + doc.template;
+
+            doc_sign.site = doc.site;
+            doc_sign.doc_id = doc.doc_id;
+            try {
+                doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
+            } catch (Exception e) {
+                Log.e("SIGN", "Wrong password error: ", e);
+            }
+
+            if (doc_sign.sign != null) {
+                result = HTTPActions.deliver(doc_sign.toJson(), DoSign.this);
+
+                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id);
+            } else {
+                result = getString(R.string.err_wrong_password);
+            }
+
+            return(result);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            send_pd.dismiss();
+
+            if (result == null) {
+                MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
+                if (!is_last_document())
+                    show_next_document();
+                else if (last_recv_time != null)
+                    // Сохраняем серверное время текущего запроса
+                    settings.set("last_recv_time", last_recv_time.toString());
+            } else {
+                MainActivity.error(result, DoSign.this);
+            }
+
+            send_task = null;
+        }
     }
 }

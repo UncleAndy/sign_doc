@@ -88,9 +88,21 @@ public class Sign {
 
         byte[] data = null;
         try {
-            Cipher c = Cipher.getInstance(RSA_DECRYPT_TAG);
-            c.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
-            data = c.doFinal(enc_data);
+            if (enc_data.length <= 256) {
+                Cipher c = Cipher.getInstance(RSA_DECRYPT_TAG);
+                c.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
+                data = c.doFinal(enc_data);
+            } else {
+                // Use RSA+AES decoding
+
+
+
+
+
+
+
+
+            }
             Log.d("DATA", "Decrypted bytes: " + data.length);
         } catch (Exception e) {
             Log.e(RSA_KEYS_TAG, "RSA decryption error");

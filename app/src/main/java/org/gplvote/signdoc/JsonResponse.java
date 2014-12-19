@@ -5,5 +5,6 @@ package org.gplvote.signdoc;
  */
 public class JsonResponse {
     public int status;
+    public Long time;
     public DocSignRequest[] documents;
 }

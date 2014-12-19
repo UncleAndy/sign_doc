@@ -31,10 +31,10 @@
     <string name="err_code_required">Код должен быть заполнен</string>
     <string name="err_wrong_password">Неверный пароль</string>
     <string name="err_http_send">Не могу отправить документ</string>
-    <string name="msg_status_start_deliver">Начало отправки документа...</string>
+    <string name="msg_status_start_deliver">Отправка документа...</string>
     <string name="msg_status_http_error">Ошибка при отправке документа</string>
     <string name="msg_status_delivered">Документ успешно доставлен</string>
-    <string name="msg_status_received">Приняты новые документы</string>
+    <string name="msg_status_received">Проверка наличия новых документов</string>
     <string name="msg_status_no_new">Нет новых документов</string>
     <string name="btn_ok">ОК</string>
     <string name="title_warning">Внимание!</string>
@@ -47,5 +47,7 @@
     <string name="txt_doc_site">Сайт:</string>
     <string name="txt_doc_id">Номер документа:</string>
     <string name="err_internet_connection_absent">Отсутствует подключение к интернет</string>
+    <string name="title_get_new_docs">Прием</string>
+    <string name="title_send">Отправка</string>
 
 </resources>
