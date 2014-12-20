@@ -149,7 +149,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                 Map<String, Object> m;
                 for (int i = 0; i < data.length; i++) {
                     m = new HashMap<String, Object>();
-                    m.put("title", tpl_lines[i+1]+":");
+                    if ((i+1) < tpl_lines.length)
+                        m.put("title", tpl_lines[i+1]+":");
+                    else
+                        m.put("title", getString(R.string.msg_no_data_description));
                     m.put("text", data[i]);
                     list.add(m);
                 }
