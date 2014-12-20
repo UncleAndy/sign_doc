@@ -1,5 +1,7 @@
 package org.gplvote.signdoc;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -16,6 +18,7 @@ import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Sign {
@@ -28,8 +31,6 @@ public class Sign {
 
     private Settings settings;
 
-    //private SecretKeySpec sks = null;
-    // private PrivateKey pvt_key = null;
     private byte[] cache_pvt_key_enc = null;
     private PublicKey pub_key = null;
     private byte[] cache_aes_key = null;
@@ -88,24 +89,31 @@ public class Sign {
 
         byte[] data = null;
         try {
+            Cipher rsa = Cipher.getInstance(RSA_DECRYPT_TAG);
+            rsa.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
             if (enc_data.length <= 256) {
-                Cipher c = Cipher.getInstance(RSA_DECRYPT_TAG);
-                c.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
-                data = c.doFinal(enc_data);
+                data = rsa.doFinal(enc_data);
             } else {
                 // Use RSA+AES decoding
+                Log.d("DECRYPT", "Use RSA+AES");
 
+                // Decode AES key
+                byte[] buf = new byte[256];
+                System.arraycopy(enc_data, 0, buf, 0, 256);
 
+                byte[] aes_key = rsa.doFinal(enc_data, 0, 256);
 
+                SecretKeySpec sks = new SecretKeySpec(aes_key, "AES");
 
-
-
-
-
+                IvParameterSpec ivSpec = new IvParameterSpec("7350264181172691".getBytes());
+                Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                aes.init(Cipher.DECRYPT_MODE, sks, ivSpec);
+                data = aes.doFinal(enc_data, 256, (enc_data.length - 256));
             }
-            Log.d("DATA", "Decrypted bytes: " + data.length);
+            if (data != null)
+                Log.d("DATA", "Decrypted bytes: " + data.length);
         } catch (Exception e) {
-            Log.e(RSA_KEYS_TAG, "RSA decryption error");
+            Log.e(RSA_KEYS_TAG, "RSA decryption error: "+e.getLocalizedMessage());
         }
 
         return(data);
