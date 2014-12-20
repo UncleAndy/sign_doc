@@ -95,16 +95,12 @@ public class Sign {
                 data = rsa.doFinal(enc_data);
             } else {
                 // Use RSA+AES decoding
-                Log.d("DECRYPT", "Use RSA+AES");
 
-                // Decode AES key
-                byte[] buf = new byte[256];
-                System.arraycopy(enc_data, 0, buf, 0, 256);
-
+                // Decode AES over RSA
                 byte[] aes_key = rsa.doFinal(enc_data, 0, 256);
 
+                // Decode big data over AES/CBC
                 SecretKeySpec sks = new SecretKeySpec(aes_key, "AES");
-
                 IvParameterSpec ivSpec = new IvParameterSpec("7350264181172691".getBytes());
                 Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 aes.init(Cipher.DECRYPT_MODE, sks, ivSpec);
