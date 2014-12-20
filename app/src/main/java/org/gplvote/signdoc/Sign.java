@@ -96,12 +96,16 @@ public class Sign {
             } else {
                 // Use RSA+AES decoding
 
-                // Decode AES over RSA
-                byte[] aes_key = rsa.doFinal(enc_data, 0, 256);
+                // Decode AES+IV over RSA
+                byte[] aes_key_plus_iv = rsa.doFinal(enc_data, 0, 256);
+                byte[] aes_key = new byte[32];
+                byte[] aes_iv  = new byte[16];
+                System.arraycopy(aes_key_plus_iv, 0, aes_key, 0, 32);
+                System.arraycopy(aes_key_plus_iv, 32, aes_iv, 0, 16);
 
                 // Decode big data over AES/CBC
                 SecretKeySpec sks = new SecretKeySpec(aes_key, "AES");
-                IvParameterSpec ivSpec = new IvParameterSpec("7350264181172691".getBytes());
+                IvParameterSpec ivSpec = new IvParameterSpec(aes_iv);
                 Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 aes.init(Cipher.DECRYPT_MODE, sks, ivSpec);
                 data = aes.doFinal(enc_data, 256, (enc_data.length - 256));
@@ -109,7 +113,7 @@ public class Sign {
             if (data != null)
                 Log.d("DATA", "Decrypted bytes: " + data.length);
         } catch (Exception e) {
-            Log.e(RSA_KEYS_TAG, "RSA decryption error: "+e.getLocalizedMessage());
+            e.printStackTrace();
         }
 
         return(data);
