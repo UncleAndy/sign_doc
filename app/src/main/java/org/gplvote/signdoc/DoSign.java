@@ -7,20 +7,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DoSign extends FragmentActivity implements View.OnClickListener {
     private class DocsListObject {
@@ -55,8 +52,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
         textDocId = (TextView) findViewById(R.id.textDocId);
 
         textHtmlDoc = (TextView) findViewById(R.id.textHtmlDoc);
-        btnSign = (Button) findViewById(R.id.btnSign); btnSign.setOnClickListener(this);
-        btnSignCancel = (Button) findViewById(R.id.btnSignCancel); btnSignCancel.setOnClickListener(this);
+        btnSign = (Button) findViewById(R.id.btnSign);
+        btnSign.setOnClickListener(this);
+        btnSignCancel = (Button) findViewById(R.id.btnSignCancel);
+        btnSignCancel.setOnClickListener(this);
 
         gson = new Gson();
 
@@ -144,17 +143,42 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
         String[] tpl_lines = document.template.split("\n");
 
+        String html = "";
         switch (tpl_lines[0]) {
             case "LIST":
-                String html = "";
                 for (int i = 0; i < data.length; i++) {
-                    if ((i+1) < tpl_lines.length)
-                        html += "<p><b>"+tpl_lines[i+1]+"</b><br>";
+                    if ((i+1) < tpl_lines.length) {
+                        String title = tpl_lines[i + 1];
+                        title = title.replaceAll("/<a [^>]+>/", "");
+                        title = title.replaceAll("/<a.*>/", "");
+                        html += "<p><b>"+title+"</b><br>";
+                    }
                     else
                         html += "<p><b>"+getString(R.string.msg_no_data_description)+"</b><br>";
 
                     String data_row = data[i].replace("\n", "<br>");
+                    data_row = data_row.replaceAll("<a [^>]+>", "");
+                    data_row = data_row.replaceAll("</a.*>", "");
                     html += data_row+"</p><hr>";
+                }
+                textHtmlDoc.setText(Html.fromHtml(html));
+                break;
+            case "HTML":
+                tpl_lines[0] = "";
+                html = TextUtils.join("\n", tpl_lines);
+                String plain_data = "";
+                for (int i = 0; i < data.length; i++) {
+                    String data_row = data[i].replace("\n", "<br>");
+                    data_row = data_row.replaceAll("<a [^>]+>", "");
+                    data_row = data_row.replaceAll("</a.*>", "");
+                    String old_html = html;
+                    html = html.replace("<%data_"+i+"%>", data_row);
+                    if (html.equals(old_html))
+                        plain_data += "["+i+"]: "+data_row+"<br>\n";
+                }
+                // Все не учтенные данные указываем в первой строке
+                if (!plain_data.equals("")) {
+                    html = "<p><b>"+getString(R.string.msg_no_data_description)+"<br>"+ plain_data + "</b>---</p>" + html;
                 }
                 textHtmlDoc.setText(Html.fromHtml(html));
                 break;

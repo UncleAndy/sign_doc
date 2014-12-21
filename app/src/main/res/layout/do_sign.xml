@@ -75,11 +75,12 @@
                     android:id="@+id/textHtmlDoc"
                     android:background="@color/white"
                     android:textColor="@color/black"
-                    android:autoLink="none"
                     android:padding="8dp"
                     android:autoText="false"
                     android:elegantTextHeight="false"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    android:clickable="false"
+                    android:linksClickable="false" />
             </ScrollView>
         </LinearLayout>
 
