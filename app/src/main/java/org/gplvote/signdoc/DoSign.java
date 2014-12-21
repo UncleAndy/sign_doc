@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,10 +33,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     private Gson gson;
     private Long last_recv_time = null;
 
-    private ListView listData;
     private TextView textTitleSignDoc;
     private TextView textDocSite;
     private TextView textDocId;
+    private TextView textHtmlDoc;
     private Button btnSign;
     private Button btnSignCancel;
 
@@ -53,7 +54,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
         textDocSite = (TextView) findViewById(R.id.textDocSite);
         textDocId = (TextView) findViewById(R.id.textDocId);
 
-        listData = (ListView) findViewById(R.id.listData);
+        textHtmlDoc = (TextView) findViewById(R.id.textHtmlDoc);
         btnSign = (Button) findViewById(R.id.btnSign); btnSign.setOnClickListener(this);
         btnSignCancel = (Button) findViewById(R.id.btnSignCancel); btnSignCancel.setOnClickListener(this);
 
@@ -145,25 +146,17 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
         switch (tpl_lines[0]) {
             case "LIST":
-                ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>(data.length);
-                Map<String, Object> m;
+                String html = "";
                 for (int i = 0; i < data.length; i++) {
-                    m = new HashMap<String, Object>();
                     if ((i+1) < tpl_lines.length)
-                        m.put("title", tpl_lines[i+1]+":");
+                        html += "<p><b>"+tpl_lines[i+1]+"</b><br>";
                     else
-                        m.put("title", getString(R.string.msg_no_data_description));
-                    m.put("text", data[i]);
-                    list.add(m);
+                        html += "<p><b>"+getString(R.string.msg_no_data_description)+"</b><br>";
+
+                    String data_row = data[i].replace("\n", "<br>");
+                    html += data_row+"</p><hr>";
                 }
-
-                String[] attrs = {"title", "text"};
-                int[] to = { R.id.textDocDataTitle, R.id.textDocDataText };
-
-                SimpleAdapter sAdapter = new SimpleAdapter(this, list, R.layout.doc_data_line, attrs, to);
-
-                listData.setAdapter(sAdapter);
-
+                textHtmlDoc.setText(Html.fromHtml(html));
                 break;
         }
     }
