@@ -42,9 +42,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         btnReady = (Button) findViewById(R.id.btnReady); btnReady.setOnClickListener(this);
 
         if (running) {
-            edCode.setEnabled(false);
-            edSite.setEnabled(false);
-            btnReady.setEnabled(false);
+            enableInputElements(false);
 
             send_pd = new ProgressDialog(RegisterSign.this);
             send_pd.setTitle(getString(R.string.title_send));
@@ -56,10 +54,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
     @Override
     public void onClick(View v) {
         running = true;
-        edCode.setEnabled(false);
-        edSite.setEnabled(false);
-        btnReady.setEnabled(false);
-
+        enableInputElements(false);
 
         // Check input fields
         if (MainActivity.isInternetPresent(this)) {
@@ -82,9 +77,13 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
                 }
             } else {
                 MainActivity.alert(errors, this);
+                running = false;
+                enableInputElements(true);
             }
         } else {
             MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+            running = false;
+            enableInputElements(true);
         }
     }
 
@@ -95,6 +94,18 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         if ((send_pd != null) && send_pd.isShowing())
             send_pd.dismiss();
         send_pd = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        running = false;
+    }
+
+    protected void enableInputElements(boolean value) {
+        edCode.setEnabled(true);
+        edSite.setEnabled(true);
+        btnReady.setEnabled(true);
     }
 
     class SendRegisterTask extends AsyncTask<String, Void, String> {
@@ -140,6 +151,8 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            running = false;
+
             if ((send_pd != null) && send_pd.isShowing())
                 send_pd.dismiss();
 
@@ -147,6 +160,8 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
                 MainActivity.alert(getString(R.string.msg_status_delivered), RegisterSign.this, true);
             } else {
                 MainActivity.error(result, RegisterSign.this);
+
+                enableInputElements(true);
             }
 
             send_task = null;
