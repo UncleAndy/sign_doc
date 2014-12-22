@@ -55,5 +55,6 @@
     <string name="btn_no">Нет</string>
     <string name="title_need_confirm">Требуется подтверждение</string>
     <string name="msg_no_data_description">- описание не задано -</string>
+    <string name="msg_reg_sign_delivered">Запрос на регистрацию подписи отправлен</string>
 
 </resources>

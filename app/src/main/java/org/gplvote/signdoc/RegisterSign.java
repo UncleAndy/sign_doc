@@ -157,7 +157,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
                 send_pd.dismiss();
 
             if (result == null) {
-                MainActivity.alert(getString(R.string.msg_status_delivered), RegisterSign.this, true);
+                MainActivity.alert(getString(R.string.msg_reg_sign_delivered), RegisterSign.this, true);
             } else {
                 MainActivity.error(result, RegisterSign.this);
 
