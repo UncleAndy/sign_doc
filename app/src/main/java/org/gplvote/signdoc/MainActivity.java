@@ -46,6 +46,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
     private Button btnInit;
     private Button btnRegister;
     private Button btnCheckNew;
+    private Button btnDocsList;
 
     private ReceiverTask receiver;
     private ProgressDialog receiver_pd;
@@ -67,6 +68,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
         btnInit = (Button) findViewById(R.id.btnInit); btnInit.setOnClickListener(this);
         btnRegister = (Button) findViewById(R.id.btnRegister); btnRegister.setOnClickListener(this);
         btnCheckNew = (Button) findViewById(R.id.btnCheckNew); btnCheckNew.setOnClickListener(this);
+        btnDocsList = (Button) findViewById(R.id.btnDocsList); btnDocsList.setOnClickListener(this);
 
         if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
         settings = Settings.getInstance();
@@ -112,6 +114,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
                   MainActivity.error(getString(R.string.err_internet_connection_absent), this);
               }
           }
+          break;
+      case R.id.btnDocsList:
+          intent = new Intent(this, DocsList.class);
+          startActivity(intent);
           break;
       default:
         break;

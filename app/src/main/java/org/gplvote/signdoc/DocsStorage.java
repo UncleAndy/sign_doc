@@ -5,7 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.format.DateFormat;
 import android.util.Log;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class DocsStorage extends SQLiteOpenHelper {
     private static final String LOG_TAG = "DB";
@@ -27,7 +32,7 @@ public class DocsStorage extends SQLiteOpenHelper {
     }
 
     public DocsStorage(Context context) {
-        super(context, "SignDoc", null, 1);
+        super(context, "SignDoc", null, 2);
     }
 
     public static boolean is_new(Context context, DocSignRequest doc) {
@@ -43,13 +48,46 @@ public class DocsStorage extends SQLiteOpenHelper {
     public static boolean add_doc(Context context, String site, String doc_id) {
         Log.d("DB", "Save doc_id = "+doc_id);
         SQLiteDatabase db = getInstance(context).getWritableDatabase();
+
         ContentValues cv = new ContentValues();
         cv.put("site", site);
         cv.put("doc_id", doc_id);
+
         long row_id = db.insert("docs_list", null, cv);
+
         Log.d(LOG_TAG, "row inserted, ID = " + row_id);
         getInstance(context).close();
         return(row_id != -1);
+    }
+
+    public static boolean add_doc(Context context, String site, String doc_id, String data, String template) {
+        Log.d("DB", "Save doc_id = "+doc_id);
+        SQLiteDatabase db = getInstance(context).getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("site", site);
+        cv.put("doc_id", doc_id);
+        cv.put("data", data);
+        cv.put("template", template);
+        cv.put("t_receive", currentTime());
+
+        long row_id = db.insert("docs_list", null, cv);
+
+        Log.d(LOG_TAG, "row inserted, ID = " + row_id);
+        getInstance(context).close();
+        return(row_id != -1);
+    }
+
+    public static void set_sign(Context context, String site, String doc_id, String sign) {
+        Log.d("DB", "Set sign for doc_id = "+doc_id);
+        SQLiteDatabase db = getInstance(context).getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("sign", sign);
+        cv.put("status", "signed");
+        cv.put("t_set_status", currentTime());
+
+        db.update("docs_list", cv, "site = ? AND doc_id = ?", new String[] { site, doc_id });
     }
 
     public static boolean clear_docs(Context context) {
@@ -71,6 +109,20 @@ public class DocsStorage extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2 && newVersion >= 2) {
+            db.beginTransaction();
+            db.execSQL("alter table docs_list add column data text;");
+            db.execSQL("alter table docs_list add column template text;");
+            db.execSQL("alter table docs_list add column status text DEFAULT 'new';");
+            db.execSQL("alter table docs_list add column t_receive INTEGER;");
+            db.execSQL("alter table docs_list add column t_set_status INTEGER;");
+            db.execSQL("alter table docs_list add column sign text;");
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+    }
 
+    private static long currentTime() {
+        return(System.currentTimeMillis());
     }
 }

@@ -33,17 +33,25 @@
 
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
 
             <Button
                 android:id="@+id/btnCheckNew"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/btn_check_new"
-                android:layout_span="2" />
+                android:text="@string/btn_check_new" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/btn_docs_list"
+                android:id="@+id/btnDocsList"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/btnCheckNew"
+                android:layout_weight="1" />
         </TableRow>
 
     </TableLayout>

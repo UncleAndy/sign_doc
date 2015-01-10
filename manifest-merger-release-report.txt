@@ -17,8 +17,6 @@ uses-sdk
 ADDED from AndroidManifest.xml:7:5
 MERGED from com.android.support:appcompat-v7:21.0.2:15:5
 MERGED from com.android.support:support-v4:21.0.2:15:5
-MERGED from com.android.support:gridlayout-v7:21.0.2:15:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
 	android:targetSdkVersion
 		ADDED from AndroidManifest.xml:9:9
 		INJECTED from AndroidManifest.xml:0:0
@@ -38,8 +36,6 @@ ADDED from AndroidManifest.xml:13:5
 application
 ADDED from AndroidManifest.xml:15:5
 MERGED from com.android.support:appcompat-v7:21.0.2:16:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
-MERGED from com.android.support:gridlayout-v7:21.0.2:16:5
 MERGED from com.android.support:support-v4:21.0.2:16:5
 	android:label
 		ADDED from AndroidManifest.xml:18:9
