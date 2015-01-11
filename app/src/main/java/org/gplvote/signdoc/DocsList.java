@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -32,10 +33,16 @@ public class DocsList extends Activity implements View.OnClickListener {
     private DocsListArrayAdapter sAdapter;
     private int curPosition = -1;
 
+    private Button btnSign;
+    private Button btnView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.docs_list);
+
+        btnSign = (Button) findViewById(R.id.btnDocSign);
+        btnView = (Button) findViewById(R.id.btnDocView);
 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -74,12 +81,24 @@ public class DocsList extends Activity implements View.OnClickListener {
                 Log.d("LIST", "itemClick: position = " + position + ", id = "
                         + id);
 
-                Object item = listDocView.getItemAtPosition(position);
+                HashMap<String, Object> item = (HashMap<String, Object>) listDocView.getItemAtPosition(position);
 
                 Log.d("LIST", "itemClick: item = " + item);
 
                 sAdapter.setCurrentPosition(position);
                 sAdapter.notifyDataSetChanged();
+
+                // Ставим статус кнопки "Подписать" в зависимости от статуса текущего выбранного документа
+                if (item.get("status").equals("sign")) {
+                    btnSign.setEnabled(false);
+                    btnView.setEnabled(true);
+                } else if ((item.get("t_set_status") != null) && (!item.get("t_set_status").equals(""))) {
+                    btnSign.setEnabled(true);
+                    btnView.setEnabled(true);
+                } else {
+                    btnSign.setEnabled(false);
+                    btnView.setEnabled(false);
+                }
             }
         });
     }
