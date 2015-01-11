@@ -45,44 +45,46 @@ public class DocsStorage extends SQLiteOpenHelper {
         return(!result);
     }
 
-    public static boolean add_doc(Context context, String site, String doc_id) {
-        Log.d("DB", "Save doc_id = "+doc_id);
-        SQLiteDatabase db = getInstance(context).getWritableDatabase();
-
-        ContentValues cv = new ContentValues();
-        cv.put("site", site);
-        cv.put("doc_id", doc_id);
-
-        long row_id = db.insert("docs_list", null, cv);
-
-        Log.d(LOG_TAG, "row inserted, ID = " + row_id);
-        getInstance(context).close();
-        return(row_id != -1);
-    }
-
     public static boolean add_doc(Context context, String site, String doc_id, String data, String template, String status, String sign) {
         Log.d("DB", "Save doc_id = "+doc_id);
         SQLiteDatabase db = getInstance(context).getWritableDatabase();
 
-        ContentValues cv = new ContentValues();
-        cv.put("site", site);
-        cv.put("doc_id", doc_id);
-        cv.put("data", data);
-        cv.put("template", template);
-        cv.put("t_receive", currentTime());
-        if ((status != null) && (status != "")) {
-            cv.put("status", status);
-            cv.put("t_set_status", currentTime());
-        }
-        if ((sign != null) && (sign != "")) {
-            cv.put("sign", sign);
-        }
+        // Сначала проверяем нет-ли уже такого документа в локальной базе
+        Cursor c = db.query("docs_list", new String[]{"id"}, "site = ? AND doc_id = ?", new String[]{site, doc_id}, null, null, null, "1");
+        boolean doc_present = c.moveToFirst();
+        c.close();
 
-        long row_id = db.insert("docs_list", null, cv);
+        if (doc_present)
+            Log.d(LOG_TAG, "DOCUMENT PRESENT!");
 
-        Log.d(LOG_TAG, "row inserted, ID = " + row_id);
+        boolean result = false;
+        if (doc_present) {
+            if ((sign != null) && (!sign.equals(""))) {
+                set_sign(context, site, doc_id, sign);
+            }
+            result = true;
+        } else {
+            ContentValues cv = new ContentValues();
+            cv.put("site", site);
+            cv.put("doc_id", doc_id);
+            cv.put("data", data);
+            cv.put("template", template);
+            cv.put("t_receive", currentTime());
+            if ((status != null) && (!status.equals(""))) {
+                cv.put("status", status);
+                cv.put("t_set_status", currentTime());
+            }
+            if ((sign != null) && (!sign.equals(""))) {
+                cv.put("sign", sign);
+            }
+
+            long row_id = db.insert("docs_list", null, cv);
+
+            Log.d(LOG_TAG, "row inserted, ID = " + row_id);
+            result = (row_id != -1);
+        }
         getInstance(context).close();
-        return(row_id != -1);
+        return (result);
     }
 
     public static void set_sign(Context context, String site, String doc_id, String sign) {
@@ -91,7 +93,7 @@ public class DocsStorage extends SQLiteOpenHelper {
 
         ContentValues cv = new ContentValues();
         cv.put("sign", sign);
-        cv.put("status", "signed");
+        cv.put("status", "sign");
         cv.put("t_set_status", currentTime());
 
         db.update("docs_list", cv, "site = ? AND doc_id = ?", new String[] { site, doc_id });

@@ -68,6 +68,8 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                 Log.e("DOSIGN", "Long parse error: "+e.getLocalizedMessage());
                 last_recv_time = 0L;
             }
+        } else {
+            last_recv_time = null;
         }
 
         String json_docs_list = getIntent().getStringExtra("DocsList");
@@ -99,7 +101,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", null);
+                        DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", "");
                         if (is_last_document()) {
                             // Сохраняем серверное время текущего запроса
                             if (last_recv_time != null)
@@ -231,9 +233,8 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             }
 
             if (doc_sign.sign != null) {
+                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign_deliver", "");
                 result = HTTPActions.deliver(doc_sign.toJson(), DoSign.this);
-
-                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign", doc_sign.sign);
             } else {
                 result = getString(R.string.err_wrong_password);
             }
@@ -249,6 +250,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
             if (result == null) {
                 MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
+                if (DoSign.this.last_recv_time == null) {
+                    Log.d("DO SIGN", "FROM DOCS LIST - "+DoSign.this.getCallingActivity());
+                    DocsList.instance.update_list();
+                }
                 if (!is_last_document())
                     show_next_document();
                 else if (last_recv_time != null)

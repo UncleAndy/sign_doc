@@ -2,6 +2,7 @@ package org.gplvote.signdoc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,22 +34,84 @@ public class DocsList extends Activity implements View.OnClickListener {
 
     private ListView listDocView;
     private DocsListArrayAdapter sAdapter;
-    private int curPosition = -1;
 
     private Button btnSign;
     private Button btnView;
+
+    public static DocsList instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.docs_list);
 
+        instance = this;
+
         btnSign = (Button) findViewById(R.id.btnDocSign);
+        btnSign.setOnClickListener(this);
+        btnSign.setEnabled(false);
         btnView = (Button) findViewById(R.id.btnDocView);
+        btnView.setOnClickListener(this);
+        btnView.setEnabled(false);
 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+        update_list();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+
+        Log.d("LIST", "onClick id = " + v.getId());
+        Log.d("LIST", "onClick R.id.btnDocSign = " + R.id.btnDocSign);
+
+        switch (v.getId()) {
+            case R.id.btnDocSign:
+                int curPosition = sAdapter.getCurrentPosition();
+
+                if (curPosition < 0) {
+                    return;
+                }
+
+                intent = new Intent(this, DoSign.class);
+
+                ArrayList<DocSignRequest> documents = new ArrayList<DocSignRequest>();
+                DocSignRequest sign_request = new DocSignRequest();
+
+                HashMap<String, Object> item = (HashMap<String, Object>) listDocView.getItemAtPosition(curPosition);
+                sign_request.site = (String) item.get("site");
+                sign_request.doc_id = (String) item.get("doc_id");
+
+                DocsStorage dbStorage = DocsStorage.getInstance(this);
+                SQLiteDatabase db = dbStorage.getWritableDatabase();
+
+                Cursor c = db.query("docs_list", new String[]{"data", "template"}, "site = ? AND doc_id = ?", new String[]{sign_request.site, sign_request.doc_id}, null, null, null, "1");
+                if (c != null) {
+                    if (c.moveToFirst()) {
+                        sign_request.dec_data = c.getString(c.getColumnIndex("data"));
+                        sign_request.template = c.getString(c.getColumnIndex("template"));
+                    }
+                }
+
+                documents.add(sign_request);
+
+                Gson gson = new Gson();
+                intent.putExtra("DocsList", gson.toJson(documents));
+                intent.putExtra("LastRecvTime", "");
+
+                startActivity(intent);
+                break;
+            case R.id.btnDocView:
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    public void update_list() {
         ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>(100);
         Map<String, Object> m;
 
@@ -54,7 +119,7 @@ public class DocsList extends Activity implements View.OnClickListener {
         DocsStorage dbStorage = DocsStorage.getInstance(this);
         SQLiteDatabase db = dbStorage.getWritableDatabase();
 
-        Cursor c = db.query("docs_list", new String[]{"t_set_status", "status", "site", "doc_id"}, null, null, null, null, "t_set_status desc", "100");
+        Cursor c = db.query("docs_list", new String[]{"t_set_status", "status", "site", "doc_id"}, null, null, null, null, "t_receive desc", "100");
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
@@ -101,11 +166,6 @@ public class DocsList extends Activity implements View.OnClickListener {
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     public class DocsListArrayAdapter extends ArrayAdapter<Map<String, Object>> {
@@ -169,6 +229,10 @@ public class DocsList extends Activity implements View.OnClickListener {
 
         public void setCurrentPosition(int position) {
             currentPosition = position;
+        }
+
+        public int getCurrentPosition() {
+            return(currentPosition);
         }
     }
 }

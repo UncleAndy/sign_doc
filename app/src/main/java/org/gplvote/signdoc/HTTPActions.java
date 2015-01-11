@@ -46,7 +46,8 @@ public class HTTPActions {
                     DocSign doc = gson.fromJson(document, DocSign.class);
 
                     if (doc.type.equals("SIGN")) {
-                        DocsStorage.add_doc(activity.getApplicationContext(), doc.site, doc.doc_id);
+                        // DocsStorage.add_doc(activity.getApplicationContext(), doc.site, doc.doc_id);
+                        DocsStorage.set_sign(activity.getApplicationContext(), doc.site, doc.doc_id, doc.sign);
                     }
                 } else {
                     error_str = activity.getString(R.string.err_http_send);
