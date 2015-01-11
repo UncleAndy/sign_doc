@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,23 +47,14 @@ public class DocsList extends Activity implements View.OnClickListener {
         DocsStorage dbStorage = DocsStorage.getInstance(this);
         SQLiteDatabase db = dbStorage.getWritableDatabase();
 
-        Cursor c = db.query("docs_list", new String[]{"strftime(\"%Y-%m-%d %H:%M:%S\", t_set_status) as t_set_status", "status", "site", "doc_id"}, null, null, null, null, "t_set_status desc", "100");
+        Cursor c = db.query("docs_list", new String[]{"t_set_status", "status", "site", "doc_id"}, null, null, null, null, "t_set_status desc", "100");
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
                     m = new HashMap<String, Object>();
 
                     m.put("t_set_status", c.getString(c.getColumnIndex("t_set_status")));
-                    String status = c.getString(c.getColumnIndex("status"));
-                    if (status == "new") {
-                        status = getString(R.string.txtDocStatusNew);
-                    } else if (status == "signed") {
-                        status = getString(R.string.txtDocStatusSigned);
-                    } else {
-                        status = getString(R.string.txtDocStatusNotSigned);
-                    }
-
-                    m.put("status", status);
+                    m.put("status", c.getString(c.getColumnIndex("status")));
                     m.put("site", c.getString(c.getColumnIndex("site")));
                     m.put("doc_id", c.getString(c.getColumnIndex("doc_id")));
 
@@ -121,8 +114,26 @@ public class DocsList extends Activity implements View.OnClickListener {
                 txtDocTime.setText("- no data -");
                 txtDocStatus.setText("- no data -");
             } else {
-                txtDocTime.setText((String) list.get(position).get("t_set_status"));
-                txtDocStatus.setText((String) list.get(position).get("status"));
+                // Time parse
+                Long doc_time_long = Long.parseLong((String) list.get(position).get("t_set_status"));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String doc_time = sdf.format(doc_time_long);
+                txtDocTime.setText(doc_time);
+
+                // Status parse
+                String status = (String) list.get(position).get("status");
+                switch (status) {
+                    case "new":
+                        status = getString(R.string.txtDocStatusNew);
+                        break;
+                    case "sign":
+                        status = getString(R.string.txtDocStatusSigned);
+                        break;
+                    default:
+                        status = getString(R.string.txtDocStatusNotSigned);
+                        break;
+                }
+                txtDocStatus.setText(status);
             }
             txtDocSite.setText((String) list.get(position).get("site"));
             txtDocId.setText((String) list.get(position).get("doc_id"));

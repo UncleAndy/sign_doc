@@ -60,7 +60,7 @@ public class DocsStorage extends SQLiteOpenHelper {
         return(row_id != -1);
     }
 
-    public static boolean add_doc(Context context, String site, String doc_id, String data, String template) {
+    public static boolean add_doc(Context context, String site, String doc_id, String data, String template, String status, String sign) {
         Log.d("DB", "Save doc_id = "+doc_id);
         SQLiteDatabase db = getInstance(context).getWritableDatabase();
 
@@ -70,6 +70,13 @@ public class DocsStorage extends SQLiteOpenHelper {
         cv.put("data", data);
         cv.put("template", template);
         cv.put("t_receive", currentTime());
+        if ((status != null) && (status != "")) {
+            cv.put("status", status);
+            cv.put("t_set_status", currentTime());
+        }
+        if ((sign != null) && (sign != "")) {
+            cv.put("sign", sign);
+        }
 
         long row_id = db.insert("docs_list", null, cv);
 

@@ -99,7 +99,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id);
+                        DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", null);
                         if (is_last_document()) {
                             // Сохраняем серверное время текущего запроса
                             if (last_recv_time != null)
@@ -233,7 +233,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             if (doc_sign.sign != null) {
                 result = HTTPActions.deliver(doc_sign.toJson(), DoSign.this);
 
-                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id);
+                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign", doc_sign.sign);
             } else {
                 result = getString(R.string.err_wrong_password);
             }
