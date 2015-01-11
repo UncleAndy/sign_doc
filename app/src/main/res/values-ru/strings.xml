@@ -61,5 +61,7 @@
     <string name="txtDocStatusNew">НОВЫЙ</string>
     <string name="txtDocStatusSigned">ПОДПИСАН</string>
     <string name="txtDocStatusNotSigned">НЕ ПОДПИСАН</string>
+    <string name="title_view_doc">Просмотр документа</string>
+    <string name="err_document_bad_format">Отсутствуют данные документа</string>
 
 </resources>

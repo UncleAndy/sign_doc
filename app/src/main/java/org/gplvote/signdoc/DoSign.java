@@ -40,6 +40,8 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     private ProgressDialog send_pd;
     private DoSignTask send_task;
 
+    private boolean view_mode = false;
+
 	@Override
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -72,8 +74,14 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             last_recv_time = null;
         }
 
-        String json_docs_list = getIntent().getStringExtra("DocsList");
+        String view_mode_param = getIntent().getStringExtra("ViewMode");
+        if ((view_mode_param != null) && (!view_mode_param.equals(""))) {
+            view_mode = true;
+            btnSign.setVisibility(View.GONE);
+            btnSignCancel.setVisibility(View.GONE);
+        }
 
+        String json_docs_list = getIntent().getStringExtra("DocsList");
         setDocs(json_docs_list);
 
         showData();
@@ -134,9 +142,20 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
     private void showData() {
         // Формируем вывод данных документа в диалог
-        textTitleSignDoc.setText(getString(R.string.title_sign_doc)+" "+(current_doc_idx+1)+"/"+documents.size());
+        if (view_mode) {
+            textTitleSignDoc.setText(R.string.title_view_doc);
+        } else {
+            textTitleSignDoc.setText(getString(R.string.title_sign_doc) + " " + (current_doc_idx + 1) + "/" + documents.size());
+        }
 
         DocSignRequest document = current_document();
+
+        if ((document == null) || (document.dec_data == null) || (document.template == null)) {
+            MainActivity.alert(getString(R.string.err_document_bad_format), DoSign.this, is_last_document());
+            Log.d("DOSIGN", "Data or template absent");
+            show_next_document();
+            return;
+        }
 
         textDocSite.setText(document.site);
         textDocId.setText(document.doc_id);

@@ -61,5 +61,7 @@
     <string name="txtDocStatusNew">NEW</string>
     <string name="txtDocStatusSigned">SIGNED</string>
     <string name="txtDocStatusNotSigned">NOT SIGNED</string>
+    <string name="title_view_doc">View document</string>
+    <string name="err_document_bad_format">No data in document</string>
 
 </resources>

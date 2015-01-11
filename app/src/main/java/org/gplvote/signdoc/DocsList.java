@@ -69,6 +69,7 @@ public class DocsList extends Activity implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.btnDocSign:
+            case R.id.btnDocView:
                 int curPosition = sAdapter.getCurrentPosition();
 
                 if (curPosition < 0) {
@@ -101,9 +102,11 @@ public class DocsList extends Activity implements View.OnClickListener {
                 intent.putExtra("DocsList", gson.toJson(documents));
                 intent.putExtra("LastRecvTime", "");
 
+                if (v.getId() == R.id.btnDocView) {
+                    intent.putExtra("ViewMode", "1");
+                }
+
                 startActivity(intent);
-                break;
-            case R.id.btnDocView:
                 break;
             default:
                 break;
