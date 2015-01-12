@@ -73,3 +73,7 @@ activity#org.gplvote.signdoc.DoSign
 ADDED from AndroidManifest.xml:32:9
 	android:name
 		ADDED from AndroidManifest.xml:32:19
+activity#org.gplvote.signdoc.DocsList
+ADDED from AndroidManifest.xml:33:9
+	android:name
+		ADDED from AndroidManifest.xml:33:19

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -122,13 +124,14 @@ public class DocsList extends Activity implements View.OnClickListener {
         DocsStorage dbStorage = DocsStorage.getInstance(this);
         SQLiteDatabase db = dbStorage.getWritableDatabase();
 
-        Cursor c = db.query("docs_list", new String[]{"t_set_status", "status", "site", "doc_id"}, null, null, null, null, "t_receive desc", "100");
+        Cursor c = db.query("docs_list", new String[]{"t_set_status", "t_confirm", "status", "site", "doc_id"}, null, null, null, null, "t_receive desc", "100");
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
                     m = new HashMap<String, Object>();
 
                     m.put("t_set_status", c.getString(c.getColumnIndex("t_set_status")));
+                    m.put("t_confirm", c.getString(c.getColumnIndex("t_confirm")));
                     m.put("status", c.getString(c.getColumnIndex("status")));
                     m.put("site", c.getString(c.getColumnIndex("site")));
                     m.put("doc_id", c.getString(c.getColumnIndex("doc_id")));
@@ -191,10 +194,14 @@ public class DocsList extends Activity implements View.OnClickListener {
             TextView txtDocStatus = (TextView) rowView.findViewById(R.id.txtDocStatus);
             TextView txtDocSite = (TextView) rowView.findViewById(R.id.txtDocSite);
             TextView txtDocId = (TextView) rowView.findViewById(R.id.txtDocId);
+            LinearLayout llhDocsListRow = (LinearLayout) rowView.findViewById(R.id.llhDocsListRow);
 
+            int bg_color = R.color.white;
             if (list.get(position).get("t_set_status") == null) {
                 txtDocTime.setText("- no data -");
                 txtDocStatus.setText("- no data -");
+
+                bg_color = R.color.wgray;
             } else {
                 // Time parse
                 Long doc_time_long = Long.parseLong((String) list.get(position).get("t_set_status"));
@@ -203,13 +210,20 @@ public class DocsList extends Activity implements View.OnClickListener {
                 txtDocTime.setText(doc_time);
 
                 // Status parse
+                String t_confirm = (String) list.get(position).get("t_confirm");
                 String status = (String) list.get(position).get("status");
                 switch (status) {
                     case "new":
                         status = getString(R.string.txtDocStatusNew);
                         break;
                     case "sign":
-                        status = getString(R.string.txtDocStatusSigned);
+                        if ((t_confirm == null) || (t_confirm.equals(""))) {
+                            status = getString(R.string.txtDocStatusSigned);
+                            bg_color = R.color.wyellow;
+                        } else {
+                            status = getString(R.string.txtDocStatusConfirmed);
+                            bg_color = R.color.wgreen;
+                        }
                         break;
                     default:
                         status = getString(R.string.txtDocStatusNotSigned);
@@ -217,6 +231,7 @@ public class DocsList extends Activity implements View.OnClickListener {
                 }
                 txtDocStatus.setText(status);
             }
+            llhDocsListRow.setBackgroundColor(getResources().getColor(bg_color));
             txtDocSite.setText((String) list.get(position).get("site"));
             txtDocId.setText((String) list.get(position).get("doc_id"));
 

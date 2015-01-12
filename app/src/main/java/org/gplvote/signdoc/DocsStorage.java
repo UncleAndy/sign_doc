@@ -32,7 +32,7 @@ public class DocsStorage extends SQLiteOpenHelper {
     }
 
     public DocsStorage(Context context) {
-        super(context, "SignDoc", null, 2);
+        super(context, "SignDoc", null, 3);
     }
 
     public static boolean is_new(Context context, DocSignRequest doc) {
@@ -99,6 +99,16 @@ public class DocsStorage extends SQLiteOpenHelper {
         db.update("docs_list", cv, "site = ? AND doc_id = ?", new String[] { site, doc_id });
     }
 
+    public static void set_confirm(Context context, String site, String doc_id) {
+        Log.d("DB", "Set confirm for doc_id = "+doc_id);
+        SQLiteDatabase db = getInstance(context).getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("t_confirm", currentTime());
+
+        db.update("docs_list", cv, "site = ? AND doc_id = ?", new String[] { site, doc_id });
+    }
+
     public static boolean clear_docs(Context context) {
         SQLiteDatabase db = getInstance(context).getWritableDatabase();
         int delCount = db.delete("docs_list", null, null);
@@ -126,6 +136,12 @@ public class DocsStorage extends SQLiteOpenHelper {
             db.execSQL("alter table docs_list add column t_receive INTEGER;");
             db.execSQL("alter table docs_list add column t_set_status INTEGER;");
             db.execSQL("alter table docs_list add column sign text;");
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        if (oldVersion < 3 && newVersion >= 3) {
+            db.beginTransaction();
+            db.execSQL("alter table docs_list add column t_confirm INTEGER;");
             db.setTransactionSuccessful();
             db.endTransaction();
         }

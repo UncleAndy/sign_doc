@@ -3,6 +3,7 @@ package org.gplvote.signdoc;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -116,6 +117,12 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                                 settings.set("last_recv_time", last_recv_time.toString());
 
                             finish();
+
+                            if (DoSign.this.last_recv_time != null) {
+                                Intent intent;
+                                intent = new Intent(DoSign.this, DocsList.class);
+                                startActivity(intent);
+                            };
                         } else {
                             show_next_document();
                         }
@@ -268,16 +275,25 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             send_pd.dismiss();
 
             if (result == null) {
-                MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
                 if (DoSign.this.last_recv_time == null) {
                     Log.d("DO SIGN", "FROM DOCS LIST - "+DoSign.this.getCallingActivity());
                     DocsList.instance.update_list();
                 }
-                if (!is_last_document())
+                if (!is_last_document()) {
                     show_next_document();
-                else if (last_recv_time != null)
-                    // Сохраняем серверное время текущего запроса
-                    settings.set("last_recv_time", last_recv_time.toString());
+                    // MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
+                } else {
+                    if (last_recv_time != null) {
+                        // Сохраняем серверное время текущего запроса
+                        settings.set("last_recv_time", last_recv_time.toString());
+
+                        Intent intent;
+                        intent = new Intent(DoSign.this, DocsList.class);
+                        startActivity(intent);
+                        // MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
+                    }
+                    DoSign.this.finish();
+                }
             } else {
                 MainActivity.error(result, DoSign.this);
             }

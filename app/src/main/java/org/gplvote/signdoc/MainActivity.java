@@ -320,20 +320,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
 
                                     // В doc.data сожержится base64(encrypt(json(['val1', 'val2', ...])))
 
-                                    byte[] json_data = sign.decrypt(doc.data);
-                                    if (json_data != null) {
-                                        doc.dec_data = new String(json_data, "UTF-8");
+                                    if (doc.type.equals("SIGN_REQUEST")) {
+                                        byte[] json_data = sign.decrypt(doc.data);
+                                        if (json_data != null) {
+                                            doc.dec_data = new String(json_data, "UTF-8");
 
-                                        // NO SECURE: Log.d("AsyncReceiver", "Doc after decode: " + gson.toJson(doc));
+                                            // NO SECURE: Log.d("AsyncReceiver", "Doc after decode: " + gson.toJson(doc));
 
-                                        // Собираем все новые запросы на подписание в массив
-                                        if (DocsStorage.is_new(MainActivity.this.getApplicationContext(), doc)) {
-                                            result.documents.add(doc);
+                                            // Собираем все новые запросы на подписание в массив
+                                            if (DocsStorage.is_new(MainActivity.this.getApplicationContext(), doc)) {
+                                                result.documents.add(doc);
+                                            } else {
+                                                Log.d("AsyncReceiver", "Already present - NOT ADD");
+                                            }
                                         } else {
-                                            Log.d("AsyncReceiver", "Already present - NOT ADD");
+                                            Log.e("AsyncDECRYPT", "Can not decrypt data from doc: " + doc.data);
                                         }
-                                    } else {
-                                        Log.e("AsyncDECRYPT", "Can not decrypt data from doc: "+doc.data);
+                                    } else if (doc.type.equals("SIGN_CONFIRM")) {
+                                        result.documents.add(doc);
                                     }
                                 }
 
@@ -365,11 +369,31 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
             receiver_pd = null;
 
             if (result.error_str == null) {
+                // Сначала обрабатываем подтверждения об обработке
+                boolean confirms_present = false;
+                if (result.documents.size() > 0) {
+                    for (int i = 0; i < result.documents.size(); i++) {
+                        DocSignRequest doc = result.documents.get(i);
+                        if (doc.type.equals("SIGN_CONFIRM")) {
+                            result.documents.remove(i);
+                            i--;
+
+                            Log.d("RECEIVER", "SIGN_CONFIRM document present " + doc.doc_id);
+                            DocsStorage.set_confirm(MainActivity.this, doc.site, doc.doc_id);
+                            confirms_present = true;
+                        }
+                    }
+                }
+
                 if (result.documents.size() > 0) {
                     Gson gson = new Gson();
                     Intent intent = new Intent(MainActivity.this, DoSign.class);
                     intent.putExtra("DocsList", gson.toJson(result.documents));
                     intent.putExtra("LastRecvTime", result.time.toString());
+                    startActivity(intent);
+                } else if (confirms_present) {
+                    Intent intent;
+                    intent = new Intent(MainActivity.this, DocsList.class);
                     startActivity(intent);
                 } else {
                     settings.set("last_recv_time", result.time.toString());

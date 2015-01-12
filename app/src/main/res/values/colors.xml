@@ -3,7 +3,10 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="gray">#aaaaaa</color>
+    <color name="wgray">#cccccc</color>
     <color name="blue">#0808FF</color>
     <color name="green">#00aa00</color>
-    
+    <color name="wgreen">#00FF80</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="wyellow">#FFFF99</color>
 </resources>
