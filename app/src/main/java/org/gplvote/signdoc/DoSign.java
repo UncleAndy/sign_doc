@@ -92,6 +92,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSign:
+                if (!MainActivity.isInternetPresent(this)) {
+                    MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+                    return;
+                }
                 if (send_task == null) {
                     send_task = new DoSignTask();
                     send_task.execute(current_document());

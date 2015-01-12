@@ -89,6 +89,10 @@ public class DocsList extends Activity implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.btnDocSign:
+                if (!MainActivity.isInternetPresent(this)) {
+                    MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+                    return;
+                }
             case R.id.btnDocView:
                 int curPosition = sAdapter.getCurrentPosition();
 
