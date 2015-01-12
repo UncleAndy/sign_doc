@@ -117,12 +117,15 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                                 settings.set("last_recv_time", last_recv_time.toString());
 
                             finish();
+                            DocsList.instance.update_list();
 
+                            /*
                             if (DoSign.this.last_recv_time != null) {
                                 Intent intent;
                                 intent = new Intent(DoSign.this, DocsList.class);
                                 startActivity(intent);
-                            };
+                            }
+                            */
                         } else {
                             show_next_document();
                         }
@@ -287,10 +290,13 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                         // Сохраняем серверное время текущего запроса
                         settings.set("last_recv_time", last_recv_time.toString());
 
+                        /*
                         Intent intent;
                         intent = new Intent(DoSign.this, DocsList.class);
                         startActivity(intent);
+                        */
                         // MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
+                        DocsList.instance.update_list();
                     }
                     DoSign.this.finish();
                 }

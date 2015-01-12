@@ -38,13 +38,6 @@
             android:layout_weight="1" >
 
             <Button
-                android:id="@+id/btnCheckNew"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/btn_check_new" />
-
-            <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="@string/btn_docs_list"

@@ -1,11 +1,13 @@
 package org.gplvote.signdoc;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -23,24 +25,37 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by andy on 31.12.14.
- */
 public class DocsList extends Activity implements View.OnClickListener {
+    public static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
+    public static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
+    public static final String APP_PREFERENCES = MainActivity.APP_PREFERENCES;
+    public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
+    public static final String HTTP_GET_URL = MainActivity.HTTP_GET_URL;
 
     private ListView listDocView;
     private DocsListArrayAdapter sAdapter;
 
     private Button btnSign;
     private Button btnView;
+    private Button btnRefresh;
 
     public static DocsList instance;
+
+    private ReceiverTask receiver;
+    private ProgressDialog receiver_pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +70,9 @@ public class DocsList extends Activity implements View.OnClickListener {
         btnView = (Button) findViewById(R.id.btnDocView);
         btnView.setOnClickListener(this);
         btnView.setEnabled(false);
+        btnRefresh = (Button) findViewById(R.id.btnDocsListRefresh);
+        btnRefresh.setOnClickListener(this);
+        btnRefresh.setEnabled(true);
 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -110,6 +128,18 @@ public class DocsList extends Activity implements View.OnClickListener {
 
                 startActivity(intent);
                 break;
+            case R.id.btnDocsListRefresh:
+                if (MainActivity.isInternetPresent(this)) {
+                    if (!(null == MainActivity.sign) && MainActivity.sign.pvt_key_present()) {
+                        if (receiver == null) {
+                            receiver = new ReceiverTask();
+                            receiver.execute();
+                        }
+                    }
+                } else {
+                    MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+                }
+                break;
             default:
                 break;
         }
@@ -119,6 +149,9 @@ public class DocsList extends Activity implements View.OnClickListener {
     public void update_list() {
         ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>(100);
         Map<String, Object> m;
+
+        btnSign.setEnabled(false);
+        btnView.setEnabled(false);
 
         // Заполнение m данными из таблицы документов
         DocsStorage dbStorage = DocsStorage.getInstance(this);
@@ -253,4 +286,168 @@ public class DocsList extends Activity implements View.OnClickListener {
             return(currentPosition);
         }
     }
+
+    class ReceiverResult {
+        String error_str = null;
+        ArrayList<DocSignRequest> documents = new ArrayList<DocSignRequest>();
+        Long time = null;
+    }
+
+    class ReceiverTask extends AsyncTask<Void, Void, ReceiverResult> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            // Показываем Progress
+            receiver_pd = new ProgressDialog(DocsList.this);
+            receiver_pd.setTitle(getString(R.string.title_get_new_docs));
+            receiver_pd.setMessage(getString(R.string.msg_status_received));
+            receiver_pd.show();
+        }
+
+        @Override
+        protected ReceiverResult doInBackground(Void... params) {
+            ReceiverResult result = new ReceiverResult();
+            String document;
+            DocRequestForUser request = new DocRequestForUser();
+
+            // Формируем документ для запроса (публичный ключ, идентификатор публичного ключа, время с которого проверять документы)
+            request.public_key = MainActivity.sign.getPublicKeyBase64();
+            request.public_key_id = MainActivity.sign.getPublicKeyIdBase64();
+            request.sign = MainActivity.sign.createBase64(MainActivity.sign.getPublicKeyId());
+            request.from_time = (System.currentTimeMillis() / 1000L) - (24 * 3600); // Проверяем за сутки
+
+            // Если есть последнее время с сервера - с него
+            String last_recv_time = MainActivity.settings.get("last_recv_time");
+            if ((last_recv_time != null) && (!last_recv_time.equals(""))) {
+                try {
+                    Log.d("MAIN", "LastRecvTime = ["+last_recv_time+"]");
+                    request.from_time = Long.parseLong(last_recv_time);
+                } catch (Exception e) {
+                    request.from_time = 0L;
+                }
+            }
+
+            document = request.toJson();
+
+            if (request.sign == null) {
+                result.error_str = getString(R.string.err_wrong_password);
+            } else {
+
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(HTTP_GET_URL);
+
+                try {
+                    // Add your data
+                    Log.d("AsyncHTTP", "User request: " + document);
+                    StringEntity se = new StringEntity(document);
+                    httppost.setEntity(se);
+                    httppost.setHeader("Accept", "application/json");
+                    httppost.setHeader("Content-type", "application/json");
+
+                    // Execute HTTP Post Request
+                    HttpResponse response = httpclient.execute(httppost);
+
+                    String body = EntityUtils.toString(response.getEntity(), "UTF-8");
+                    int http_status = response.getStatusLine().getStatusCode();
+                    if (http_status == 200) {
+                        Gson gson = new Gson();
+                        JsonResponse json_resp = gson.fromJson(body, JsonResponse.class);
+                        if (json_resp.status == 0) {
+                            result.time = json_resp.time;
+                            if ((json_resp.documents != null) && (json_resp.documents.length > 0)) {
+                                for (int i = 0; i < json_resp.documents.length; i++) {
+                                    DocSignRequest doc = json_resp.documents[i];
+                                    Log.d("AsyncHTTP", "Request sign document: " + doc.toJson());
+
+                                    // В doc.data сожержится base64(encrypt(json(['val1', 'val2', ...])))
+
+                                    if (doc.type.equals("SIGN_REQUEST")) {
+                                        byte[] json_data = MainActivity.sign.decrypt(doc.data);
+                                        if (json_data != null) {
+                                            doc.dec_data = new String(json_data, "UTF-8");
+
+                                            // NO SECURE: Log.d("AsyncReceiver", "Doc after decode: " + gson.toJson(doc));
+
+                                            // Собираем все новые запросы на подписание в массив
+                                            if (DocsStorage.is_new(DocsList.this.getApplicationContext(), doc)) {
+                                                result.documents.add(doc);
+                                            } else {
+                                                Log.d("AsyncReceiver", "Already present - NOT ADD");
+                                            }
+                                        } else {
+                                            Log.e("AsyncDECRYPT", "Can not decrypt data from doc: " + doc.data);
+                                        }
+                                    } else if (doc.type.equals("SIGN_CONFIRM")) {
+                                        result.documents.add(doc);
+                                    }
+                                }
+
+                                // String json_requests_list = gson.toJson(result.documents);
+                                // NO SECURE: Log.d("AsyncDATA", "Json docs list: " + json_requests_list);
+                            }
+                        } else {
+                            result.error_str = getString(R.string.err_http_send);
+                            Log.e("AsyncHTTP", "Error HTTP response: " + body);
+                        }
+                    } else {
+                        result.error_str = getString(R.string.msg_status_http_error);
+                        Log.e("AsyncHTTP", "HTTP response: " + http_status + " body: " + body);
+                    }
+                } catch (Exception e) {
+                    result.error_str = getString(R.string.msg_status_http_error);
+                    Log.e("AsyncHTTP", "Error HTTP request: ", e);
+                }
+            }
+
+            return(result);
+        }
+
+        @Override
+        protected void onPostExecute(ReceiverResult result) {
+            super.onPostExecute(result);
+
+            if (receiver_pd != null) receiver_pd.hide();
+            receiver_pd = null;
+
+            if (result.error_str == null) {
+                // Сначала обрабатываем подтверждения об обработке
+                boolean confirms_present = false;
+                if (result.documents.size() > 0) {
+                    for (int i = 0; i < result.documents.size(); i++) {
+                        DocSignRequest doc = result.documents.get(i);
+                        if (doc.type.equals("SIGN_CONFIRM")) {
+                            result.documents.remove(i);
+                            i--;
+
+                            Log.d("RECEIVER", "SIGN_CONFIRM document present " + doc.doc_id);
+                            DocsStorage.set_confirm(DocsList.this, doc.site, doc.doc_id);
+
+                            confirms_present = true;
+                        }
+                    }
+                }
+
+                if (result.documents.size() > 0) {
+                    Gson gson = new Gson();
+                    Intent intent = new Intent(DocsList.this, DoSign.class);
+                    intent.putExtra("DocsList", gson.toJson(result.documents));
+                    intent.putExtra("LastRecvTime", result.time.toString());
+                    startActivity(intent);
+                } else if (confirms_present) {
+                    MainActivity.settings.set("last_recv_time", result.time.toString());
+                    DocsList.this.update_list();
+                } else {
+                    MainActivity.settings.set("last_recv_time", result.time.toString());
+                    MainActivity.alert(getString(R.string.msg_status_no_new), DocsList.this);
+                }
+            } else {
+                MainActivity.error(result.error_str, DocsList.this);
+            }
+
+            receiver = null;
+        }
+    }
+
 }
