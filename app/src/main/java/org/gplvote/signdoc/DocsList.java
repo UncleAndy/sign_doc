@@ -224,8 +224,13 @@ public class DocsList extends Activity implements View.OnClickListener {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.docs_list_item, parent, false);
+            View rowView;
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                rowView = inflater.inflate(R.layout.docs_list_item, parent, false);
+            } else {
+                rowView = convertView;
+            }
 
             TextView txtDocTime = (TextView) rowView.findViewById(R.id.txtDocTime);
             TextView txtDocStatus = (TextView) rowView.findViewById(R.id.txtDocStatus);
