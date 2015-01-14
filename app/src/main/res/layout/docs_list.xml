@@ -3,19 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="fill_parent"
-        android:layout_height="48dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/green"
-        android:gravity="center_vertical|center_horizontal"
-        android:padding="6dp"
-        android:text="@string/titleDocsList"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -40,24 +27,36 @@
         android:nestedScrollingEnabled="true" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/btnSign"
+                android:id="@+id/btnDocSign"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/btnView"
+                android:id="@+id/btnDocView"
+                android:layout_weight="1" />
+        </LinearLayout>
 
         <Button
-            android:layout_width="0dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btnSign"
-            android:id="@+id/btnDocSign"
-            android:layout_weight="1" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/btnView"
-            android:id="@+id/btnDocView"
-            android:layout_weight="1" />
+            android:text="@string/btn_registration"
+            android:id="@+id/btnRegistration" />
     </LinearLayout>
 
 </LinearLayout>

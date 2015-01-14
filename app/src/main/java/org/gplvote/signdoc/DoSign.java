@@ -8,11 +8,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -35,8 +39,15 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     private TextView textDocSite;
     private TextView textDocId;
     private TextView textHtmlDoc;
+
+    private TextView txtViewDocStatus;
+    private TextView txtViewDocStatusTime;
+    private TextView txtViewDocCreateTime;
+    private TextView txtViewDocConfirmTime;
+
     private Button btnSign;
     private Button btnSignCancel;
+    private TableLayout tblViewInfo;
 
     private ProgressDialog send_pd;
     private DoSignTask send_task;
@@ -53,6 +64,12 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
         textTitleSignDoc = (TextView) findViewById(R.id.textTitleSignDoc);
         textDocSite = (TextView) findViewById(R.id.textDocSite);
         textDocId = (TextView) findViewById(R.id.textDocId);
+
+        tblViewInfo = (TableLayout) findViewById(R.id.tblViewInfo);
+        txtViewDocStatus = (TextView) findViewById(R.id.txtViewDocStatus);
+        txtViewDocStatusTime = (TextView) findViewById(R.id.txtViewDocStatusTime);
+        txtViewDocCreateTime = (TextView) findViewById(R.id.txtViewDocCreateTime);
+        txtViewDocConfirmTime = (TextView) findViewById(R.id.txtViewDocConfirmTime);
 
         textHtmlDoc = (TextView) findViewById(R.id.textHtmlDoc);
         btnSign = (Button) findViewById(R.id.btnSign);
@@ -80,6 +97,9 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             view_mode = true;
             btnSign.setVisibility(View.GONE);
             btnSignCancel.setVisibility(View.GONE);
+            tblViewInfo.setVisibility(View.VISIBLE);
+        } else {
+            tblViewInfo.setVisibility(View.GONE);
         }
 
         String json_docs_list = getIntent().getStringExtra("DocsList");
@@ -156,13 +176,28 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
     private void showData() {
         // Формируем вывод данных документа в диалог
+        DocSignRequest document = current_document();
+
         if (view_mode) {
             textTitleSignDoc.setText(R.string.title_view_doc);
+
+            txtViewDocCreateTime.setText(getIntent().getStringExtra("DocView_t_create"));
+            txtViewDocStatusTime.setText(getIntent().getStringExtra("DocView_t_set_status"));
+            txtViewDocConfirmTime.setText(getIntent().getStringExtra("DocView_t_confirm"));
+
+            if (getIntent().getStringExtra("DocView_t_confirm").equals("")) {
+                if (getIntent().getStringExtra("DocView_status").equals("sign")) {
+                    txtViewDocStatus.setText(R.string.txtDocStatusSigned);
+                } else {
+                    txtViewDocStatus.setText(R.string.txtDocStatusNotSigned);
+                }
+            } else {
+                txtViewDocStatus.setText(R.string.txtDocStatusConfirmed);
+            }
         } else {
             textTitleSignDoc.setText(getString(R.string.title_sign_doc) + " " + (current_doc_idx + 1) + "/" + documents.size());
         }
 
-        DocSignRequest document = current_document();
 
         if ((document == null) || (document.dec_data == null) || (document.template == null)) {
             MainActivity.alert(getString(R.string.err_document_bad_format), DoSign.this, is_last_document());

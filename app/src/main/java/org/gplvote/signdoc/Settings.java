@@ -29,7 +29,7 @@ public class Settings {
     }
 
     public Settings() {
-        if (this.sPref == null) { this.sPref = MainActivity.getPref(); };
+        if (this.sPref == null) { this.sPref = DocsList.getPref(); };
     }
 
     public String get(String key) {

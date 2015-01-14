@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,12 +42,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DocsList extends Activity implements View.OnClickListener {
+public class DocsList extends FragmentActivity implements View.OnClickListener, GetPassInterface {
     public static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     public static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
     public static final String APP_PREFERENCES = MainActivity.APP_PREFERENCES;
     public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
     public static final String HTTP_GET_URL = MainActivity.HTTP_GET_URL;
+
+    private static SharedPreferences sPref;
+    public static Settings settings;
 
     private ListView listDocView;
     private DocsListArrayAdapter sAdapter;
@@ -51,6 +58,9 @@ public class DocsList extends Activity implements View.OnClickListener {
     private Button btnSign;
     private Button btnView;
     private Button btnRefresh;
+    private Button btnRegistration;
+
+    private static DialogFragment dlgPassword = null;
 
     public static DocsList instance;
 
@@ -64,20 +74,40 @@ public class DocsList extends Activity implements View.OnClickListener {
 
         instance = this;
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
+        settings = Settings.getInstance();
+        MainActivity.settings = settings;
+
         btnSign = (Button) findViewById(R.id.btnDocSign);
         btnSign.setOnClickListener(this);
-        btnSign.setEnabled(false);
+        btnSign.setVisibility(View.GONE);
+
         btnView = (Button) findViewById(R.id.btnDocView);
         btnView.setOnClickListener(this);
-        btnView.setEnabled(false);
+        btnView.setVisibility(View.GONE);
+
         btnRefresh = (Button) findViewById(R.id.btnDocsListRefresh);
         btnRefresh.setOnClickListener(this);
-        btnRefresh.setEnabled(true);
+
+        btnRegistration = (Button) findViewById(R.id.btnRegistration);
+        btnRegistration.setOnClickListener(this);
 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        update_list();
+        checkPasswordDlgShow();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isFinishing())
+            System.exit(0);
     }
 
     @Override
@@ -88,6 +118,16 @@ public class DocsList extends Activity implements View.OnClickListener {
         Log.d("LIST", "onClick R.id.btnDocSign = " + R.id.btnDocSign);
 
         switch (v.getId()) {
+            case R.id.btnRegistration:
+                if (!(null == MainActivity.sign) && MainActivity.sign.pvt_key_present()) {
+                    if (MainActivity.isInternetPresent(this)) {
+                        intent = new Intent(this, RegisterSign.class);
+                        startActivity(intent);
+                    } else {
+                        MainActivity.error(getString(R.string.err_internet_connection_absent), this);
+                    }
+                }
+                break;
             case R.id.btnDocSign:
                 if (!MainActivity.isInternetPresent(this)) {
                     MainActivity.error(getString(R.string.err_internet_connection_absent), this);
@@ -112,11 +152,16 @@ public class DocsList extends Activity implements View.OnClickListener {
                 DocsStorage dbStorage = DocsStorage.getInstance(this);
                 SQLiteDatabase db = dbStorage.getWritableDatabase();
 
-                Cursor c = db.query("docs_list", new String[]{"data", "template"}, "site = ? AND doc_id = ?", new String[]{sign_request.site, sign_request.doc_id}, null, null, null, "1");
+                Cursor c = db.query("docs_list", new String[]{"data", "template", "status", "t_receive", "t_set_status", "t_confirm"}, "site = ? AND doc_id = ?", new String[]{sign_request.site, sign_request.doc_id}, null, null, null, "1");
                 if (c != null) {
                     if (c.moveToFirst()) {
                         sign_request.dec_data = c.getString(c.getColumnIndex("data"));
                         sign_request.template = c.getString(c.getColumnIndex("template"));
+
+                        intent.putExtra("DocView_status", c.getString(c.getColumnIndex("status")));
+                        intent.putExtra("DocView_t_create", time_to_string(c.getString(c.getColumnIndex("t_receive"))));
+                        intent.putExtra("DocView_t_set_status", time_to_string(c.getString(c.getColumnIndex("t_set_status"))));
+                        intent.putExtra("DocView_t_confirm", time_to_string(c.getString(c.getColumnIndex("t_confirm"))));
                     }
                 }
 
@@ -150,12 +195,49 @@ public class DocsList extends Activity implements View.OnClickListener {
 
     }
 
+    @Override
+    public boolean onPassword(String password) {
+        if (MainActivity.sign == null) {
+            MainActivity.sign = new Sign();
+        } else {
+            MainActivity.sign.cache_reset();
+        }
+        Log.d("DocsList", "setPassword");
+        MainActivity.sign.setPassword(password);
+        if (MainActivity.sign.pvt_key_present()) {
+            Log.d("DocsList", "pvt_key_present true");
+            update_list();
+            return(true);
+        } else {
+            Log.d("DocsList", "Error about wrong password");
+
+            return(false);
+        }
+    }
+
+    public static SharedPreferences getPref() {
+        return(sPref);
+    }
+
+    private void checkPasswordDlgShow() {
+        if ((!settings.get(PREF_ENC_PRIVATE_KEY).equals("")) && (MainActivity.sign == null || !MainActivity.sign.pvt_key_present())) {
+            if (dlgPassword == null)
+                dlgPassword = new DlgPassword(this);
+            dlgPassword.show(getSupportFragmentManager(), "missiles");
+        } else {
+            // Initialization
+            Intent intent;
+            intent = new Intent(this, InitKey.class);
+            startActivity(intent);
+        }
+    }
+
     public void update_list() {
         ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>(100);
         Map<String, Object> m;
 
-        btnSign.setEnabled(false);
-        btnView.setEnabled(false);
+        btnSign.setVisibility(View.GONE);
+        btnView.setVisibility(View.GONE);
 
         // Заполнение m данными из таблицы документов
         DocsStorage dbStorage = DocsStorage.getInstance(this);
@@ -198,14 +280,14 @@ public class DocsList extends Activity implements View.OnClickListener {
 
                 // Ставим статус кнопки "Подписать" в зависимости от статуса текущего выбранного документа
                 if (item.get("status").equals("sign")) {
-                    btnSign.setEnabled(false);
-                    btnView.setEnabled(true);
+                    btnSign.setVisibility(View.GONE);
+                    btnView.setVisibility(View.VISIBLE);
                 } else if ((item.get("t_set_status") != null) && (!item.get("t_set_status").equals(""))) {
-                    btnSign.setEnabled(true);
-                    btnView.setEnabled(true);
+                    btnSign.setVisibility(View.VISIBLE);
+                    btnView.setVisibility(View.VISIBLE);
                 } else {
-                    btnSign.setEnabled(false);
-                    btnView.setEnabled(false);
+                    btnSign.setVisibility(View.GONE);
+                    btnView.setVisibility(View.GONE);
                 }
             }
         });
@@ -247,9 +329,7 @@ public class DocsList extends Activity implements View.OnClickListener {
             } else {
                 // Time parse
                 Long doc_time_long = Long.parseLong((String) list.get(position).get("t_set_status"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String doc_time = sdf.format(doc_time_long);
-                txtDocTime.setText(doc_time);
+                txtDocTime.setText(time_to_string(doc_time_long));
 
                 // Status parse
                 String t_confirm = (String) list.get(position).get("t_confirm");
@@ -294,6 +374,24 @@ public class DocsList extends Activity implements View.OnClickListener {
         public int getCurrentPosition() {
             return(currentPosition);
         }
+    }
+
+    private String time_to_string(Long time) {
+        if (time == null || time <= 0) return("");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return(sdf.format(time));
+    }
+
+    private String time_to_string(String time) {
+        Long time_long;
+        try {
+            time_long = Long.parseLong(time);
+        } catch (Exception e) {
+            time_long = 0L;
+        }
+
+        return(time_to_string(time_long));
     }
 
     class ReceiverResult {
