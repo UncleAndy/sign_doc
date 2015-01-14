@@ -69,7 +69,7 @@ public class DlgPassword extends DialogFragment {
         Log.d("DlgPassword", "onDestroy()");
         dlgPassword = null;
 
-        if (MainActivity.do_destroy)
+        if (DocsList.do_destroy)
             return;
 
         if ((!password_correct || (MainActivity.sign == null) || !MainActivity.sign.pvt_key_present())) {

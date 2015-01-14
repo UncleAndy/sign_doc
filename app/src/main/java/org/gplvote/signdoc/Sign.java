@@ -168,9 +168,7 @@ public class Sign {
         cache_aes_key = null;
     }
 
-    public boolean pvt_key_present() {
-        return(cache_pvt_key_enc != null);
-    }
+    public boolean pvt_key_present() { return(cache_pvt_key_enc != null); }
 
     // PRIVATE
 

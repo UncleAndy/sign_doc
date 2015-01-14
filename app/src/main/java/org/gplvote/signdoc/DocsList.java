@@ -67,12 +67,14 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
     private ReceiverTask receiver;
     private ProgressDialog receiver_pd;
 
+    public static boolean do_destroy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.docs_list);
 
-        instance = this;
+        do_destroy = false;
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -100,11 +102,15 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
+        if (instance != null) update_list();
+        instance = this;
+
         checkPasswordDlgShow();
     }
 
     @Override
     protected void onDestroy() {
+        do_destroy = true;
         super.onDestroy();
         if (isFinishing())
             System.exit(0);
@@ -220,10 +226,12 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
     }
 
     private void checkPasswordDlgShow() {
-        if ((!settings.get(PREF_ENC_PRIVATE_KEY).equals("")) && (MainActivity.sign == null || !MainActivity.sign.pvt_key_present())) {
-            if (dlgPassword == null)
-                dlgPassword = new DlgPassword(this);
-            dlgPassword.show(getSupportFragmentManager(), "missiles");
+        if (!settings.get(PREF_ENC_PRIVATE_KEY).equals("")) {
+            if (MainActivity.sign == null || !MainActivity.sign.pvt_key_present()) {
+                if (dlgPassword == null)
+                    dlgPassword = new DlgPassword(this);
+                dlgPassword.show(getSupportFragmentManager(), "missiles");
+            }
         } else {
             // Initialization
             Intent intent;
