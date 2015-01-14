@@ -106,7 +106,7 @@ public class DocsStorage extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("t_confirm", currentTime());
 
-        db.update("docs_list", cv, "site = ? AND doc_id = ?", new String[] { site, doc_id });
+        db.update("docs_list", cv, "site = ? AND doc_id = ? AND status = 'sign'", new String[] { site, doc_id });
     }
 
     public static boolean clear_docs(Context context) {
@@ -120,28 +120,40 @@ public class DocsStorage extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(LOG_TAG, "--- onCreate database ---");
-        db.execSQL("create table docs_list ("
+        db.execSQL("CREATE TABLE docs_list ("
                 + "id integer primary key autoincrement,"
                 + "site text,"
-                + "doc_id text" + ");");
+                + "doc_id text,"
+                + "data text,"
+                + "template text,"
+                + "status text DEFAULT 'new',"
+                + "t_receive INTEGER,"
+                + "t_set_status INTEGER,"
+                + "sign text,"
+                + "t_confirm INTEGER"
+                + ");");
+        db.execSQL("CREATE INDEX docs_list_site_doc_id_idx ON docs_list (site, doc_id)");
+        db.execSQL("CREATE INDEX docs_list_t_receive_idx ON docs_list (t_receive)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2 && newVersion >= 2) {
             db.beginTransaction();
-            db.execSQL("alter table docs_list add column data text;");
-            db.execSQL("alter table docs_list add column template text;");
-            db.execSQL("alter table docs_list add column status text DEFAULT 'new';");
-            db.execSQL("alter table docs_list add column t_receive INTEGER;");
-            db.execSQL("alter table docs_list add column t_set_status INTEGER;");
-            db.execSQL("alter table docs_list add column sign text;");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN data text;");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN template text;");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN status text DEFAULT 'new';");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN t_receive INTEGER;");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN t_set_status INTEGER;");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN sign text;");
+            db.execSQL("CREATE INDEX docs_list_site_doc_id_idx ON docs_list (site, doc_id)");
+            db.execSQL("CREATE INDEX docs_list_t_receive_idx ON docs_list (t_receive)");
             db.setTransactionSuccessful();
             db.endTransaction();
         }
         if (oldVersion < 3 && newVersion >= 3) {
             db.beginTransaction();
-            db.execSQL("alter table docs_list add column t_confirm INTEGER;");
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN t_confirm INTEGER;");
             db.setTransactionSuccessful();
             db.endTransaction();
         }

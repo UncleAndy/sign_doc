@@ -547,7 +547,7 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
                     DocsList.this.update_list();
                 } else {
                     MainActivity.settings.set("last_recv_time", result.time.toString());
-                    MainActivity.alert(getString(R.string.msg_status_no_new), DocsList.this);
+//                    MainActivity.alert(getString(R.string.msg_status_no_new), DocsList.this);
                 }
             } else {
                 MainActivity.error(result.error_str, DocsList.this);

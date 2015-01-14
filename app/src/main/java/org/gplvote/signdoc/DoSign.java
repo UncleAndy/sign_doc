@@ -122,52 +122,22 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.btnSignCancel:
-                getCancelConfirmation ();
+                DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", "");
+                if (is_last_document()) {
+                    // Сохраняем серверное время текущего запроса
+                    if (last_recv_time != null)
+                        settings.set("last_recv_time", last_recv_time.toString());
+
+                    finish();
+                    DocsList.instance.update_list();
+                } else {
+                    show_next_document();
+                }
                 break;
             default:
                 break;
         }
     }
-
-    private void getCancelConfirmation () {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", "");
-                        if (is_last_document()) {
-                            // Сохраняем серверное время текущего запроса
-                            if (last_recv_time != null)
-                                settings.set("last_recv_time", last_recv_time.toString());
-
-                            finish();
-                            DocsList.instance.update_list();
-
-                            /*
-                            if (DoSign.this.last_recv_time != null) {
-                                Intent intent;
-                                intent = new Intent(DoSign.this, DocsList.class);
-                                startActivity(intent);
-                            }
-                            */
-                        } else {
-                            show_next_document();
-                        }
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        break;
-                }
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.title_need_confirm)
-                .setIcon(R.drawable.confirm)
-                .setMessage(getString(R.string.msg_cansel_sure))
-                .setPositiveButton(getString(R.string.btn_cancel_yes), dialogClickListener)
-                .setNegativeButton(getString(R.string.btn_no), dialogClickListener).show();
-    }
-
 
     private void setDocs(String json_doc) {
         ArrayList<DocSignRequest> doc_list_object;

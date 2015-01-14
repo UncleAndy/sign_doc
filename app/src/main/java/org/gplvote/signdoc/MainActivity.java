@@ -205,7 +205,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
     }
 
     public static void initSign(String password) {
-        sign = new Sign();
+        if (sign == null) {
+            sign = new Sign();
+        } else {
+            sign.cache_reset();
+        }
         sign.setPassword(password);
     }
 
