@@ -6,7 +6,7 @@
     <TextView
         android:id="@+id/textTitleSignDoc"
         android:layout_width="fill_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@color/green"
         android:gravity="center_vertical|center_horizontal"
@@ -206,6 +206,19 @@
 
         <LinearLayout
             android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/llyForBack">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_back"
+                android:id="@+id/btnViewDocBack" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
@@ -223,6 +236,7 @@
                 android:text="@string/btn_sign_cancel"
                 android:id="@+id/btnSignCancel"
                 android:layout_weight="1" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

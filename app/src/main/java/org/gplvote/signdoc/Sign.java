@@ -1,6 +1,7 @@
 package org.gplvote.signdoc;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
@@ -35,8 +36,8 @@ public class Sign {
     private PublicKey pub_key = null;
     private byte[] cache_aes_key = null;
 
-    public Sign() {
-        settings = Settings.getInstance();
+    public Sign(Context context) {
+        settings = Settings.getInstance(context);
         restorePublicKey();
     }
 

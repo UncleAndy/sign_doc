@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
         btnDocsList = (Button) findViewById(R.id.btnDocsList); btnDocsList.setOnClickListener(this);
 
         if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
-        settings = Settings.getInstance();
+        settings = Settings.getInstance(this);
 
         checkPasswordDlgShow();
     }
@@ -188,7 +188,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
     @Override
     public boolean onPassword(String password) {
         if (sign == null) {
-            sign = new Sign();
+            sign = new Sign(this);
         } else {
             sign.cache_reset();
         }
@@ -204,9 +204,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
         }
     }
 
-    public static void initSign(String password) {
+    public static void initSign(String password, Context context) {
         if (sign == null) {
-            sign = new Sign();
+            sign = new Sign(context);
         } else {
             sign.cache_reset();
         }

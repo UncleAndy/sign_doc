@@ -22,9 +22,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class DoSign extends FragmentActivity implements View.OnClickListener {
+public class DoSign extends GetPassActivity implements View.OnClickListener {
     private class DocsListObject {
         DocSignRequest[] values;
     }
@@ -47,23 +48,50 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
     private Button btnSign;
     private Button btnSignCancel;
+    private Button btnBack;
     private TableLayout tblViewInfo;
+    private LinearLayout llyForBack;
 
     private ProgressDialog send_pd;
     private DoSignTask send_task;
+
+    private ArrayList<DocSign> sign_docs;
 
     private boolean view_mode = false;
 
 	@Override
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.do_sign);
 
-        settings = Settings.getInstance();
+        gson = new Gson();
+
+        String confirm_mode = getIntent().getStringExtra("ConfirmMode");
+        if ((confirm_mode != null) && (!confirm_mode.equals(""))) {
+            String json_confirms_list = getIntent().getStringExtra("DocsList");
+            setDocs(json_confirms_list);
+
+            for (int i = 0; i < documents.size(); i++) {
+                DocSignRequest doc = documents.get(i);
+
+                if (doc.type.equals("SIGN_CONFIRM")) {
+                    Log.d("APP:SIGN_CONFIRM", "SIGN_CONFIRM document present " + doc.doc_id);
+                    DocsStorage.set_confirm(DoSign.this, doc.site, doc.doc_id);
+                }
+            }
+
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.do_sign);
+
+        settings = Settings.getInstance(this);
 
         textTitleSignDoc = (TextView) findViewById(R.id.textTitleSignDoc);
         textDocSite = (TextView) findViewById(R.id.textDocSite);
         textDocId = (TextView) findViewById(R.id.textDocId);
+
+        llyForBack = (LinearLayout) findViewById(R.id.llyForBack);
 
         tblViewInfo = (TableLayout) findViewById(R.id.tblViewInfo);
         txtViewDocStatus = (TextView) findViewById(R.id.txtViewDocStatus);
@@ -76,8 +104,10 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
         btnSign.setOnClickListener(this);
         btnSignCancel = (Button) findViewById(R.id.btnSignCancel);
         btnSignCancel.setOnClickListener(this);
+        btnBack = (Button) findViewById(R.id.btnViewDocBack);
+        btnBack.setOnClickListener(this);
 
-        gson = new Gson();
+        sign_docs = new ArrayList<DocSign>();
 
         String sLastRecvTime = getIntent().getStringExtra("LastRecvTime");
         if (sLastRecvTime != null && (!sLastRecvTime.equals(""))) {
@@ -98,49 +128,94 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             btnSign.setVisibility(View.GONE);
             btnSignCancel.setVisibility(View.GONE);
             tblViewInfo.setVisibility(View.VISIBLE);
+            llyForBack.setVisibility(View.VISIBLE);
         } else {
             tblViewInfo.setVisibility(View.GONE);
+            llyForBack.setVisibility(View.GONE);
         }
 
         String json_docs_list = getIntent().getStringExtra("DocsList");
         setDocs(json_docs_list);
+
+        checkPasswordDlgShow(settings);
 
         showData();
     }
 
     @Override
     public void onClick(View v) {
+        boolean app_sign_mode = current_document().site.substring(0, 4).equals("app:");
         switch (v.getId()) {
             case R.id.btnSign:
                 if (!MainActivity.isInternetPresent(this)) {
                     MainActivity.error(getString(R.string.err_internet_connection_absent), this);
                     return;
                 }
-                if (send_task == null) {
-                    send_task = new DoSignTask();
-                    send_task.execute(current_document());
+                if (app_sign_mode) {
+                    Log.d("DOSIGN", "Sign in APP MODE");
+
+                    // Подписание в режиме приложения
+                    DocSignRequest doc = current_document();
+                    DocSign doc_sign = new DocSign();
+                    doc_sign.site = doc.site;
+                    doc_sign.doc_id = doc.doc_id;
+
+                    String sign_data = doc.site + ":" + doc.doc_id + ":" + doc.dec_data + ":" + doc.template;
+
+                    try {
+                        doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
+                        sign_docs.add(doc_sign);
+                        DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign", doc_sign.sign);
+                    } catch (UnsupportedEncodingException e) {
+                        MainActivity.error(getString(R.string.err_wrong_password), this);
+                        e.printStackTrace();
+                    }
+
+                    appModeNextDocProcess();
+                } else {
+                    if (send_task == null) {
+                        send_task = new DoSignTask();
+                        send_task.execute(current_document());
+                    }
                 }
                 break;
             case R.id.btnSignCancel:
                 DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", "");
-                if (is_last_document()) {
-                    // Сохраняем серверное время текущего запроса
-                    if (last_recv_time != null)
-                        settings.set("last_recv_time", last_recv_time.toString());
-
-                    finish();
-                    DocsList.instance.update_list();
+                if (app_sign_mode) {
+                    appModeNextDocProcess();
                 } else {
-                    show_next_document();
+                    if (is_last_document()) {
+                        // Сохраняем серверное время текущего запроса
+                        if (!app_sign_mode && last_recv_time != null)
+                            settings.set("last_recv_time", last_recv_time.toString());
+
+                        finish();
+                        if (DocsList.instance != null) DocsList.instance.update_list();
+                    } else {
+                        show_next_document();
+                    }
                 }
+                break;
+            case R.id.btnViewDocBack:
+                finish();
                 break;
             default:
                 break;
         }
     }
 
+    private void appModeNextDocProcess() {
+        if (is_last_document()) {
+            Intent intent = new Intent();
+            intent.putExtra("SIGNS", gson.toJson(sign_docs));
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            show_next_document();
+        }
+    }
+
     private void setDocs(String json_doc) {
-        ArrayList<DocSignRequest> doc_list_object;
         documents = gson.fromJson(json_doc, new TypeToken<ArrayList<DocSignRequest>>(){}.getType());
     }
 
@@ -164,12 +239,16 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
             } else {
                 txtViewDocStatus.setText(R.string.txtDocStatusConfirmed);
             }
-        } else {
+        } else if (document != null) {
             textTitleSignDoc.setText(getString(R.string.title_sign_doc) + " " + (current_doc_idx + 1) + "/" + documents.size());
         }
 
 
-        if ((document == null) || (document.dec_data == null) || (document.template == null)) {
+        if (document == null) {
+            MainActivity.alert(getString(R.string.err_document_bad_format), DoSign.this, true);
+            Log.d("DOSIGN", "Document absent");
+            return;
+        } else if ((document.dec_data == null) || (document.template == null)) {
             MainActivity.alert(getString(R.string.err_document_bad_format), DoSign.this, is_last_document());
             Log.d("DOSIGN", "Data or template absent");
             show_next_document();
@@ -237,6 +316,7 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
     }
 
     private DocSignRequest current_document() {
+        if (documents == null) return(null);
         return(documents.get(current_doc_idx));
     }
 
@@ -288,23 +368,14 @@ public class DoSign extends FragmentActivity implements View.OnClickListener {
 
             if (result == null) {
                 if (DoSign.this.last_recv_time == null) {
-                    Log.d("DO SIGN", "FROM DOCS LIST - "+DoSign.this.getCallingActivity());
-                    DocsList.instance.update_list();
+                    if (DocsList.instance != null) DocsList.instance.update_list();
                 }
                 if (!is_last_document()) {
                     show_next_document();
-                    // MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
                 } else {
                     if (last_recv_time != null) {
                         // Сохраняем серверное время текущего запроса
                         settings.set("last_recv_time", last_recv_time.toString());
-
-                        /*
-                        Intent intent;
-                        intent = new Intent(DoSign.this, DocsList.class);
-                        startActivity(intent);
-                        */
-                        // MainActivity.alert(getString(R.string.msg_status_delivered), DoSign.this, is_last_document());
                         DocsList.instance.update_list();
                     }
                     DoSign.this.finish();

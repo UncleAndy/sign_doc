@@ -47,7 +47,7 @@ public class InitKey extends Activity implements OnClickListener {
         btnBegin = (Button) findViewById(R.id.btnBegin);
         btnBegin.setOnClickListener(this);
 
-        settings = Settings.getInstance();
+        settings = Settings.getInstance(this);
 
         if (running) {
             edtPassword.setEnabled(false);
@@ -190,7 +190,7 @@ public class InitKey extends Activity implements OnClickListener {
                 init_key_pd.dismiss();
 
             if (result.error_str == null) {
-                MainActivity.initSign(result.pass);
+                MainActivity.initSign(result.pass, InitKey.this);
             } else {
                 MainActivity.error(result.error_str, InitKey.this);
             }

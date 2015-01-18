@@ -10,26 +10,27 @@ import android.util.Log;
 
 // SINGLETON
 public class Settings {
+    public static final String APP_PREFERENCES = "org.gplvote.signdoc";
+
     private static SharedPreferences sPref;
     private static Settings instance;
 
-    public static Settings getInstance() {
+    public static Settings getInstance(Context context) {
         synchronized (Settings.class) {
             if (instance == null) {
                 try {
-                    instance = new Settings();
+                    instance = new Settings(context);
                 } catch (Exception e) {
                     Log.e("Settings/Singleton", e.getMessage(), e);
-                    instance = new Settings();
+                    instance = new Settings(context);
                 }
             }
             return instance;
         }
-
     }
 
-    public Settings() {
-        if (this.sPref == null) { this.sPref = DocsList.getPref(); };
+    public Settings(Context context) {
+        if (sPref == null) sPref = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public String get(String key) {

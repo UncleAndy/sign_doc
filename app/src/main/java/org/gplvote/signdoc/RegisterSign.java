@@ -35,7 +35,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
         Log.d("REGISTER_SIGN", "onCreate");
 	    setContentView(R.layout.register_sign);
 
-        settings = Settings.getInstance();
+        settings = Settings.getInstance(this);
 
         edSite = (EditText) findViewById(R.id.edSite);
         edCode = (EditText) findViewById(R.id.edCode);

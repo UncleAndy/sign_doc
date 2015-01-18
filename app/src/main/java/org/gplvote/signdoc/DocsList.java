@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DocsList extends FragmentActivity implements View.OnClickListener, GetPassInterface {
+public class DocsList extends GetPassActivity implements View.OnClickListener, GetPassInterface {
     public static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     public static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
     public static final String APP_PREFERENCES = MainActivity.APP_PREFERENCES;
@@ -82,7 +82,7 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
         }
 
         if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
-        settings = Settings.getInstance();
+        settings = Settings.getInstance(this);
         MainActivity.settings = settings;
 
         btnSign = (Button) findViewById(R.id.btnDocSign);
@@ -119,9 +119,6 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         Intent intent;
-
-        Log.d("LIST", "onClick id = " + v.getId());
-        Log.d("LIST", "onClick R.id.btnDocSign = " + R.id.btnDocSign);
 
         switch (v.getId()) {
             case R.id.btnRegistration:
@@ -203,22 +200,9 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
 
     @Override
     public boolean onPassword(String password) {
-        if (MainActivity.sign == null) {
-            MainActivity.sign = new Sign();
-        } else {
-            MainActivity.sign.cache_reset();
-        }
-        Log.d("DocsList", "setPassword");
-        MainActivity.sign.setPassword(password);
-        if (MainActivity.sign.pvt_key_present()) {
-            Log.d("DocsList", "pvt_key_present true");
-            update_list();
-            return(true);
-        } else {
-            Log.d("DocsList", "Error about wrong password");
-
-            return(false);
-        }
+        boolean result;
+        if (result = super.onPassword(password)) update_list();
+        return(result);
     }
 
     public static SharedPreferences getPref() {
@@ -226,18 +210,7 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
     }
 
     private void checkPasswordDlgShow() {
-        if (!settings.get(PREF_ENC_PRIVATE_KEY).equals("")) {
-            if (MainActivity.sign == null || !MainActivity.sign.pvt_key_present()) {
-                if (dlgPassword == null)
-                    dlgPassword = new DlgPassword(this);
-                dlgPassword.show(getSupportFragmentManager(), "missiles");
-            }
-        } else {
-            // Initialization
-            Intent intent;
-            intent = new Intent(this, InitKey.class);
-            startActivity(intent);
-        }
+        if (!checkPasswordDlgShow(settings)) update_list();
     }
 
     public void update_list() {
@@ -275,13 +248,7 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
-                Log.d("LIST", "itemClick: position = " + position + ", id = "
-                        + id);
-
                 HashMap<String, Object> item = (HashMap<String, Object>) listDocView.getItemAtPosition(position);
-
-                Log.d("LIST", "itemClick: item = " + item);
 
                 sAdapter.setCurrentPosition(position);
                 sAdapter.notifyDataSetChanged();
@@ -455,7 +422,6 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
 
                 try {
                     // Add your data
-                    Log.d("AsyncHTTP", "User request: " + document);
                     StringEntity se = new StringEntity(document);
                     httppost.setEntity(se);
                     httppost.setHeader("Accept", "application/json");
@@ -474,7 +440,6 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
                             if ((json_resp.documents != null) && (json_resp.documents.length > 0)) {
                                 for (int i = 0; i < json_resp.documents.length; i++) {
                                     DocSignRequest doc = json_resp.documents[i];
-                                    Log.d("AsyncHTTP", "Request sign document: " + doc.toJson());
 
                                     // В doc.data сожержится base64(encrypt(json(['val1', 'val2', ...])))
 
@@ -482,8 +447,6 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
                                         byte[] json_data = MainActivity.sign.decrypt(doc.data);
                                         if (json_data != null) {
                                             doc.dec_data = new String(json_data, "UTF-8");
-
-                                            // NO SECURE: Log.d("AsyncReceiver", "Doc after decode: " + gson.toJson(doc));
 
                                             // Собираем все новые запросы на подписание в массив
                                             if (DocsStorage.is_new(DocsList.this.getApplicationContext(), doc)) {
@@ -498,9 +461,6 @@ public class DocsList extends FragmentActivity implements View.OnClickListener, 
                                         result.documents.add(doc);
                                     }
                                 }
-
-                                // String json_requests_list = gson.toJson(result.documents);
-                                // NO SECURE: Log.d("AsyncDATA", "Json docs list: " + json_requests_list);
                             }
                         } else {
                             result.error_str = getString(R.string.err_http_send);

@@ -45,7 +45,7 @@ MERGED from com.android.support:support-v4:21.0.2:16:5
 		ADDED from AndroidManifest.xml:17:9
 	android:theme
 		ADDED from AndroidManifest.xml:19:9
-activity#org.gplvote.signdoc.MainActivity
+activity#org.gplvote.signdoc.DocsList
 ADDED from AndroidManifest.xml:21:9
 	android:label
 		ADDED from AndroidManifest.xml:23:13
@@ -73,7 +73,7 @@ activity#org.gplvote.signdoc.DoSign
 ADDED from AndroidManifest.xml:32:9
 	android:name
 		ADDED from AndroidManifest.xml:32:19
-activity#org.gplvote.signdoc.DocsList
+activity#org.gplvote.signdoc.MainActivity
 ADDED from AndroidManifest.xml:33:9
 	android:name
 		ADDED from AndroidManifest.xml:33:19
