@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.gplvote.signdoc"
-    android:versionCode="13"
-    android:versionName="1.10" >
+    android:versionCode="15"
+    android:versionName="1.12" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -29,10 +29,17 @@
         </activity>
         <activity android:name="org.gplvote.signdoc.InitKey"/>
         <activity android:name="org.gplvote.signdoc.RegisterSign"/>
-        <activity android:name="org.gplvote.signdoc.DoSign">
+        <activity android:name="org.gplvote.signdoc.DoSign"
+                  android:label="GPLVote Sign Doc" >
             <intent-filter>
                 <action android:name="org.gplvote.signdoc.DO_SIGN" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="signdoc" />
             </intent-filter>
         </activity>
         <activity android:name="org.gplvote.signdoc.MainActivity"/>

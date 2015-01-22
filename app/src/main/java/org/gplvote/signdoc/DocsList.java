@@ -175,7 +175,9 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                 intent.putExtra("LastRecvTime", "");
 
                 if (v.getId() == R.id.btnDocView) {
-                    intent.putExtra("ViewMode", "1");
+                    intent.putExtra("Command", "ViewDoc");
+                } else {
+                    intent.putExtra("Command", "SignDoc");
                 }
 
                 startActivity(intent);
@@ -254,7 +256,10 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                 sAdapter.notifyDataSetChanged();
 
                 // Ставим статус кнопки "Подписать" в зависимости от статуса текущего выбранного документа
-                if (item.get("status").equals("sign")) {
+                if (item.get("site").toString().startsWith("app:")) {
+                    btnSign.setVisibility(View.GONE);
+                    btnView.setVisibility(View.VISIBLE);
+                } else if (item.get("status").equals("sign")) {
                     btnSign.setVisibility(View.GONE);
                     btnView.setVisibility(View.VISIBLE);
                 } else if ((item.get("t_set_status") != null) && (!item.get("t_set_status").equals(""))) {
@@ -507,6 +512,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                 if (result.documents.size() > 0) {
                     Gson gson = new Gson();
                     Intent intent = new Intent(DocsList.this, DoSign.class);
+                    intent.putExtra("Command", "SignDoc");
                     intent.putExtra("DocsList", gson.toJson(result.documents));
                     intent.putExtra("LastRecvTime", result.time.toString());
                     startActivity(intent);

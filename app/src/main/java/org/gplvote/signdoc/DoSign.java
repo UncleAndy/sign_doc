@@ -4,13 +4,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +25,17 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class DoSign extends GetPassActivity implements View.OnClickListener {
@@ -32,6 +45,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
     private static Settings settings;
     ArrayList<DocSignRequest> documents;
+    ArrayList<DocSignRequest> documents_for_post_decode;
     private int current_doc_idx = 0;
     private Gson gson;
     private Long last_recv_time = null;
@@ -63,10 +77,16 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         gson = new Gson();
 
-        String confirm_mode = getIntent().getStringExtra("ConfirmMode");
-        if ((confirm_mode != null) && (!confirm_mode.equals(""))) {
+        String command = getIntent().getStringExtra("Command");
+
+        if ((command != null) && (command.equals("SendConfirms"))) {
             String json_confirms_list = getIntent().getStringExtra("DocsList");
             setDocs(json_confirms_list);
 
@@ -79,6 +99,18 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
                 }
             }
 
+            finish();
+            return;
+        }
+
+        if ((command != null) && (command.equals("GetPublicKeyId"))) {
+            if (MainActivity.sign == null) {
+                MainActivity.sign = new Sign(this);
+            }
+
+            Intent intent = new Intent();
+            intent.putExtra("PUBLIC_KEY_ID", MainActivity.sign.getPublicKeyIdBase64());
+            setResult(RESULT_OK, intent);
             finish();
             return;
         }
@@ -122,8 +154,8 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
             last_recv_time = null;
         }
 
-        String view_mode_param = getIntent().getStringExtra("ViewMode");
-        if ((view_mode_param != null) && (!view_mode_param.equals(""))) {
+        view_mode = (command != null && command.equals("ViewDoc"));
+        if (view_mode) {
             view_mode = true;
             btnSign.setVisibility(View.GONE);
             btnSignCancel.setVisibility(View.GONE);
@@ -135,11 +167,67 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
         }
 
         String json_docs_list = getIntent().getStringExtra("DocsList");
-        setDocs(json_docs_list);
+        if (json_docs_list != null && !json_docs_list.equals("")) {
+            setDocs(json_docs_list);
 
-        checkPasswordDlgShow(settings);
+            checkPasswordDlgShow(settings);
 
-        showData();
+            showData();
+        } else {
+            // Проверяем не передан-ли документ через URL
+            Intent i = getIntent();
+            Uri d = i.getData();
+
+            if (d != null && d.getScheme().equals("signdoc")) {
+                Log.d("DOSIGN", "Sign doc URL = "+d.toString());
+
+                if (!MainActivity.isInternetPresent(this)) {
+                    MainActivity.error(getString(R.string.err_internet_connection_absent), this, true);
+                    return;
+                }
+
+                HttpClient httpclient = new DefaultHttpClient();
+
+                String url_query = d.getQuery();
+                String host = d.getHost().replaceAll("_", "-");
+
+                Log.d("DOSIGN", "Get doc URL = "+"http://"+host+d.getPath()+"?"+url_query);
+                HttpGet httpget = null;
+                try {
+                    httpget = new HttpGet(new URI("http://"+host+d.getPath()+"?"+url_query));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    // Execute HTTP Post Request
+                    HttpResponse response = httpclient.execute(httpget);
+
+                    String body = EntityUtils.toString(response.getEntity(), "UTF-8");
+                    json_docs_list = "["+body+"]";
+                    Log.d("DOSIGN", "Json docs list = "+json_docs_list);
+                    int http_status = response.getStatusLine().getStatusCode();
+                    if (http_status == 200) {
+                        Log.d("DOSIGN", "Set docs from "+json_docs_list);
+                        setDocsForPostDecode(json_docs_list);
+
+                        if ((MainActivity.sign != null) && MainActivity.sign.pvt_key_present()) {
+                            processDocsForPostDecode();
+                        } else {
+                            checkPasswordDlgShow(settings);
+                        }
+                    } else {
+                        Log.e("AsyncHTTP", "Error HTTP response status "+http_status);
+                        finish();
+                        return;
+                    }
+                } catch (Exception e) {
+                    Log.e("AsyncHTTP", "Error HTTP request: ", e);
+                    finish();
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -217,6 +305,55 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
     private void setDocs(String json_doc) {
         documents = gson.fromJson(json_doc, new TypeToken<ArrayList<DocSignRequest>>(){}.getType());
+    }
+
+    private void setDocsForPostDecode(String json_doc) {
+        documents_for_post_decode = gson.fromJson(json_doc, new TypeToken<ArrayList<DocSignRequest>>() {
+        }.getType());
+    }
+
+    private void processDocsForPostDecode() {
+        Log.d("DOSIGN", "processDocsForPostDecode for public_key_id = "+MainActivity.sign.getPublicKeyIdBase64());
+        if ((documents_for_post_decode != null) && (documents_for_post_decode.size() > 0)) {
+            Log.d("DOSIGN", "processDocsForPostDecode docs present");
+            boolean is_new_docs = false;
+            for(int i = 0; i < documents_for_post_decode.size(); i++) {
+                DocSignRequest doc = documents_for_post_decode.get(i);
+                Log.d("DOSIGN", "processDocsForPostDecode decrypt data = "+doc.data);
+
+                byte[] json_data = MainActivity.sign.decrypt(doc.data);
+                if (json_data != null) {
+                    try {
+                        doc.dec_data = new String(json_data, "UTF-8");
+                        Log.d("DOSIGN", "processDocsForPostDecode decrypted = "+doc.dec_data);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Собираем все новые запросы на подписание в массив
+                    Log.d("DOSIGN", "processDocsForPostDecode check for new doc");
+                    if ((doc.dec_data != null) && !doc.dec_data.equals("") && DocsStorage.is_new(DoSign.this.getApplicationContext(), doc)) {
+                        Log.d("DOSIGN", "processDocsForPostDecode add doc in list");
+                        if (documents == null) documents = new ArrayList<DocSignRequest>();
+                        documents.add(doc);
+                        is_new_docs = true;
+                    }
+                }
+            }
+            if (is_new_docs) {
+                Log.d("DOSIGN", "processDocsForPostDecode show data");
+                showData();
+            }
+        }
+    }
+
+    @Override
+    public boolean onPassword(String password) {
+        boolean result;
+        if (result = super.onPassword(password)) {
+            processDocsForPostDecode();
+        }
+        return(result);
     }
 
     private void showData() {
@@ -352,7 +489,9 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
             if (doc_sign.sign != null) {
                 DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign_deliver", "");
-                result = HTTPActions.deliver(doc_sign.toJson(), DoSign.this);
+                result = HTTPActions.deliver(doc_sign.toJson(), DoSign.this, doc.sign_url);
+                if (((result == null) || result.equals("")) && ((doc.sign_url != null) && !doc.sign_url.equals("")))
+                    DocsStorage.set_confirm(DoSign.this, doc.site, doc.doc_id);
             } else {
                 result = getString(R.string.err_wrong_password);
             }

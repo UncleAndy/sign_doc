@@ -19,12 +19,13 @@ import java.io.UnsupportedEncodingException;
 public class HTTPActions {
     public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
 
-    public static String deliver(String document, Activity activity) {
+    public static String deliver(String document, Activity activity, String sign_url) {
         String error_str = null;
 
         // Инициируется процесс отправки документа
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(HTTP_SEND_URL);
+        if ((sign_url == null) || (sign_url.equals(""))) sign_url = HTTP_SEND_URL;
+        HttpPost httppost = new HttpPost(sign_url);
 
         try {
             // Add your data
@@ -69,5 +70,9 @@ public class HTTPActions {
         }
 
         return(error_str);
+    }
+
+    public static String deliver(String document, Activity activity) {
+        return(deliver(document, activity, null));
     }
 }
