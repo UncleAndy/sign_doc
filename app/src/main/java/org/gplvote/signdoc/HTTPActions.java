@@ -19,13 +19,13 @@ import java.io.UnsupportedEncodingException;
 public class HTTPActions {
     public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
 
-    public static String deliver(String document, Activity activity, String sign_url) {
+    public static String deliver(String document, Activity activity, String return_url) {
         String error_str = null;
 
         // Инициируется процесс отправки документа
         HttpClient httpclient = new DefaultHttpClient();
-        if ((sign_url == null) || (sign_url.equals(""))) sign_url = HTTP_SEND_URL;
-        HttpPost httppost = new HttpPost(sign_url);
+        if ((return_url == null) || (return_url.equals(""))) return_url = HTTP_SEND_URL;
+        HttpPost httppost = new HttpPost(return_url);
 
         try {
             // Add your data
@@ -47,7 +47,6 @@ public class HTTPActions {
                     DocSign doc = gson.fromJson(document, DocSign.class);
 
                     if (doc.type.equals("SIGN")) {
-                        // DocsStorage.add_doc(activity.getApplicationContext(), doc.site, doc.doc_id);
                         DocsStorage.set_sign(activity.getApplicationContext(), doc.site, doc.doc_id, doc.sign);
                     }
                 } else {
@@ -67,6 +66,7 @@ public class HTTPActions {
         } catch (IOException e) {
             error_str = activity.getString(R.string.msg_status_http_error);
             Log.e("HTTP", "Error HTTP request: ", e);
+            e.printStackTrace();
         }
 
         return(error_str);

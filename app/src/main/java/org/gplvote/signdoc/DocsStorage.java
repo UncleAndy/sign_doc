@@ -32,7 +32,7 @@ public class DocsStorage extends SQLiteOpenHelper {
     }
 
     public DocsStorage(Context context) {
-        super(context, "SignDoc", null, 3);
+        super(context, "SignDoc", null, 4);
     }
 
     public static boolean is_new(Context context, DocSignRequest doc) {
@@ -45,7 +45,21 @@ public class DocsStorage extends SQLiteOpenHelper {
         return(!result);
     }
 
-    public static boolean add_doc(Context context, String site, String doc_id, String data, String template, String status, String sign) {
+    public static boolean is_not_signed(Context context, DocSignRequest doc) {
+        SQLiteDatabase db = getInstance(context).getReadableDatabase();
+
+        String status = null;
+        Cursor c = db.query("docs_list", new String[]{"status"}, "site = ? AND doc_id = ?", new String[]{doc.site, doc.doc_id}, null, null, null, "1");
+        if (c != null && c.moveToFirst()) {
+            status = c.getString(c.getColumnIndex("status"));
+            c.close();
+        }
+        getInstance(context).close();
+
+        return((status == null) || !status.equals("sign"));
+    }
+
+    public static boolean add_doc(Context context, String site, String doc_id, String data, String template, String status, String sign, String sign_url) {
         Log.d("DB", "Save doc_id = "+doc_id);
         SQLiteDatabase db = getInstance(context).getWritableDatabase();
 
@@ -69,6 +83,7 @@ public class DocsStorage extends SQLiteOpenHelper {
             cv.put("doc_id", doc_id);
             cv.put("data", data);
             cv.put("template", template);
+            cv.put("sign_url", sign_url);
             cv.put("t_receive", currentTime());
             if ((status != null) && (!status.equals(""))) {
                 cv.put("status", status);
@@ -109,14 +124,6 @@ public class DocsStorage extends SQLiteOpenHelper {
         db.update("docs_list", cv, "site = ? AND doc_id = ? AND status = 'sign'", new String[] { site, doc_id });
     }
 
-    public static boolean clear_docs(Context context) {
-        SQLiteDatabase db = getInstance(context).getWritableDatabase();
-        int delCount = db.delete("docs_list", null, null);
-        Log.d(LOG_TAG, "All documents deleted: "+delCount+" docs");
-        getInstance(context).close();
-        return(true);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d(LOG_TAG, "--- onCreate database ---");
@@ -126,6 +133,7 @@ public class DocsStorage extends SQLiteOpenHelper {
                 + "doc_id text,"
                 + "data text,"
                 + "template text,"
+                + "sign_url text,"
                 + "status text DEFAULT 'new',"
                 + "t_receive INTEGER,"
                 + "t_set_status INTEGER,"
@@ -154,6 +162,12 @@ public class DocsStorage extends SQLiteOpenHelper {
         if (oldVersion < 3 && newVersion >= 3) {
             db.beginTransaction();
             db.execSQL("ALTER TABLE docs_list ADD COLUMN t_confirm INTEGER;");
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        if (oldVersion < 4 && newVersion >= 4) {
+            db.beginTransaction();
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN sign_url text;");
             db.setTransactionSuccessful();
             db.endTransaction();
         }

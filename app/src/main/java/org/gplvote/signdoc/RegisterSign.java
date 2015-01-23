@@ -1,7 +1,11 @@
 package org.gplvote.signdoc;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
@@ -11,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class RegisterSign extends FragmentActivity implements OnClickListener {
+public class RegisterSign extends GetPassActivity implements OnClickListener {
     static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
     static final String RSA_KEYS_TAG = "RSA";
@@ -28,6 +32,8 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
     private static ProgressDialog send_pd;
     private static SendRegisterTask send_task;
     private static boolean running;
+
+    private static Uri external_calc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,25 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
             send_pd.setTitle(getString(R.string.title_send));
             send_pd.setMessage(getString(R.string.msg_status_start_deliver));
             send_pd.show();
+        } else {
+            Intent i = getIntent();
+            if (i != null) external_calc = i.getData();
+
+            if (external_calc != null && external_calc.getScheme().equals("signreg")) {
+                if (!MainActivity.isInternetPresent(this)) {
+                    MainActivity.error(getString(R.string.err_internet_connection_absent), this, true);
+                    return;
+                }
+
+                if (MainActivity.sign != null && MainActivity.sign.pvt_key_present()) {
+                    if (send_task == null) {
+                        send_task = new SendRegisterTask();
+                        send_task.execute(external_calc.getQueryParameter("site"), external_calc.getQueryParameter("code"), "http://" + external_calc.getHost() + external_calc.getPath());
+                    }
+                } else {
+                    checkPasswordDlgShow(settings);
+                }
+            }
         }
     }
 
@@ -85,6 +110,19 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
             running = false;
             enableInputElements(true);
         }
+    }
+
+
+    @Override
+    public boolean onPassword(String password) {
+        boolean result;
+        if (result = super.onPassword(password)) {
+            if (send_task == null) {
+                send_task = new SendRegisterTask();
+                send_task.execute(external_calc.getQueryParameter("site"), external_calc.getQueryParameter("code"), "http://"+external_calc.getHost()+external_calc.getPath());
+            }
+        }
+        return(result);
     }
 
     @Override
@@ -127,6 +165,7 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
             DocSignRegistration doc = new DocSignRegistration();
             doc.site = params[0].trim();
             doc.code = params[1].trim();
+            String register_url = params[2].trim();
 
             // Извлекаем публичный ключ
             doc.public_key = MainActivity.sign.getPublicKeyBase64();
@@ -140,7 +179,9 @@ public class RegisterSign extends FragmentActivity implements OnClickListener {
             } else {
                 doc.sign = Base64.encodeToString(b_sign, Base64.NO_WRAP);
 
-                result = HTTPActions.deliver(doc.toJson(), RegisterSign.this);
+                Log.d("REGSIGN", "Register URL =  "+register_url);
+
+                result = HTTPActions.deliver(doc.toJson(), RegisterSign.this, register_url);
                 Log.d("SIGN_REGISTER", "Sign doc: "+doc.toJson());
             }
 

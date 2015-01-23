@@ -176,7 +176,8 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
         } else {
             // Проверяем не передан-ли документ через URL
             Intent i = getIntent();
-            Uri d = i.getData();
+            Uri d = null;
+            if (i != null) d = i.getData();
 
             if (d != null && d.getScheme().equals("signdoc")) {
                 Log.d("DOSIGN", "Sign doc URL = "+d.toString());
@@ -253,7 +254,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
                     try {
                         doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
                         sign_docs.add(doc_sign);
-                        DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign", doc_sign.sign);
+                        DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign", doc_sign.sign, doc.sign_url);
                     } catch (UnsupportedEncodingException e) {
                         MainActivity.error(getString(R.string.err_wrong_password), this);
                         e.printStackTrace();
@@ -268,7 +269,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.btnSignCancel:
-                DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", "");
+                DocsStorage.add_doc(getApplicationContext(), current_document().site, current_document().doc_id, current_document().dec_data, current_document().template, "cancel", "", current_document().sign_url);
                 if (app_sign_mode) {
                     appModeNextDocProcess();
                 } else {
@@ -332,17 +333,22 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
                     // Собираем все новые запросы на подписание в массив
                     Log.d("DOSIGN", "processDocsForPostDecode check for new doc");
-                    if ((doc.dec_data != null) && !doc.dec_data.equals("") && DocsStorage.is_new(DoSign.this.getApplicationContext(), doc)) {
+                    if ((doc.dec_data != null) && !doc.dec_data.equals("") && (DocsStorage.is_new(DoSign.this.getApplicationContext(), doc) || DocsStorage.is_not_signed(DoSign.this.getApplicationContext(), doc))) {
                         Log.d("DOSIGN", "processDocsForPostDecode add doc in list");
                         if (documents == null) documents = new ArrayList<DocSignRequest>();
                         documents.add(doc);
                         is_new_docs = true;
+                    } else {
+                        if (doc.dec_data == null || doc.dec_data.equals("")) Log.d("DOSIGN", "processDocsForPostDecode no dec_data in document");
+                        if (!DocsStorage.is_new(DoSign.this.getApplicationContext(), doc)) Log.d("DOSIGN", "processDocsForPostDecode doc already in DB");
                     }
                 }
             }
             if (is_new_docs) {
                 Log.d("DOSIGN", "processDocsForPostDecode show data");
                 showData();
+            } else {
+                MainActivity.alert(getString(R.string.err_document_already_signed), DoSign.this, true);
             }
         }
     }
@@ -488,7 +494,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
             }
 
             if (doc_sign.sign != null) {
-                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign_deliver", "");
+                DocsStorage.add_doc(DoSign.this.getApplicationContext(), doc_sign.site, doc_sign.doc_id, doc.dec_data, doc.template, "sign_deliver", "", doc.sign_url);
                 result = HTTPActions.deliver(doc_sign.toJson(), DoSign.this, doc.sign_url);
                 if (((result == null) || result.equals("")) && ((doc.sign_url != null) && !doc.sign_url.equals("")))
                     DocsStorage.set_confirm(DoSign.this, doc.site, doc.doc_id);

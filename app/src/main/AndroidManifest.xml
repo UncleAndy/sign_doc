@@ -28,7 +28,15 @@
             </intent-filter>
         </activity>
         <activity android:name="org.gplvote.signdoc.InitKey"/>
-        <activity android:name="org.gplvote.signdoc.RegisterSign"/>
+        <activity android:name="org.gplvote.signdoc.RegisterSign"
+                  android:label="GPLVote Sign Doc">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="signreg" />
+            </intent-filter>
+        </activity>
         <activity android:name="org.gplvote.signdoc.DoSign"
                   android:label="GPLVote Sign Doc" >
             <intent-filter>

@@ -69,5 +69,6 @@
     <string name="txtViewDocCreateTime">Receive time:</string>
     <string name="txtViewDocStatusTime">Set status time:</string>
     <string name="txtViewDocConfirmTime">Confirm time:</string>
+    <string name="err_document_already_signed">Already signed</string>
 
 </resources>

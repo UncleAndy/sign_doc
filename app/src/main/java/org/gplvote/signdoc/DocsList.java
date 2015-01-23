@@ -155,11 +155,12 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                 DocsStorage dbStorage = DocsStorage.getInstance(this);
                 SQLiteDatabase db = dbStorage.getWritableDatabase();
 
-                Cursor c = db.query("docs_list", new String[]{"data", "template", "status", "t_receive", "t_set_status", "t_confirm"}, "site = ? AND doc_id = ?", new String[]{sign_request.site, sign_request.doc_id}, null, null, null, "1");
+                Cursor c = db.query("docs_list", new String[]{"data", "template", "status", "t_receive", "t_set_status", "t_confirm", "sign_url"}, "site = ? AND doc_id = ?", new String[]{sign_request.site, sign_request.doc_id}, null, null, null, "1");
                 if (c != null) {
                     if (c.moveToFirst()) {
                         sign_request.dec_data = c.getString(c.getColumnIndex("data"));
                         sign_request.template = c.getString(c.getColumnIndex("template"));
+                        sign_request.sign_url = c.getString(c.getColumnIndex("sign_url"));
 
                         intent.putExtra("DocView_status", c.getString(c.getColumnIndex("status")));
                         intent.putExtra("DocView_t_create", time_to_string(c.getString(c.getColumnIndex("t_receive"))));
@@ -226,7 +227,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         DocsStorage dbStorage = DocsStorage.getInstance(this);
         SQLiteDatabase db = dbStorage.getWritableDatabase();
 
-        Cursor c = db.query("docs_list", new String[]{"t_set_status", "t_confirm", "status", "site", "doc_id"}, null, null, null, null, "t_receive desc", "100");
+        Cursor c = db.query("docs_list", new String[]{"t_set_status", "t_confirm", "status", "site", "doc_id", "sign_url"}, null, null, null, null, "t_receive desc", "100");
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
@@ -237,6 +238,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                     m.put("status", c.getString(c.getColumnIndex("status")));
                     m.put("site", c.getString(c.getColumnIndex("site")));
                     m.put("doc_id", c.getString(c.getColumnIndex("doc_id")));
+                    m.put("sign_url", c.getString(c.getColumnIndex("sign_url")));
 
                     list.add(m);
                 } while (c.moveToNext());
@@ -332,6 +334,12 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                         break;
                 }
                 txtDocStatus.setText(status);
+
+                // Если документ с урл прямого доступа, подчеркиваем сайт
+                String sign_url = (String) list.get(position).get("sign_url");
+                if ((sign_url != null) && !sign_url.equals("")) {
+                    txtDocSite.set
+                }
             }
             llhDocsListRow.setBackgroundColor(getResources().getColor(bg_color));
             txtDocSite.setText((String) list.get(position).get("site"));
