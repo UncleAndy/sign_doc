@@ -165,7 +165,8 @@ public class RegisterSign extends GetPassActivity implements OnClickListener {
             DocSignRegistration doc = new DocSignRegistration();
             doc.site = params[0].trim();
             doc.code = params[1].trim();
-            String register_url = params[2].trim();
+            String register_url = "";
+            if ((params.length > 2) && (params[2] != null)) register_url = params[2].trim();
 
             // Извлекаем публичный ключ
             doc.public_key = MainActivity.sign.getPublicKeyBase64();

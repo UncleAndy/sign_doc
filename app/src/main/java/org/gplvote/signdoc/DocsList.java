@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -338,7 +339,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                 // Если документ с урл прямого доступа, подчеркиваем сайт
                 String sign_url = (String) list.get(position).get("sign_url");
                 if ((sign_url != null) && !sign_url.equals("")) {
-                    txtDocSite.set
+                    txtDocSite.setPaintFlags(txtDocSite.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 }
             }
             llhDocsListRow.setBackgroundColor(getResources().getColor(bg_color));
