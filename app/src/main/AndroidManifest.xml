@@ -20,7 +20,8 @@
 
         <activity
             android:name="org.gplvote.signdoc.DocsList"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +30,8 @@
         </activity>
         <activity android:name="org.gplvote.signdoc.InitKey"/>
         <activity android:name="org.gplvote.signdoc.RegisterSign"
-                  android:label="GPLVote Sign Doc">
+                  android:label="GPLVote Sign Doc"
+                  android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -38,7 +40,8 @@
             </intent-filter>
         </activity>
         <activity android:name="org.gplvote.signdoc.DoSign"
-                  android:label="GPLVote Sign Doc" >
+                  android:label="GPLVote Sign Doc"
+                  android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="org.gplvote.signdoc.DO_SIGN" />
                 <category android:name="android.intent.category.DEFAULT" />

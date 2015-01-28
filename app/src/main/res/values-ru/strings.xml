@@ -64,11 +64,12 @@
     <string name="title_view_doc">Просмотр документа</string>
     <string name="err_document_bad_format">Отсутствуют данные документа</string>
     <string name="txtDocStatusConfirmed">ОБРАБОТАН</string>
-    <string name="btn_refresh">Обновить список документов</string>
+    <string name="btn_refresh">Обновить список</string>
     <string name="txtViewDocStatus">Статус документа:</string>
     <string name="txtViewDocCreateTime">Получен:</string>
     <string name="txtViewDocStatusTime">Статус установлен:</string>
     <string name="txtViewDocConfirmTime">Подтвержден:</string>
     <string name="err_document_already_signed">Уже подписан</string>
+    <string name="btn_qr_read">Считать QR-код</string>
 
 </resources>

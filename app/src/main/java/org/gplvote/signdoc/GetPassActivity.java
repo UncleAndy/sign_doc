@@ -12,12 +12,14 @@ public class GetPassActivity extends FragmentActivity implements GetPassInterfac
     public boolean checkPasswordDlgShow(Settings settings) {
         if (!settings.get(MainActivity.PREF_ENC_PRIVATE_KEY).equals("")) {
             if (MainActivity.sign == null || !MainActivity.sign.pvt_key_present()) {
+                Log.d("GetPassActivity", "No sign - run dlgPassword");
                 if (dlgPassword == null)
                     dlgPassword = new DlgPassword(this);
                 dlgPassword.show(getSupportFragmentManager(), "missiles");
-                return(true);
-            } else {
                 return(false);
+            } else {
+                Log.d("GetPassActivity", "Sign present - NO need dlgPassword");
+                return(true);
             }
         } else {
             // Initialization

@@ -22,12 +22,14 @@ public class DlgPassword extends DialogFragment {
     @SuppressLint("ValidFragment")
     public DlgPassword(GetPassInterface eventPass) {
         eventPassword = eventPass;
-    };
-    public DlgPassword() { };
+    }
+    public DlgPassword() { }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Log.d("DlgPassword", "onCreateDialog()");
         if (dlgPassword == null) {
+            Log.d("DlgPassword", "onCreateDialog() CREATE INSTANCE");
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -59,6 +61,8 @@ public class DlgPassword extends DialogFragment {
                         }
                     });
             dlgPassword = builder.create();
+        } else {
+            Log.d("DlgPassword", "onCreateDialog() USE OLD INSTANCE");
         }
         return(dlgPassword);
     }

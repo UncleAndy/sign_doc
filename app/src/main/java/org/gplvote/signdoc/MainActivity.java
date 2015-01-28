@@ -162,12 +162,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, G
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("MAIN", "onResume");
+        Log.d("MainActivity", "onResume");
         updateButtonsState();
     }
 
     @Override
     protected void onDestroy() {
+        Log.d("MainActivity", "onDestroy");
         do_destroy = true;
         super.onDestroy();
         if (isFinishing())

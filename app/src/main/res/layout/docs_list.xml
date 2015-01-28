@@ -4,15 +4,23 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/btn_refresh"
-            android:id="@+id/btnDocsListRefresh" />
+            android:id="@+id/btnDocsListRefresh"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_qr_read"
+            android:id="@+id/btnQRRead"
+            android:layout_weight="1" />
 
     </LinearLayout>
 

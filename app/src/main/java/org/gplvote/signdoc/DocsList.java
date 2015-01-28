@@ -59,9 +59,8 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
     private Button btnSign;
     private Button btnView;
     private Button btnRefresh;
+    private Button btnQRRead;
     private Button btnRegistration;
-
-    private static DialogFragment dlgPassword = null;
 
     public static DocsList instance;
 
@@ -82,7 +81,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
             StrictMode.setThreadPolicy(policy);
         }
 
-        if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); };
+        if (sPref == null) { sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE); }
         settings = Settings.getInstance(this);
         MainActivity.settings = settings;
 
@@ -97,13 +96,17 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         btnRefresh = (Button) findViewById(R.id.btnDocsListRefresh);
         btnRefresh.setOnClickListener(this);
 
+        btnQRRead = (Button) findViewById(R.id.btnQRRead);
+        btnQRRead.setOnClickListener(this);
+
         btnRegistration = (Button) findViewById(R.id.btnRegistration);
         btnRegistration.setOnClickListener(this);
 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        if (instance != null) update_list();
+        Log.d("MAIN", "onCreate");
+        if (instance != null && (MainActivity.sign != null) && MainActivity.sign.pvt_key_present()) update_list();
         instance = this;
 
         checkPasswordDlgShow();
@@ -196,6 +199,11 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                     MainActivity.error(getString(R.string.err_internet_connection_absent), this);
                 }
                 break;
+            case R.id.btnQRRead:
+                // TODO: Вызываем активити со считывателем QR-кодов
+
+
+                break;
             default:
                 break;
         }
@@ -204,8 +212,9 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
 
     @Override
     public boolean onPassword(String password) {
-        boolean result;
-        if (result = super.onPassword(password)) update_list();
+        Log.d("MAIN", "onPassword");
+        boolean result = super.onPassword(password);
+        if (result) update_list();
         return(result);
     }
 
@@ -214,12 +223,15 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
     }
 
     private void checkPasswordDlgShow() {
-        if (!checkPasswordDlgShow(settings)) update_list();
+        Log.d("MAIN", "checkPasswordDlgShow");
+        if (checkPasswordDlgShow(settings)) update_list();
     }
 
     public void update_list() {
         ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>(100);
         Map<String, Object> m;
+
+        Log.d("MAIN", "Run update_list");
 
         btnSign.setVisibility(View.GONE);
         btnView.setVisibility(View.GONE);
@@ -228,10 +240,14 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         DocsStorage dbStorage = DocsStorage.getInstance(this);
         SQLiteDatabase db = dbStorage.getWritableDatabase();
 
+        Log.d("MAIN", "update_list run query");
         Cursor c = db.query("docs_list", new String[]{"t_set_status", "t_confirm", "status", "site", "doc_id", "sign_url"}, null, null, null, null, "t_receive desc", "100");
         if (c != null) {
+            Log.d("MAIN", "update_list p1");
             if (c.moveToFirst()) {
+                Log.d("MAIN", "update_list p2");
                 do {
+                    Log.d("MAIN", "update_list p3");
                     m = new HashMap<String, Object>();
 
                     m.put("t_set_status", c.getString(c.getColumnIndex("t_set_status")));
@@ -246,6 +262,8 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
             }
         }
 
+        listDocView = (ListView) findViewById(R.id.listDocsView);
+        listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         sAdapter = new DocsListArrayAdapter(this, list);
         listDocView.setAdapter(sAdapter);
 
@@ -290,6 +308,8 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View rowView;
+            Log.d("MAIN", "Start getView for position = "+position);
+
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 rowView = inflater.inflate(R.layout.docs_list_item, parent, false);
