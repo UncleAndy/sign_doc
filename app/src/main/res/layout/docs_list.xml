@@ -60,11 +60,26 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_registration"
-            android:id="@+id/btnRegistration" />
+            android:layout_height="fill_parent">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_registration"
+                android:id="@+id/btnRegistration"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnInfo"
+                android:layout_weight="1"
+                android:text="@string/btn_show_info" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -3,7 +3,7 @@
 
     <string name="app_name">Sign Doc</string>
     <string name="btn_init">Initialize application</string>
-    <string name="btn_registration">Registration on site</string>
+    <string name="btn_registration">Registration</string>
     <string name="btn_check_new">Check new documents</string>
     <string name="btn_docs_list">Documents list</string>
     <string name="btn_options">Options...</string>
@@ -64,12 +64,14 @@
     <string name="title_view_doc">View document</string>
     <string name="err_document_bad_format">No data in document</string>
     <string name="txtDocStatusConfirmed">DONE</string>
-    <string name="btn_refresh">Refresh list</string>
+    <string name="btn_refresh">Refresh</string>
     <string name="txtViewDocStatus">Document status:</string>
     <string name="txtViewDocCreateTime">Receive time:</string>
     <string name="txtViewDocStatusTime">Set status time:</string>
     <string name="txtViewDocConfirmTime">Confirm time:</string>
     <string name="err_document_already_signed">Already signed</string>
     <string name="btn_qr_read">Read QR-code</string>
+    <string name="btn_show_info">Information</string>
+    <string name="txt_public_key_id">Key identificator</string>
 
 </resources>

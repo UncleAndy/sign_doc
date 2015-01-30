@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -29,6 +30,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -61,6 +64,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
     private Button btnRefresh;
     private Button btnQRRead;
     private Button btnRegistration;
+    private Button btnInfo;
 
     public static DocsList instance;
 
@@ -101,6 +105,9 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
 
         btnRegistration = (Button) findViewById(R.id.btnRegistration);
         btnRegistration.setOnClickListener(this);
+
+        btnInfo = (Button) findViewById(R.id.btnInfo);
+        btnInfo.setOnClickListener(this);
 
         listDocView = (ListView) findViewById(R.id.listDocsView);
         listDocView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -200,14 +207,32 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                 }
                 break;
             case R.id.btnQRRead:
-                // TODO: Вызываем активити со считывателем QR-кодов
-
-
+                IntentIntegrator integrator = new IntentIntegrator(this);
+                integrator.initiateScan();
+                break;
+            case R.id.btnInfo:
+                intent = new Intent(this, ShowInfo.class);
+                startActivity(intent);
                 break;
             default:
                 break;
         }
 
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.d("QRCODE", "onActivityResult");
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            String uri = scanResult.getContents();
+
+            if (uri != null) {
+                Log.d("SCAN", "Scan result = " + uri);
+
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(intent);
+            }
+        }
     }
 
     @Override

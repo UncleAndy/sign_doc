@@ -322,25 +322,34 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
                 DocSignRequest doc = documents_for_post_decode.get(i);
                 Log.d("DOSIGN", "processDocsForPostDecode decrypt data = "+doc.data);
 
-                byte[] json_data = MainActivity.sign.decrypt(doc.data);
-                if (json_data != null) {
-                    try {
-                        doc.dec_data = new String(json_data, "UTF-8");
-                        Log.d("DOSIGN", "processDocsForPostDecode decrypted = "+doc.dec_data);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                if (doc.dec_data != null && !doc.dec_data.equals("")) {
+                    Log.d("DOSIGN", "processDocsForPostDecode decrypted data present");
+                    if (documents == null) documents = new ArrayList<DocSignRequest>();
+                    documents.add(doc);
+                    is_new_docs = true;
+                } else {
+                    byte[] json_data = MainActivity.sign.decrypt(doc.data);
+                    if (json_data != null) {
+                        try {
+                            doc.dec_data = new String(json_data, "UTF-8");
+                            Log.d("DOSIGN", "processDocsForPostDecode decrypted = " + doc.dec_data);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
 
-                    // Собираем все новые запросы на подписание в массив
-                    Log.d("DOSIGN", "processDocsForPostDecode check for new doc");
-                    if ((doc.dec_data != null) && !doc.dec_data.equals("") && (DocsStorage.is_new(DoSign.this.getApplicationContext(), doc) || DocsStorage.is_not_signed(DoSign.this.getApplicationContext(), doc))) {
-                        Log.d("DOSIGN", "processDocsForPostDecode add doc in list");
-                        if (documents == null) documents = new ArrayList<DocSignRequest>();
-                        documents.add(doc);
-                        is_new_docs = true;
-                    } else {
-                        if (doc.dec_data == null || doc.dec_data.equals("")) Log.d("DOSIGN", "processDocsForPostDecode no dec_data in document");
-                        if (!DocsStorage.is_new(DoSign.this.getApplicationContext(), doc)) Log.d("DOSIGN", "processDocsForPostDecode doc already in DB");
+                        // Собираем все новые запросы на подписание в массив
+                        Log.d("DOSIGN", "processDocsForPostDecode check for new doc");
+                        if ((doc.dec_data != null) && !doc.dec_data.equals("") && (DocsStorage.is_new(DoSign.this.getApplicationContext(), doc) || DocsStorage.is_not_signed(DoSign.this.getApplicationContext(), doc))) {
+                            Log.d("DOSIGN", "processDocsForPostDecode add doc in list");
+                            if (documents == null) documents = new ArrayList<DocSignRequest>();
+                            documents.add(doc);
+                            is_new_docs = true;
+                        } else {
+                            if (doc.dec_data == null || doc.dec_data.equals(""))
+                                Log.d("DOSIGN", "processDocsForPostDecode no dec_data in document");
+                            if (!DocsStorage.is_new(DoSign.this.getApplicationContext(), doc))
+                                Log.d("DOSIGN", "processDocsForPostDecode doc already in DB");
+                        }
                     }
                 }
             }
@@ -487,6 +496,10 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
             doc_sign.site = doc.site;
             doc_sign.doc_id = doc.doc_id;
+            if (doc.user_key_id == null || doc.user_key_id.equals("")) {
+                Log.d("SIGN", "Public doc - add public key in sign");
+                doc_sign.public_key = MainActivity.sign.getPublicKeyBase64();
+            }
             try {
                 doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
             } catch (Exception e) {

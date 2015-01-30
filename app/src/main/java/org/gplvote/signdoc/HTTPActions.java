@@ -29,6 +29,8 @@ public class HTTPActions {
 
         try {
             // Add your data
+            Log.d("HTTP", "HTTP deliver doc: " + document);
+
             StringEntity se = null;
             se = new StringEntity(document);
             httppost.setEntity(se);
@@ -41,9 +43,10 @@ public class HTTPActions {
             String body = EntityUtils.toString(response.getEntity(), "UTF-8");
             int http_status = response.getStatusLine().getStatusCode();
             if (http_status == 200) {
+                Log.d("HTTP", "HTTP response 200 with body: " + body);
                 Gson gson = new Gson();
                 JsonResponse json_resp = gson.fromJson(body, JsonResponse.class);
-                if (json_resp.status == 0) {
+                if (json_resp != null && json_resp.status == 0) {
                     DocSign doc = gson.fromJson(document, DocSign.class);
 
                     if (doc.type.equals("SIGN")) {

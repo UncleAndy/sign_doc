@@ -54,6 +54,7 @@
             </intent-filter>
         </activity>
         <activity android:name="org.gplvote.signdoc.MainActivity"/>
+        <activity android:name="org.gplvote.signdoc.ShowInfo"/>
     </application>
 
 </manifest>
