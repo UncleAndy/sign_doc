@@ -111,3 +111,7 @@ activity#org.gplvote.signdoc.MainActivity
 ADDED from AndroidManifest.xml:56:9
 	android:name
 		ADDED from AndroidManifest.xml:56:19
+activity#org.gplvote.signdoc.ShowInfo
+ADDED from AndroidManifest.xml:57:9
+	android:name
+		ADDED from AndroidManifest.xml:57:19

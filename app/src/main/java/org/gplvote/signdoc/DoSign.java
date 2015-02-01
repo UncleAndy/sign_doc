@@ -322,7 +322,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
                 DocSignRequest doc = documents_for_post_decode.get(i);
                 Log.d("DOSIGN", "processDocsForPostDecode decrypt data = "+doc.data);
 
-                if (doc.dec_data != null && !doc.dec_data.equals("")) {
+                if (doc.dec_data != null && !doc.dec_data.equals("") && (DocsStorage.is_new(DoSign.this.getApplicationContext(), doc) || DocsStorage.is_not_signed(DoSign.this.getApplicationContext(), doc))) {
                     Log.d("DOSIGN", "processDocsForPostDecode decrypted data present");
                     if (documents == null) documents = new ArrayList<DocSignRequest>();
                     documents.add(doc);
