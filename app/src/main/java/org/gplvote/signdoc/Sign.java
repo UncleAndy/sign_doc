@@ -28,7 +28,7 @@ public class Sign {
     private static final String RSA_KEYS_TAG = "RSA";
     private static final String RSA_DECRYPT_TAG = "RSA/None/PKCS1Padding";
     private static final String AES_KEYS_TAG = "AES";
-    private static final String SIGN_ALG_TAG = "SHA1withRSA";
+    private static final String SIGN_ALG_TAG = "SHA256withRSA";
 
     private Settings settings;
 
@@ -101,8 +101,10 @@ public class Sign {
                 byte[] aes_key_plus_iv = rsa.doFinal(enc_data, 0, 256);
                 byte[] aes_key = new byte[32];
                 byte[] aes_iv  = new byte[16];
+                byte[] data_crc  = new byte[32];
                 System.arraycopy(aes_key_plus_iv, 0, aes_key, 0, 32);
                 System.arraycopy(aes_key_plus_iv, 32, aes_iv, 0, 16);
+                System.arraycopy(aes_key_plus_iv, 48, data_crc, 0, 32);
 
                 // Decode big data over AES/CBC
                 SecretKeySpec sks = new SecretKeySpec(aes_key, "AES");
@@ -110,6 +112,15 @@ public class Sign {
                 Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 aes.init(Cipher.DECRYPT_MODE, sks, ivSpec);
                 data = aes.doFinal(enc_data, 256, (enc_data.length - 256));
+
+                // Check crc for decrypted data
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(data);
+                byte[] crc = md.digest();
+
+                if (!Arrays.equals(data_crc, crc)) {
+                    data = null;
+                }
             }
             if (data != null)
                 Log.d("DATA", "Decrypted bytes: " + data.length);
@@ -225,7 +236,7 @@ public class Sign {
     private void pvt_key_to_cache(PrivateKey key) throws NoSuchAlgorithmException {
         try {
             SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-            sr.setSeed(Long.toString(System.currentTimeMillis()).getBytes());
+            // sr.setSeed(Long.toString(System.currentTimeMillis()).getBytes()); // Not secured
             KeyGenerator kg = KeyGenerator.getInstance("AES");
             kg.init(256, sr);
             SecretKeySpec aes_key_sks = new SecretKeySpec((kg.generateKey()).getEncoded(), "AES");

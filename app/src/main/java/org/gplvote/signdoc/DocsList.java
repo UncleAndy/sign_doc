@@ -1,21 +1,15 @@
 package org.gplvote.signdoc;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,19 +20,11 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,11 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DocsList extends GetPassActivity implements View.OnClickListener, GetPassInterface {
-    public static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
-    public static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
     public static final String APP_PREFERENCES = MainActivity.APP_PREFERENCES;
-    public static final String HTTP_SEND_URL = MainActivity.HTTP_SEND_URL;
-    public static final String HTTP_GET_URL = MainActivity.HTTP_GET_URL;
 
     private static SharedPreferences sPref;
     public static Settings settings;
@@ -61,9 +43,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
 
     private Button btnSign;
     private Button btnView;
-    private Button btnRefresh;
     private Button btnQRRead;
-    private Button btnRegistration;
     private Button btnInfo;
 
     public static DocsList instance;
