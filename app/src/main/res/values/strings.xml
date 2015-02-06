@@ -41,7 +41,7 @@
     <string name="err_cannot_decrypt">Decrypt data error</string>
     <string name="title_sign_doc">Signing document</string>
     <string name="btn_do_sign">Sign</string>
-    <string name="btn_sign_cancel">Cancel</string>
+    <string name="btn_sign_cancel">Put aside</string>
     <string name="in_document">in document</string>
     <string name="btn_back">Return</string>
     <string name="txt_doc_site">Site:</string>
@@ -70,7 +70,7 @@
     <string name="txtViewDocStatusTime">Set status time:</string>
     <string name="txtViewDocConfirmTime">Confirm time:</string>
     <string name="err_document_already_signed">Already signed</string>
-    <string name="btn_qr_read">Read QR-code</string>
+    <string name="btn_qr_read">Read code</string>
     <string name="btn_show_info">Information</string>
     <string name="txt_public_key_id">Key identificator</string>
 

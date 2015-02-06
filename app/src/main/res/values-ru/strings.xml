@@ -41,7 +41,7 @@
     <string name="err_cannot_decrypt">Ошибка расшифровки данных</string>
     <string name="title_sign_doc">Подписание документа</string>
     <string name="btn_do_sign">Подписать</string>
-    <string name="btn_sign_cancel">Отказать</string>
+    <string name="btn_sign_cancel">Отложить</string>
     <string name="in_document"> в документе </string>
     <string name="btn_back">Назад</string>
     <string name="txt_doc_site">Сайт:</string>
@@ -70,7 +70,7 @@
     <string name="txtViewDocStatusTime">Статус установлен:</string>
     <string name="txtViewDocConfirmTime">Подтвержден:</string>
     <string name="err_document_already_signed">Уже подписан</string>
-    <string name="btn_qr_read">Считать QR-код</string>
+    <string name="btn_qr_read">Прочитать код</string>
     <string name="btn_show_info">Информация</string>
     <string name="txt_public_key_id">Идентификатор ключа</string>
 
