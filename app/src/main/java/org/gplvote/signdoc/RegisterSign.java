@@ -175,6 +175,10 @@ public class RegisterSign extends GetPassActivity implements OnClickListener {
             String sign_data = doc.code;
             byte[] b_sign = MainActivity.sign.create(sign_data.getBytes());
 
+            // Извлекаем публичный ключ для отмены основного ключа, подписываем его и добавляем в запрос на регистрацию
+            doc.cancel_public_key = MainActivity.sign.getCancelPublicKeyBase64();
+            doc.cancel_public_key_sign = MainActivity.sign.createBase64(doc.cancel_public_key.getBytes());
+
             if (b_sign == null) {
                 result = getString(R.string.err_wrong_password);
             } else {

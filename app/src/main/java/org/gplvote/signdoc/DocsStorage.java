@@ -32,7 +32,7 @@ public class DocsStorage extends SQLiteOpenHelper {
     }
 
     public DocsStorage(Context context) {
-        super(context, "SignDoc", null, 4);
+        super(context, "SignDoc", null, 5);
     }
 
     public static boolean is_new(Context context, DocSignRequest doc) {
@@ -91,6 +91,7 @@ public class DocsStorage extends SQLiteOpenHelper {
             }
             if ((sign != null) && (!sign.equals(""))) {
                 cv.put("sign", sign);
+                cv.put("sign_type", Sign.SIGN_ALG_TAG);
             }
 
             long row_id = db.insert("docs_list", null, cv);
@@ -108,6 +109,7 @@ public class DocsStorage extends SQLiteOpenHelper {
 
         ContentValues cv = new ContentValues();
         cv.put("sign", sign);
+        cv.put("sign_type", Sign.SIGN_ALG_TAG);
         cv.put("status", "sign");
         cv.put("t_set_status", currentTime());
 
@@ -138,6 +140,7 @@ public class DocsStorage extends SQLiteOpenHelper {
                 + "t_receive INTEGER,"
                 + "t_set_status INTEGER,"
                 + "sign text,"
+                + "sign_type text,"
                 + "t_confirm INTEGER"
                 + ");");
         db.execSQL("CREATE INDEX docs_list_site_doc_id_idx ON docs_list (site, doc_id)");
@@ -168,6 +171,12 @@ public class DocsStorage extends SQLiteOpenHelper {
         if (oldVersion < 4 && newVersion >= 4) {
             db.beginTransaction();
             db.execSQL("ALTER TABLE docs_list ADD COLUMN sign_url text;");
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        }
+        if (oldVersion < 5 && newVersion >= 5) {
+            db.beginTransaction();
+            db.execSQL("ALTER TABLE docs_list ADD COLUMN sign_type text;");
             db.setTransactionSuccessful();
             db.endTransaction();
         }

@@ -33,6 +33,8 @@ import java.util.ArrayList;
 public class MainActivity extends FragmentActivity implements OnClickListener, GetPassInterface {
     public static final String PREF_ENC_PRIVATE_KEY = "enc_priv_key";
     public static final String PREF_PUBLIC_KEY = "pub_key";
+    public static final String PREF_CANCEL_ENC_PRIVATE_KEY = "cancel_enc_priv_key";
+    public static final String PREF_CANCEL_PUBLIC_KEY = "cancel_pub_key";
     public static final String APP_PREFERENCES = "org.gplvote.signdoc";
     public static final String HTTP_SEND_URL = "http://signdoc.gplvote.org/send";
     public static final String HTTP_GET_URL = "http://signdoc.gplvote.org/get";

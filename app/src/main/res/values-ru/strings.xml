@@ -73,5 +73,6 @@
     <string name="btn_qr_read">Прочитать код</string>
     <string name="btn_show_info">Информация</string>
     <string name="txt_public_key_id">Идентификатор ключа</string>
+    <string name="txt_cancel_pvt_key">Ключ для отмены основного ключа</string>
 
 </resources>

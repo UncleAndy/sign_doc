@@ -29,7 +29,7 @@ public class HTTPActions {
 
         try {
             // Add your data
-            Log.d("HTTP", "HTTP deliver doc: " + document);
+            Log.d("HTTP", "HTTP deliver doc to "+return_url+": " + document);
 
             StringEntity se = null;
             se = new StringEntity(document);

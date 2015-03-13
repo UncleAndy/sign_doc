@@ -25,16 +25,20 @@ import javax.crypto.spec.SecretKeySpec;
 public class Sign {
     private static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     private static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
+    private static final String PREF_CANCEL_ENC_PRIVATE_KEY = MainActivity.PREF_CANCEL_ENC_PRIVATE_KEY;
+    private static final String PREF_CANCEL_PUBLIC_KEY = MainActivity.PREF_CANCEL_PUBLIC_KEY;
+
     private static final String RSA_KEYS_TAG = "RSA";
     private static final String RSA_DECRYPT_TAG = "RSA/None/PKCS1Padding";
     private static final String AES_KEYS_TAG = "AES";
-    private static final String SIGN_ALG_TAG = "SHA256withRSA";
+    public static final String SIGN_ALG_TAG = "SHA256withRSA";
 
     private Settings settings;
 
     private byte[] cache_pvt_key_enc = null;
     private PublicKey pub_key = null;
     private byte[] cache_aes_key = null;
+    private byte[] cache_cancel_pvt_key = null;
 
     public Sign(Context context) {
         settings = Settings.getInstance(context);
@@ -52,7 +56,9 @@ public class Sign {
             byte[] passwordBytes = password.getBytes("UTF-8");
             int length = passwordBytes.length < keyBytes.length ? passwordBytes.length : keyBytes.length;
             System.arraycopy(passwordBytes, 0, keyBytes, 0, length);
-            return(restorePrivateKey(new SecretKeySpec(keyBytes, AES_KEYS_TAG)));
+            SecretKeySpec aes_restore_key = new SecretKeySpec(keyBytes, AES_KEYS_TAG);
+            restoreCancelPrivateKey(aes_restore_key);
+            return(restorePrivateKey(aes_restore_key));
         } catch (Exception e) {
             Log.e("setPassword", "error restore pvt key");
         }
@@ -172,6 +178,50 @@ public class Sign {
         return(null);
     }
 
+
+    public String getCancelPublicKeyBase64() {
+        return(settings.get(PREF_CANCEL_PUBLIC_KEY));
+    }
+
+    public byte[] getCancelPublicKey()
+    {
+        String b64_pub_key = getCancelPublicKeyBase64();
+        return(Base64.decode(b64_pub_key, Base64.NO_WRAP));
+    }
+
+    public byte[] getCancelPublicKeyId() {
+        MessageDigest digest;
+        byte[] hash;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            hash = digest.digest(getCancelPublicKey());
+            return(hash);
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("SHA-256", "Hash create error: "+e.getMessage());
+        }
+
+        return(null);
+    }
+
+    public byte[] getCancelPvtKey() { return(cache_cancel_pvt_key); }
+
+    public String getCancelPvtKeyBase64() {
+        if (cache_cancel_pvt_key != null) {
+            return (Base64.encodeToString(cache_cancel_pvt_key, Base64.NO_WRAP));
+        } else {
+            return(null);
+        }
+    }
+
+    public String getCancelPublicKeyIdBase64() {
+        byte[] hash = getCancelPublicKeyId();
+        if (hash != null) {
+            return (Base64.encodeToString(hash, Base64.NO_WRAP));
+        }
+        return(null);
+    }
+
+
     // Cache private key (encrypted)
     public void cache_reset() {
         if (cache_pvt_key_enc != null) Arrays.fill(cache_pvt_key_enc, (byte) 0 );
@@ -181,6 +231,7 @@ public class Sign {
     }
 
     public boolean pvt_key_present() { return(cache_pvt_key_enc != null); }
+    public boolean cancel_pvt_key_present() { return(cache_cancel_pvt_key != null); }
 
     // PRIVATE
 
@@ -217,6 +268,26 @@ public class Sign {
         }
 
         return(pvt_key_present());
+    }
+
+    private boolean restoreCancelPrivateKey(SecretKeySpec sks) {
+        if (cancel_pvt_key_present()) { return(true); }
+
+        String b64_enc_pvt_key = settings.get(PREF_CANCEL_ENC_PRIVATE_KEY);
+        byte[] enc_pvt_key = Base64.decode(b64_enc_pvt_key, Base64.NO_WRAP);
+
+        byte[] dec_pvt_key;
+        try {
+            Cipher c = Cipher.getInstance(AES_KEYS_TAG);
+            c.init(Cipher.DECRYPT_MODE, sks);
+            dec_pvt_key = c.doFinal(enc_pvt_key);
+
+            cache_cancel_pvt_key = KeyFactory.getInstance(RSA_KEYS_TAG).generatePrivate(new PKCS8EncodedKeySpec(dec_pvt_key)).getEncoded();
+        } catch (Exception e) {
+            Log.e(RSA_KEYS_TAG, "Restore cancel private key error: "+e.getMessage());
+        }
+
+        return(cancel_pvt_key_present());
     }
 
     private PrivateKey pvt_key_from_cache() {

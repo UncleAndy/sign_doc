@@ -110,6 +110,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
             Intent intent = new Intent();
             intent.putExtra("PUBLIC_KEY_ID", MainActivity.sign.getPublicKeyIdBase64());
+            intent.putExtra("PUBLIC_KEY", MainActivity.sign.getPublicKeyBase64());
             setResult(RESULT_OK, intent);
             finish();
             return;
@@ -191,11 +192,16 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
                 String url_query = d.getQuery();
                 String host = d.getHost().replaceAll("_", "-");
+                int port = d.getPort();
+                String port_str = "";
+                if (port != 80 && port > 0) {
+                    port_str = ":" + Integer.toString(port);
+                }
 
-                Log.d("DOSIGN", "Get doc URL = "+"http://"+host+d.getPath()+"?"+url_query);
+                Log.d("DOSIGN", "Get doc URL = "+"http://"+host+port_str+d.getPath()+"?"+url_query);
                 HttpGet httpget = null;
                 try {
-                    httpget = new HttpGet(new URI("http://"+host+d.getPath()+"?"+url_query));
+                    httpget = new HttpGet(new URI("http://"+host+port_str+d.getPath()+"?"+url_query));
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
@@ -250,6 +256,8 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
                     doc_sign.doc_id = doc.doc_id;
 
                     String sign_data = doc.site + ":" + doc.doc_id + ":" + doc.dec_data + ":" + doc.template;
+
+                    Log.d("DOSIGN", "Signed data: "+sign_data);
 
                     try {
                         doc_sign.sign = MainActivity.sign.createBase64(sign_data.getBytes("UTF-8"));
@@ -493,6 +501,8 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
             DocSignRequest doc = params[0];
             String sign_data = doc.site + ":" + doc.doc_id + ":" + doc.dec_data + ":" + doc.template;
+
+            Log.d("DOSIGN", "Signed data: "+sign_data);
 
             doc_sign.site = doc.site;
             doc_sign.doc_id = doc.doc_id;

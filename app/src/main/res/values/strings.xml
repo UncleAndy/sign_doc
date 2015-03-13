@@ -73,5 +73,6 @@
     <string name="btn_qr_read">Read code</string>
     <string name="btn_show_info">Information</string>
     <string name="txt_public_key_id">Key identificator</string>
+    <string name="txt_cancel_pvt_key">Private key for cancel main key</string>
 
 </resources>

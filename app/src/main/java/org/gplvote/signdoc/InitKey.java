@@ -23,6 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class InitKey extends Activity implements OnClickListener {
     public static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     public static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
+    public static final String PREF_CANCEL_ENC_PRIVATE_KEY = MainActivity.PREF_CANCEL_ENC_PRIVATE_KEY;
+    public static final String PREF_CANCEL_PUBLIC_KEY = MainActivity.PREF_CANCEL_PUBLIC_KEY;
 
     static final String RSA_KEYS_TAG = "RSA";
     static final String AES_KEYS_TAG = "AES";
@@ -128,6 +130,34 @@ public class InitKey extends Activity implements OnClickListener {
             TaskResult result = new TaskResult();
             result.pass = params[0];
 
+            // Main key pair
+            KeyPairBase64 keys = generate_key_pair_base64(result.pass);
+            if (keys.pub_key != null && keys.enc_pvt_key != null) {
+                settings.set(PREF_PUBLIC_KEY, keys.pub_key);
+                settings.set(PREF_ENC_PRIVATE_KEY, keys.enc_pvt_key);
+            } else {
+                result.error_str = keys.error_str;
+            }
+
+            // Cancel key pair
+            KeyPairBase64 cancel_keys = generate_key_pair_base64(result.pass);
+            if (cancel_keys.pub_key != null && cancel_keys.enc_pvt_key != null) {
+                settings.set(PREF_CANCEL_PUBLIC_KEY, cancel_keys.pub_key);
+                settings.set(PREF_CANCEL_ENC_PRIVATE_KEY, cancel_keys.enc_pvt_key);
+            }
+
+            return(result);
+        }
+
+        class KeyPairBase64 {
+            String enc_pvt_key;
+            String pub_key;
+            String error_str;
+        }
+
+        private KeyPairBase64 generate_key_pair_base64(String pass) {
+            KeyPairBase64 result = new KeyPairBase64();
+
             Key publicKey = null;
             Key privateKey = null;
 
@@ -140,8 +170,8 @@ public class InitKey extends Activity implements OnClickListener {
 
                 // Сохраняем публичный ключ
                 byte[] publicKeyBytes = publicKey.getEncoded();
-                settings.set(PREF_PUBLIC_KEY, Base64.encodeToString(publicKeyBytes, Base64.NO_WRAP));
-                Log.d(RSA_KEYS_TAG, "Generated public key: "+Base64.encodeToString(publicKeyBytes, Base64.NO_WRAP));
+                result.pub_key = Base64.encodeToString(publicKeyBytes, Base64.NO_WRAP);
+                Log.d(RSA_KEYS_TAG, "Generated public key: "+result.pub_key);
 
                 // Шифруем и сохраняем приватный ключ
                 SecretKeySpec sks = null;
@@ -149,7 +179,7 @@ public class InitKey extends Activity implements OnClickListener {
                     int keyLength = 128;
                     byte[] keyBytes = new byte[keyLength / 8];
                     Arrays.fill(keyBytes, (byte) 0x0);
-                    byte[] passwordBytes = params[0].getBytes("UTF-8");
+                    byte[] passwordBytes = pass.getBytes("UTF-8");
                     int length = passwordBytes.length < keyBytes.length ? passwordBytes.length : keyBytes.length;
                     System.arraycopy(passwordBytes, 0, keyBytes, 0, length);
                     sks = new SecretKeySpec(keyBytes, AES_KEYS_TAG);
@@ -160,10 +190,10 @@ public class InitKey extends Activity implements OnClickListener {
                         c.init(Cipher.ENCRYPT_MODE, sks);
                         encodedBytes = c.doFinal(privateKey.getEncoded());
 
-                        settings.set(PREF_ENC_PRIVATE_KEY, Base64.encodeToString(encodedBytes, Base64.NO_WRAP));
-                        Log.d(RSA_KEYS_TAG, "Encrypted private key: "+Base64.encodeToString(encodedBytes, Base64.NO_WRAP));
+                        result.enc_pvt_key = Base64.encodeToString(encodedBytes, Base64.NO_WRAP);
+                        Log.d(RSA_KEYS_TAG, "Encrypted private key: "+result.enc_pvt_key);
 
-                        finish();
+                        return(result);
                     } catch (Exception e) {
                         result.error_str = "encryption error";
                         Log.e(AES_KEYS_TAG, "encryption error");
@@ -176,9 +206,11 @@ public class InitKey extends Activity implements OnClickListener {
                 result.error_str = getString(R.string.err_keys_pair_create);
                 Log.e(RSA_KEYS_TAG, "error create keys pair");
             }
-
+            result.pub_key = null;
+            result.enc_pvt_key = null;
             return(result);
         }
+
 
         @Override
         protected void onPostExecute(TaskResult result) {
@@ -196,6 +228,7 @@ public class InitKey extends Activity implements OnClickListener {
             }
 
             init_key_task = null;
+            finish();
         }
     }
 }
