@@ -50,12 +50,10 @@ public class Sign {
 
         // Формируем из пароля ключ для расшифровки AES
         try {
-            int keyLength = 128;
-            byte[] keyBytes = new byte[keyLength / 8];
-            Arrays.fill(keyBytes, (byte) 0x0);
             byte[] passwordBytes = password.getBytes("UTF-8");
-            int length = passwordBytes.length < keyBytes.length ? passwordBytes.length : keyBytes.length;
-            System.arraycopy(passwordBytes, 0, keyBytes, 0, length);
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(passwordBytes);
+            byte[] keyBytes = md.digest();
             SecretKeySpec aes_restore_key = new SecretKeySpec(keyBytes, AES_KEYS_TAG);
             restoreCancelPrivateKey(aes_restore_key);
             return(restorePrivateKey(aes_restore_key));

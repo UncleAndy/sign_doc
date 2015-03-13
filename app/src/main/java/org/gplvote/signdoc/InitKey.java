@@ -15,6 +15,7 @@ import android.widget.EditText;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -176,12 +177,10 @@ public class InitKey extends Activity implements OnClickListener {
                 // Шифруем и сохраняем приватный ключ
                 SecretKeySpec sks = null;
                 try {
-                    int keyLength = 128;
-                    byte[] keyBytes = new byte[keyLength / 8];
-                    Arrays.fill(keyBytes, (byte) 0x0);
                     byte[] passwordBytes = pass.getBytes("UTF-8");
-                    int length = passwordBytes.length < keyBytes.length ? passwordBytes.length : keyBytes.length;
-                    System.arraycopy(passwordBytes, 0, keyBytes, 0, length);
+                    MessageDigest md = MessageDigest.getInstance("SHA-256");
+                    md.update(passwordBytes);
+                    byte[] keyBytes = md.digest();
                     sks = new SecretKeySpec(keyBytes, AES_KEYS_TAG);
 
                     byte[] encodedBytes = null;
