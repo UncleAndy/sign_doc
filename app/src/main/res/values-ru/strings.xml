@@ -74,5 +74,6 @@
     <string name="btn_show_info">Информация</string>
     <string name="txt_public_key_id">Идентификатор ключа</string>
     <string name="txt_cancel_pvt_key">Ключ для отмены основного ключа</string>
+    <string name="err_code_to_big">Код для подтверждения слишком большой или неверного формата</string>
 
 </resources>

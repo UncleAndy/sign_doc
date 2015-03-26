@@ -74,5 +74,6 @@
     <string name="btn_show_info">Information</string>
     <string name="txt_public_key_id">Key identificator</string>
     <string name="txt_cancel_pvt_key">Private key for cancel main key</string>
+    <string name="err_code_to_big">Code for confirm is too big or bad format</string>
 
 </resources>

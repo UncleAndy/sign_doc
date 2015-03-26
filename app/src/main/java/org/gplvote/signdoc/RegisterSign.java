@@ -65,9 +65,22 @@ public class RegisterSign extends GetPassActivity implements OnClickListener {
                 }
 
                 if (MainActivity.sign != null && MainActivity.sign.pvt_key_present()) {
-                    if (send_task == null) {
-                        send_task = new SendRegisterTask();
-                        send_task.execute(external_calc.getQueryParameter("site"), external_calc.getQueryParameter("code"), "http://" + external_calc.getHost() + external_calc.getPath());
+                    String site = external_calc.getQueryParameter("site");
+                    String code = external_calc.getQueryParameter("code");
+                    String code_only_digits = code.replaceAll("[^\\d]", "");
+                    if ((code.length() <= 16) && code.equals(code_only_digits)) {
+                        int port = external_calc.getPort();
+                        String port_str = "";
+                        if (port != 80 && port > 0) {
+                            port_str = ":" + Integer.toString(port);
+                        }
+
+                        if (send_task == null) {
+                            send_task = new SendRegisterTask();
+                            send_task.execute(site, code, "http://" + external_calc.getHost() + port_str + external_calc.getPath());
+                        }
+                    } else {
+                        MainActivity.alert(getString(R.string.err_code_to_big), this, true);
                     }
                 } else {
                     checkPasswordDlgShow(settings);
