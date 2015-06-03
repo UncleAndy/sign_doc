@@ -111,6 +111,8 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
             Intent intent = new Intent();
             intent.putExtra("PUBLIC_KEY_ID", MainActivity.sign.getPublicKeyIdBase64());
             intent.putExtra("PUBLIC_KEY", MainActivity.sign.getPublicKeyBase64());
+            intent.putExtra("CANCEL_PUBLIC_KEY_ID", MainActivity.sign.getCancelPublicKeyIdBase64());
+            intent.putExtra("CANCEL_PUBLIC_KEY", MainActivity.sign.getCancelPublicKeyBase64());
             setResult(RESULT_OK, intent);
             finish();
             return;
@@ -242,7 +244,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
         boolean app_sign_mode = current_document().site.substring(0, 4).equals("app:");
         switch (v.getId()) {
             case R.id.btnSign:
-                if (!MainActivity.isInternetPresent(this)) {
+                if (!app_sign_mode && !MainActivity.isInternetPresent(this)) {
                     MainActivity.error(getString(R.string.err_internet_connection_absent), this);
                     return;
                 }
