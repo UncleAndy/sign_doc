@@ -74,7 +74,7 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
     private boolean view_mode = false;
 
 	@Override
-	  protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -85,6 +85,12 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
         gson = new Gson();
 
         String command = getIntent().getStringExtra("Command");
+
+        // Источник запроса необходим для последующего контроля автоматического подписания
+        // покументов через фильтры
+        String source_app = getCallingPackage();
+
+        Log.d("DO_SIGN", "Called from "+source_app);
 
         if ((command != null) && (command.equals("SendConfirms"))) {
             String json_confirms_list = getIntent().getStringExtra("DocsList");
