@@ -430,9 +430,19 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
 
         String[] tpl_lines = document.template.split("\n");
 
+        // Выделяем название документа если оно есть в шаблоне
+        String doc_title = null;
+        String[] first_line = tpl_lines[0].split(":");
+        if (first_line != null && first_line.length > 1) {
+            tpl_lines[0] = first_line[0];
+            doc_title = first_line[1];
+        }
+
         String html = "";
         switch (tpl_lines[0]) {
             case "LIST":
+                if (doc_title != null)
+                    html += "<h1>"+doc_title+"</h1>";
                 for (int i = 0; i < data.length; i++) {
                     if ((i+1) < tpl_lines.length) {
                         String title = tpl_lines[i + 1];
