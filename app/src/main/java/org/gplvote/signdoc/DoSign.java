@@ -38,6 +38,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+// TODO: Добавить в интерфейс взаимодействия с приложениями возможность шифровать и расшифровывать данные
+// При шифровании с данными должен передаваться и публичный ключ, которым будет производится шифрование
+// Расшифровка должна производиться текущим секретным ключем
 public class DoSign extends GetPassActivity implements View.OnClickListener {
     private class DocsListObject {
         DocSignRequest[] values;

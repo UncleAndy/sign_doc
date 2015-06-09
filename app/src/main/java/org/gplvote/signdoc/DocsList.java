@@ -222,6 +222,46 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         Log.d("MAIN", "onPassword");
         boolean result = super.onPassword(password);
         if (result) update_list();
+
+        if (result && MainActivity.sign != null) {
+            Log.d("ENCRYPT_TEST", "Start small data...");
+            String small_data = "test small data";
+            String enc_data = MainActivity.sign.encrypt_base64(small_data, MainActivity.sign.getPublicKeyBase64());
+            Log.d("ENCRYPT_TEST", "Encrypted small data = "+enc_data);
+            Log.d("ENCRYPT_TEST", "Decrypt small data...");
+            byte[] dec_data_bytes = MainActivity.sign.decrypt(enc_data);
+            String dec_data = new String(dec_data_bytes);
+            Log.d("ENCRYPT_TEST", "Decrypted small data = "+dec_data);
+            if (dec_data.equals(small_data)) {
+                Log.d("ENCRYPT_TEST", "for small data IS OK");
+            } else {
+                Log.d("ENCRYPT_TEST", "for small data IS BAD!!!");
+            }
+
+            Log.d("ENCRYPT_TEST", "Start big data...");
+            String big_data = "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
+                    "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n";
+            enc_data = MainActivity.sign.encrypt_base64(big_data, MainActivity.sign.getPublicKeyBase64());
+            Log.d("ENCRYPT_TEST", "Encrypted big data = "+enc_data);
+            Log.d("ENCRYPT_TEST", "Decrypt big data...");
+            dec_data = new String(MainActivity.sign.decrypt(enc_data));
+            Log.d("ENCRYPT_TEST", "Decrypted big data = "+dec_data);
+            if (dec_data.equals(big_data)) {
+                Log.d("ENCRYPT_TEST", "for big data IS OK");
+            } else {
+                Log.d("ENCRYPT_TEST", "for gig data IS BAD!!!");
+            }
+        }
+
         return(result);
     }
 

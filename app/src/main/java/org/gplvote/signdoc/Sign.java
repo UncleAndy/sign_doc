@@ -14,6 +14,7 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
@@ -22,6 +23,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+// TODO: Добавить методы для шифрования сообщений публичным ключем так-же как для расшифровки
 public class Sign {
     private static final String PREF_ENC_PRIVATE_KEY = MainActivity.PREF_ENC_PRIVATE_KEY;
     private static final String PREF_PUBLIC_KEY = MainActivity.PREF_PUBLIC_KEY;
@@ -30,6 +32,7 @@ public class Sign {
 
     private static final String RSA_KEYS_TAG = "RSA";
     private static final String RSA_DECRYPT_TAG = "RSA/None/PKCS1Padding";
+    private static final String RSA_ENCRYPT_TAG = "RSA/None/PKCS1Padding";
     private static final String AES_KEYS_TAG = "AES";
     public static final String SIGN_ALG_TAG = "SHA256withRSA";
 
@@ -89,11 +92,83 @@ public class Sign {
         }
     }
 
+    public byte[] encrypt(byte[] data_bytes, byte[] pub_key_bytes) {
+        if (pub_key_bytes == null || data_bytes == null) { return(null); }
+
+        Log.d("DATA", "Data for encrypt: " + Arrays.toString(data_bytes));
+
+        byte[] enc_data = null;
+        try {
+            PublicKey pub = KeyFactory.getInstance(RSA_KEYS_TAG).generatePublic(new X509EncodedKeySpec(pub_key_bytes));
+
+            Cipher rsa = Cipher.getInstance(RSA_ENCRYPT_TAG);
+            rsa.init(Cipher.ENCRYPT_MODE, pub);
+            if (data_bytes.length <= 256) {
+                enc_data = new byte[256];
+                enc_data = rsa.doFinal(data_bytes);
+            } else {
+                // Use RSA+AES encoding
+
+                // HEADER
+                byte[] header = new byte[80];
+                // Random AES key with random Initial Vector
+                SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+                byte[] aes_key_bytes = sr.generateSeed(32);
+                byte[] aes_iv_bytes = sr.generateSeed(16);
+
+                // CRC of data
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(data_bytes);
+                byte[] crc_data = md.digest();
+
+                // Encode header over RSA
+                System.arraycopy(aes_key_bytes, 0, header, 0, 32);
+                System.arraycopy(aes_iv_bytes, 0, header, 32, 16);
+                System.arraycopy(crc_data, 0, header, 48, 32);
+                byte[] enc_header = rsa.doFinal(header);
+
+                // Encode data over AES
+                SecretKeySpec sks = new SecretKeySpec(aes_key_bytes, "AES");
+                IvParameterSpec ivSpec = new IvParameterSpec(aes_iv_bytes);
+                Cipher aes = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                aes.init(Cipher.ENCRYPT_MODE, sks, ivSpec);
+                byte[] enc_data_block = aes.doFinal(data_bytes);
+
+                enc_data = new byte[enc_header.length + enc_data_block.length];
+
+                System.arraycopy(enc_header, 0, enc_data, 0, enc_header.length);
+                System.arraycopy(enc_data_block, 0, enc_data, enc_header.length, enc_data_block.length);
+
+                Log.d("ENC_AES", "Enc data size = "+enc_data_block.length+"; raw data size = "+data_bytes.length);
+            }
+            if (enc_data != null) {
+                Log.d("DATA", "Encrypted bytes: " + enc_data.length);
+
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(enc_data);
+                Log.d("SHA256_encrypt", Base64.encodeToString(md.digest(), Base64.NO_WRAP));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return(enc_data);
+    }
+
+    public String encrypt_base64(String data, String pub_key_base64) {
+        Log.d("DATA", "Data for encrypt: " + data);
+        return(Base64.encodeToString(encrypt(data.getBytes(), Base64.decode(pub_key_base64, Base64.NO_WRAP)), Base64.NO_WRAP));
+    }
+
     public byte[] decrypt(byte[] enc_data) {
         if (!pvt_key_present()) { return(null); }
 
         byte[] data = null;
         try {
+            MessageDigest mdg = MessageDigest.getInstance("SHA-256");
+            mdg.update(enc_data);
+            Log.d("SHA256_decrypt", Base64.encodeToString(mdg.digest(), Base64.NO_WRAP));
+
             Cipher rsa = Cipher.getInstance(RSA_DECRYPT_TAG);
             rsa.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
             if (enc_data.length <= 256) {
