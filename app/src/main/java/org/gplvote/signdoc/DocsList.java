@@ -224,21 +224,17 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         if (result) update_list();
 
         if (result && MainActivity.sign != null) {
-            Log.d("ENCRYPT_TEST", "Start small data...");
+            // Временный блок тестирования функций шифвроания и расшифровки
             String small_data = "test small data";
             String enc_data = MainActivity.sign.encrypt_base64(small_data, MainActivity.sign.getPublicKeyBase64());
-            Log.d("ENCRYPT_TEST", "Encrypted small data = "+enc_data);
-            Log.d("ENCRYPT_TEST", "Decrypt small data...");
             byte[] dec_data_bytes = MainActivity.sign.decrypt(enc_data);
             String dec_data = new String(dec_data_bytes);
-            Log.d("ENCRYPT_TEST", "Decrypted small data = "+dec_data);
             if (dec_data.equals(small_data)) {
                 Log.d("ENCRYPT_TEST", "for small data IS OK");
             } else {
                 Log.d("ENCRYPT_TEST", "for small data IS BAD!!!");
             }
 
-            Log.d("ENCRYPT_TEST", "Start big data...");
             String big_data = "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
                     "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
                     "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
@@ -251,10 +247,7 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
                     "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n" +
                     "test big data\ntest big data\ntest big data\ntest big data\ntest big data\n";
             enc_data = MainActivity.sign.encrypt_base64(big_data, MainActivity.sign.getPublicKeyBase64());
-            Log.d("ENCRYPT_TEST", "Encrypted big data = "+enc_data);
-            Log.d("ENCRYPT_TEST", "Decrypt big data...");
             dec_data = new String(MainActivity.sign.decrypt(enc_data));
-            Log.d("ENCRYPT_TEST", "Decrypted big data = "+dec_data);
             if (dec_data.equals(big_data)) {
                 Log.d("ENCRYPT_TEST", "for big data IS OK");
             } else {
@@ -290,11 +283,8 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         Log.d("MAIN", "update_list run query");
         Cursor c = db.query("docs_list", new String[]{"t_set_status", "t_confirm", "status", "site", "doc_id", "sign_url"}, null, null, null, null, "t_receive desc", "100");
         if (c != null) {
-            Log.d("MAIN", "update_list p1");
             if (c.moveToFirst()) {
-                Log.d("MAIN", "update_list p2");
                 do {
-                    Log.d("MAIN", "update_list p3");
                     m = new HashMap<String, Object>();
 
                     m.put("t_set_status", c.getString(c.getColumnIndex("t_set_status")));
@@ -355,7 +345,6 @@ public class DocsList extends GetPassActivity implements View.OnClickListener, G
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View rowView;
-            Log.d("MAIN", "Start getView for position = "+position);
 
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

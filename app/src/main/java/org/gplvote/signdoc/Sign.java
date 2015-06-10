@@ -95,8 +95,6 @@ public class Sign {
     public byte[] encrypt(byte[] data_bytes, byte[] pub_key_bytes) {
         if (pub_key_bytes == null || data_bytes == null) { return(null); }
 
-        Log.d("DATA", "Data for encrypt: " + Arrays.toString(data_bytes));
-
         byte[] enc_data = null;
         try {
             PublicKey pub = KeyFactory.getInstance(RSA_KEYS_TAG).generatePublic(new X509EncodedKeySpec(pub_key_bytes));
@@ -138,16 +136,9 @@ public class Sign {
 
                 System.arraycopy(enc_header, 0, enc_data, 0, enc_header.length);
                 System.arraycopy(enc_data_block, 0, enc_data, enc_header.length, enc_data_block.length);
-
-                Log.d("ENC_AES", "Enc data size = "+enc_data_block.length+"; raw data size = "+data_bytes.length);
             }
-            if (enc_data != null) {
+            if (enc_data != null)
                 Log.d("DATA", "Encrypted bytes: " + enc_data.length);
-
-                MessageDigest md = MessageDigest.getInstance("SHA-256");
-                md.update(enc_data);
-                Log.d("SHA256_encrypt", Base64.encodeToString(md.digest(), Base64.NO_WRAP));
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,7 +147,6 @@ public class Sign {
     }
 
     public String encrypt_base64(String data, String pub_key_base64) {
-        Log.d("DATA", "Data for encrypt: " + data);
         return(Base64.encodeToString(encrypt(data.getBytes(), Base64.decode(pub_key_base64, Base64.NO_WRAP)), Base64.NO_WRAP));
     }
 
@@ -165,10 +155,6 @@ public class Sign {
 
         byte[] data = null;
         try {
-            MessageDigest mdg = MessageDigest.getInstance("SHA-256");
-            mdg.update(enc_data);
-            Log.d("SHA256_decrypt", Base64.encodeToString(mdg.digest(), Base64.NO_WRAP));
-
             Cipher rsa = Cipher.getInstance(RSA_DECRYPT_TAG);
             rsa.init(Cipher.DECRYPT_MODE, pvt_key_from_cache());
             if (enc_data.length <= 256) {
