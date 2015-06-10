@@ -127,6 +127,26 @@ public class DoSign extends GetPassActivity implements View.OnClickListener {
             return;
         }
 
+        if ((command != null) && (command.equals("Encrypt"))) {
+            if (MainActivity.sign == null) {
+                MainActivity.sign = new Sign(this);
+            }
+
+            String text = getIntent().getStringExtra("Text");
+            String pub_key = getIntent().getStringExtra("PublicKey");
+
+            if (text != null && pub_key != null) {
+                Intent intent = new Intent();
+
+                String enc_text = MainActivity.sign.encrypt_base64(text, pub_key);
+
+                intent.putExtra("ENCRYPTED_TEXT", enc_text);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+            return;
+        }
+
         setContentView(R.layout.do_sign);
 
         settings = Settings.getInstance(this);
