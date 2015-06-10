@@ -53,6 +53,13 @@
                 <data android:scheme="signdoc" />
             </intent-filter>
         </activity>
+        <activity android:name="org.gplvote.signdoc.DoDecrypt"
+            android:label="GPLVote Sign Doc Decrypt">
+            <intent-filter>
+                <action android:name="org.gplvote.signdoc.DO_DECRYPT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="org.gplvote.signdoc.MainActivity"/>
         <activity android:name="org.gplvote.signdoc.ShowInfo"/>
     </application>
